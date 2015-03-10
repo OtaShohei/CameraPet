@@ -2,8 +2,7 @@
 <resources>
 
     <string name="app_name">CameraPet</string>
-    <string name="hello_world">Hello world!</string>
-        <string name="ShotBtn">SHOT</string>
+    <string name="ShotBtn">SHOT</string>
     <string name="action_settings">Settings</string>
 
 </resources>

@@ -161,5 +161,3 @@ public class CameraView extends SurfaceView  {
 	}
 
 }
-
-
