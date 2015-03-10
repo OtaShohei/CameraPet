@@ -2,7 +2,8 @@
 <resources>
 
     <string name="app_name">CameraPet</string>
-    <string name="ShotBtn">SHOT</string>
+    <string name="goCamBtn">SHOT</string>
     <string name="action_settings">Settings</string>
-
+    <string name="returnBtn">GoHome</string>
+    <string name="shotBtn">TakePic</string>
 </resources>

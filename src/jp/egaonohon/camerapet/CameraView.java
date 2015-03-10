@@ -17,23 +17,25 @@ import android.hardware.Camera.Size;
 import android.net.Uri;
 import android.provider.MediaStore.Images.Media;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 /**
- * CameraViewは、CameraBasicほぼ、そのまま。
- * ただ、AFを使うようにしているのが違う。
+ * CameraViewは、CameraBasicほぼ、そのまま。 ただ、AFを使うようにしているのが違う。
+ *
  * @author 1107AND
  *
  */
-public class CameraView extends SurfaceView  {
-	private Camera c;
+public class CameraView extends SurfaceView {
+	private Camera petCam;
 	private static final String SD_CARD = "/sdcard/";
 	private static ContentResolver contentResolver = null;
-	private boolean afStart=false;
+	private boolean afStart = false;
 
+	/*
+	 * コンストラクタ3種ー＞オリジナルの部品XMLからの利用を可能にするため
+	 */
 	public CameraView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		init(context);
@@ -53,84 +55,85 @@ public class CameraView extends SurfaceView  {
 		contentResolver = context.getContentResolver();
 
 		SurfaceHolder holder = getHolder();
-		holder.addCallback(
-				new SurfaceHolder.Callback() {
-					public void surfaceCreated(SurfaceHolder holder) {
-						c = Camera.open(0);
-						try {
-							c.setPreviewDisplay(holder);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
-
-					public void surfaceChanged(SurfaceHolder holder,
-							int format, int width, int height) {
-						c.stopPreview();
-						Parameters params = c.getParameters();
-
-
-						Size sz = params.getSupportedPreviewSizes().get(0);
-						params.setPreviewSize(sz.width, sz.height);
-
-						c.setParameters(params);
-						setCameraParameters(c);
-						c.startPreview();
-
-
-					}
-
-					public void surfaceDestroyed(SurfaceHolder holder) {
-						c.release();
-						c = null;
-					}
+		holder.addCallback(new SurfaceHolder.Callback() {
+			public void surfaceCreated(SurfaceHolder holder) {
+				petCam = Camera.open(0);
+				try {
+					petCam.setPreviewDisplay(holder);
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-				);
-//		holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+			}
+
+			public void surfaceChanged(SurfaceHolder holder, int format,
+					int width, int height) {
+				petCam.stopPreview();
+				Parameters params = petCam.getParameters();
+
+				Size sz = params.getSupportedPreviewSizes().get(0);
+				params.setPreviewSize(sz.width, sz.height);
+
+				petCam.setParameters(params);
+				setCameraParameters(petCam);
+				petCam.startPreview();
+
+			}
+
+			public void surfaceDestroyed(SurfaceHolder holder) {
+				petCam.release();
+				petCam = null;
+			}
+		});
+		// holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 	}
 
-	//カメラに対して画像のサイズの指定をしている。
+	// カメラに対して画像のサイズの指定をしている。
 	private void setCameraParameters(Camera camera) {
-		//元の設定を読んでおく
+		// 元の設定を読んでおく
 		Parameters parameters = camera.getParameters();
-		//変更するところだけ変更する。
-		parameters.setPictureSize(480, 320);	//Default:2048x1536
-		//変更内容を保存する。
+		// 変更するところだけ変更する。
+		parameters.setPictureSize(480, 320); // Default:2048x1536
+		// 変更内容を保存する。
 		camera.setParameters(parameters);
 	}
 
 	/**
-	 * onAutoFocus()メソッドを呼び出すことを onTouchのタイミングで実は行っている。
-	 * したがって、やや時間がかかっている。
+	 * onAutoFocus()メソッドを呼び出すことを onTouchのタイミングで実は行っている。 したがって、やや時間がかかっている。
 	 */
 	@Override
 	public boolean onTouchEvent(MotionEvent e) {
 		if (e.getAction() == MotionEvent.ACTION_DOWN) {
-			Log.v("CAMERA","ontouch");
-			//AutoFoucusする要求を発行！
-			if (afStart == false)onAutoFocus();
+//			Log.v("CAMERA", "ontouch");
+			// AutoFoucusする要求を発行！
+			if (afStart == false)
+				onAutoFocus();
 		}
 		return true;
 	}
+
 	public void onAutoFocus() {
 		afStart = true;
-		c.autoFocus(new AutoFocusCallback() {//c.autoFocusでオートフォーカスの支持を出す。
+		petCam.autoFocus(new AutoFocusCallback() {// c.autoFocusでオートフォーカスの指示を出す。
 			@Override
 			public void onAutoFocus(boolean success, Camera camera) {
 				camera.takePicture(new ShutterCallback() {
-		  	          public void onShutter() {}
-	  	        }, null, new Camera.PictureCallback() {
+					public void onShutter() {
+					}
+				}, null, new Camera.PictureCallback() {
 					@Override
 					public void onPictureTaken(byte[] data, Camera camera) {
 						try {
-							String dataName = "photo_" + String.valueOf(Calendar.getInstance().getTimeInMillis()) + ".jpg";
+							String dataName = "photo_"
+									+ String.valueOf(Calendar.getInstance()
+											.getTimeInMillis()) + ".jpg";
 							/**
 							 * saveDataToURIはギャラリーに直接書き込むメソッド。
-							 * SDカード経由の時に用いた、Environment.getExternalStorageState()を使うかどうかはどちらでもいい。
+							 * SDカード経由の時に用いた、Environment
+							 * .getExternalStorageState()を使うかどうかはどちらでもいい。
 							 */
-							saveDataToURI(data,dataName);
-							camera.startPreview();//プレビューを再度表示開始。
-							afStart = false;//オートフォーカスをオフ&この動作まで再び写真撮影をさせない。
+							saveDataToURI(data, dataName);
+							camera.startPreview();// プレビューを再度表示開始。
+							afStart = false;// オートフォーカスをオフ&この動作まで再び写真撮影をさせない。
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -140,7 +143,7 @@ public class CameraView extends SurfaceView  {
 		});
 	}
 
-	//コンテンツプロバイダ経由で保存するメソッド(ギャラリーに登録される)
+	// コンテンツプロバイダ経由で保存するメソッド(ギャラリーに登録される)
 	private void saveDataToURI(byte[] data, String dataName) {
 		Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
 		ContentValues values = new ContentValues();
@@ -156,7 +159,6 @@ public class CameraView extends SurfaceView  {
 		} catch (Exception e) {
 
 		}
-
 
 	}
 

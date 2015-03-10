@@ -1,6 +1,7 @@
 package jp.egaonohon.camerapet;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -9,7 +10,7 @@ import android.widget.Button;
 
 public class MainActivity extends Activity {
 
-	Button shot;
+	Button goCam;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +39,18 @@ public class MainActivity extends Activity {
 	}
 
 	public void findViewById() {
-		shot = (Button) findViewById(R.id.ShotBtn);// 更新依頼ボタンの参照を引っ張ってくる
+		goCam = (Button) findViewById(R.id.goCamBtn);// 更新依頼ボタンの参照を引っ張ってくる
 	}
 
-	public void onClickShotBtn(View v) {
-		CameraActivity.takeShot();
+	public void onClickGoCamBtn(View v) {
+		/**
+		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
+		 */
+		Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+
+		/**
+		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
+		 */
+		startActivity(intent);
 	}
 }

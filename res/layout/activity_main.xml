@@ -14,12 +14,12 @@
         android:orientation="vertical" >
 
         <Button
-            android:id="@+id/ShotBtn"
+            android:id="@+id/goCamBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:onClick="onClickShotBtn"
-            android:text="@string/ShotBtn" />
+            android:onClick="onClickGoCamBtn"
+            android:text="@string/goCamBtn" />
     </LinearLayout>
 
 </RelativeLayout>
