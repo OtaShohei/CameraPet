@@ -1,4 +1,4 @@
-package jp.egaonohon.android.camerapet;
+package jp.egaonohon.camerapet;
 
 import java.io.IOException;
 import java.io.OutputStream;

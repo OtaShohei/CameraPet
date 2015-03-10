@@ -1,4 +1,4 @@
-package jp.egaonohon.android.camerapet;
+package jp.egaonohon.camerapet;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -23,9 +23,6 @@ public class CameraOvlView extends View {
 		height = h;
 	}
 
-	/**
-	 *
-	 */
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
@@ -51,12 +48,12 @@ public class CameraOvlView extends View {
 		canvas.drawLine((float) 0.0, (float) height / 2, (float) width,
 				(float) height / 2, paint);
 		// 文字表示
-		paint.setARGB(255, 255, 255, 255);
-		paint.setStyle(Paint.Style.FILL);
-		canvas.drawText("うまく撮ってね", 0, height - 30, paint);
+		// paint.setARGB(255, 255, 255, 255);
+		// paint.setStyle(Paint.Style.FILL);
+		// canvas.drawText("うまく撮ってね", 0, height - 30, paint);
 		// エアータグに似て非なるもの
-		canvas.drawText("エアータグ?", width - 75, 17, paint);
-		paint.setARGB(125, 100, 100, 255);
+		// canvas.drawText("エアータグ?", width - 75, 17, paint);
+		// paint.setARGB(125, 100, 100, 255);
 		RectF rect = new RectF(width - 80, 0, width - 5, 30);
 		canvas.drawRoundRect(rect, 10, 10, paint);
 

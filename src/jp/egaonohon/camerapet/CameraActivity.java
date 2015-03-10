@@ -1,4 +1,4 @@
-package jp.egaonohon.android.camerapet;
+package jp.egaonohon.camerapet;
 
 import android.app.Activity;
 import android.os.Bundle;

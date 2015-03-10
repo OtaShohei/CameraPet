@@ -1,4 +1,4 @@
-package jp.egaonohon.android.camerapet;
+package jp.egaonohon.camerapet;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -43,6 +43,5 @@ public class MainActivity extends Activity {
 
 	public void onClickShotBtn(View v) {
 		CameraActivity.takeShot();
-
 	}
 }
