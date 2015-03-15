@@ -1,5 +1,7 @@
 package jp.egaonohon.camerapet;
 
+//import jp.egaonohon.surface.camera.ovl.CameraOvlView;
+//import jp.egaonohon.surface.camera.ovl.CameraView;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +12,6 @@ import android.widget.Button;
 
 public class CameraActivity extends Activity {
 	private CameraView cameraView;
-	private boolean afStart = false;
 	Button shot;
 	Button back;
 
@@ -23,11 +24,13 @@ public class CameraActivity extends Activity {
 				LayoutParams.MATCH_PARENT);
 		// addContentViewした時点で、CameraOvlViewクラスのonSizeChanged()メソッドが動いてwとhが取得される。
 		addContentView(new CameraOvlView(this), params);// プレビューの上にオーバーレイさせる。
+
 		/**
 		 * スクリーンが自動でオフになるのを防ぐ。
 		 */
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		findViewById();
+
 	}
 
 	@Override
@@ -48,7 +51,7 @@ public class CameraActivity extends Activity {
 	}
 
 	public void findViewById() {
-		shot = (Button) findViewById(R.id.shotBtn);// 撮影ボタンの参照を引っ張ってくる
+//		shot = (Button) findViewById(R.id.shotBtn);// 撮影ボタンの参照を引っ張ってくる
 		back = (Button) findViewById(R.id.returnBtn);// 戻るボタンの参照を引っ張ってくる
 	}
 
@@ -59,9 +62,9 @@ public class CameraActivity extends Activity {
 	 */
 	public void onClickTakePicBtn(View v) {
 
-		if (afStart == false) {
-			cameraView.onAutoFocus();
-		}
+		// if (afStart == false) {
+		// myShutter.onAutoFocus();
+		// }
 	}
 
 	/**
@@ -74,7 +77,6 @@ public class CameraActivity extends Activity {
 		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
 		 */
 		Intent intent = new Intent(CameraActivity.this, MainActivity.class);
-
 		/**
 		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
 		 */

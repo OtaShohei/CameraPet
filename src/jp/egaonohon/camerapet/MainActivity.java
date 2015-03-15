@@ -1,11 +1,18 @@
 package jp.egaonohon.camerapet;
 
 import android.app.Activity;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Context;
 import android.content.Intent;
+import android.content.Loader;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,10 +25,19 @@ import android.widget.Toast;
  * @author 1107AND
  *
  */
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements LoaderCallbacks<String> {
 
 	private final int FACEBOOK_ID = 0;
 	private final int TWITTER_ID = 1;
+	Bundle savedInstanceState;
+	private Integer intShotCnt = 0;// 撮影回数の初期値
+	/** 撮影回数保存用Preferences */
+	SharedPreferences pref;
+	/** Preferencesへの書き込み用Editor */
+	Editor editor;
+	/** BGM用変数 */
+	private MediaPlayer mp;
+	/** SNS連携用のメンバ変数 */
 	private final String[] sharePackages = { "com.facebook.katana",
 			"com.twitter.android" };
 
@@ -29,6 +45,52 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		/** プリファレンスの準備 */
+		pref = this.getSharedPreferences("shotCnt", Context.MODE_PRIVATE);
+		/** プリファレンスに書き込むためのEditorオブジェクト取得 */
+		editor = pref.edit();
+
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO 自動生成されたメソッド・スタブ
+		super.onResume();
+		
+		intShotCnt = loadShotCnt(this);
+
+		/**
+		 * LoaderManagerを実行して撮影回数を読み込み。
+		 * こうしてLoaderの初期化。LoaderManagerがローダーを識別するid0番を付けてる。
+		 * 第2引数に情報を格納したbundle。onCreateLoader（LoaderCallbacksの3つのメソッドの一つ）へここから飛ぶ。
+		 */
+		getLoaderManager().initLoader(0, null, this);
+		/*
+		 * initLoaderの引数について。 第1引数:Loaderを識別するID値（onCreateLoaderメソッドの第1引数に渡される）
+		 * 第2引数:パラメータ格納用（onCreateLoaderメソッド（このアクティビティにあるメソッド）の第2引数に渡される）
+		 * 第3引数:LoaderCallbackインターフェースを実装したクラス（すなわちこのアクティビティ）
+		 */
+
+		/** BGMを鳴らす*/
+		mp = MediaPlayer.create(MainActivity.this, R.raw.bgm_stagebgm_08_hq);
+		mp.setLooping(true);
+		mp.start(); // SEを鳴らす
+	}
+
+	/** Cameraへの移動や他アプリへの遷移時にBGMの停止などを行う。*/
+	@Override
+	protected void onPause() {
+		// TODO 自動生成されたメソッド・スタブ
+		super.onPause();
+		/** BGMの一時停止 */
+		mp.pause();
+		
+		/** 撮影回数を0にリセットする。 */
+		editor.putInt("shotCnt", 0);
+		editor.commit();
+		Log.v("CAMERA", "MainActivityOnPause");
+
 	}
 
 	@Override
@@ -49,6 +111,32 @@ public class MainActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+
+	@Override
+	public Loader<String> onCreateLoader(int id, Bundle args) {
+		// TODO 自動生成されたメソッド・スタブ
+		// intShotCnt = args.getInt("CntNum_Key");
+		Log.v("CAMERA", "onCreateLoader");
+		return new AsyncOnSave(this, intShotCnt);
+
+	}
+
+	@Override
+	public void onLoadFinished(Loader<String> loader, String data) {
+		// TODO 自動生成されたメソッド・スタブ
+		Toast.makeText(this, data, Toast.LENGTH_SHORT).show();
+		Log.v("CAMERA", "onLoadFinished");
+	}
+
+	@Override
+	public void onLoaderReset(Loader<String> loader) {
+		// TODO 自動生成されたメソッド・スタブ
+		Log.v("CAMERA", "onLoaderReset");
+	}
+
+	// //////////////////////////////////////////////////////////////////////////////////
+	// 以下、非オーバーライド系メソッド。
+	// //////////////////////////////////////////////////////////////////////////////////
 
 	public void onClickGoCamBtn(View v) {
 		/**
@@ -127,5 +215,18 @@ public class MainActivity extends Activity {
 		Uri uri = Uri.parse("market://details?id=" + sharePackages[shareId]);
 		Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 		startActivity(intent);
+	}
+
+	/** プリファレンスから「撮影回数」を取り出す。登録されていなければ 0 を返す */
+	public int loadShotCnt(Context context) {
+		/** 撮影回数を取り出しておく */
+		int beforeShotCnt = pref.getInt("shotCnt", 0);
+
+		/** 取り出し終えたので撮影回数を0にリセットする。 */
+		editor.putInt("shotCnt", 0);
+		editor.commit();
+
+		/** 取り出しておいた撮影回数を戻り値として戻す */
+		return beforeShotCnt;
 	}
 }
