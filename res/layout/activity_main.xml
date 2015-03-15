@@ -43,7 +43,7 @@
             android:text="@string/tweet" />
 
         <Button
-            android:id="@+id/changeSound"
+            android:id="@+id/stopSound"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

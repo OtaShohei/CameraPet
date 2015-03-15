@@ -29,14 +29,14 @@ public class MainActivity extends Activity implements LoaderCallbacks<String> {
 
 	private final int FACEBOOK_ID = 0;
 	private final int TWITTER_ID = 1;
-	Bundle savedInstanceState;
 	private Integer intShotCnt = 0;// 撮影回数の初期値
 	/** 撮影回数保存用Preferences */
-	SharedPreferences pref;
+	private SharedPreferences pref;
 	/** Preferencesへの書き込み用Editor */
-	Editor editor;
+	private Editor editor;
 	/** BGM用変数 */
 	private MediaPlayer mp;
+	private boolean bgmOn = true;
 	/** SNS連携用のメンバ変数 */
 	private final String[] sharePackages = { "com.facebook.katana",
 			"com.twitter.android" };
@@ -45,7 +45,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<String> {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		
+
 		/** プリファレンスの準備 */
 		pref = this.getSharedPreferences("shotCnt", Context.MODE_PRIVATE);
 		/** プリファレンスに書き込むためのEditorオブジェクト取得 */
@@ -57,7 +57,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<String> {
 	protected void onResume() {
 		// TODO 自動生成されたメソッド・スタブ
 		super.onResume();
-		
+
 		intShotCnt = loadShotCnt(this);
 
 		/**
@@ -72,20 +72,22 @@ public class MainActivity extends Activity implements LoaderCallbacks<String> {
 		 * 第3引数:LoaderCallbackインターフェースを実装したクラス（すなわちこのアクティビティ）
 		 */
 
-		/** BGMを鳴らす*/
+		/** BGMを鳴らす */
 		mp = MediaPlayer.create(MainActivity.this, R.raw.bgm_stagebgm_08_hq);
 		mp.setLooping(true);
 		mp.start(); // SEを鳴らす
+		bgmOn = true;
 	}
 
-	/** Cameraへの移動や他アプリへの遷移時にBGMの停止などを行う。*/
+	/** Cameraへの移動や他アプリへの遷移時にBGMの停止などを行う。 */
 	@Override
 	protected void onPause() {
 		// TODO 自動生成されたメソッド・スタブ
 		super.onPause();
 		/** BGMの一時停止 */
 		mp.pause();
-		
+		bgmOn = false;
+
 		/** 撮影回数を0にリセットする。 */
 		editor.putInt("shotCnt", 0);
 		editor.commit();
@@ -134,21 +136,26 @@ public class MainActivity extends Activity implements LoaderCallbacks<String> {
 		Log.v("CAMERA", "onLoaderReset");
 	}
 
+	public void onClickFacebookBtn(View v) {
+		if (isShareAppInstall(FACEBOOK_ID)) {
+			Intent intent = new Intent();
+			intent.setAction(Intent.ACTION_SEND);
+			intent.setPackage(sharePackages[FACEBOOK_ID]);
+			intent.setType("text/plain");
+			/**
+			 * 　URLはアプリのダウンロードページに差し替えること!
+			 */
+			intent.putExtra(Intent.EXTRA_TEXT,
+					"https://play.google.com/store/apps/");
+			startActivity(intent);
+		} else {
+			shareAppDl(FACEBOOK_ID);
+		}
+	}
+
 	// //////////////////////////////////////////////////////////////////////////////////
 	// 以下、非オーバーライド系メソッド。
 	// //////////////////////////////////////////////////////////////////////////////////
-
-	public void onClickGoCamBtn(View v) {
-		/**
-		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
-		 */
-		Intent intent = new Intent(MainActivity.this, CameraActivity.class);
-
-		/**
-		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
-		 */
-		startActivity(intent);
-	}
 
 	public void onClickTwitterBtn(View v) {
 		if (isShareAppInstall(TWITTER_ID)) {
@@ -168,20 +175,27 @@ public class MainActivity extends Activity implements LoaderCallbacks<String> {
 		}
 	}
 
-	public void onClickFacebookBtn(View v) {
-		if (isShareAppInstall(FACEBOOK_ID)) {
-			Intent intent = new Intent();
-			intent.setAction(Intent.ACTION_SEND);
-			intent.setPackage(sharePackages[FACEBOOK_ID]);
-			intent.setType("text/plain");
-			/**
-			 * 　URLはアプリのダウンロードページに差し替えること!
-			 */
-			intent.putExtra(Intent.EXTRA_TEXT,
-					"https://play.google.com/store/apps/");
-			startActivity(intent);
+	public void onClickGoCamBtn(View v) {
+		/**
+		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
+		 */
+		Intent intent = new Intent(MainActivity.this, CameraActivity.class);
+
+		/**
+		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
+		 */
+		startActivity(intent);
+	}
+
+	public void onClickSoundBtn(View v) {
+		/** BGMの一時停止 */
+
+		if (bgmOn) {
+			mp.pause();
+			bgmOn = false;
 		} else {
-			shareAppDl(FACEBOOK_ID);
+			mp.start();
+			bgmOn = true;
 		}
 	}
 
