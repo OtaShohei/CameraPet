@@ -194,19 +194,8 @@ public class CameraView extends SurfaceView {
 		}
 	}
 
-//	/**
-//	 * アクティビティから割り当てがなくなった時に発生するイベントです。 撮影枚数を保存。
-//	 */
-//	protected void onDetachedFromWindow() {
-//		// TODO 自動生成されたメソッド・スタブ
-//		super.onDetachedFromWindow();
-//		Log.v("CAMERA", "onDetachedFromWindow");
-//		// bunCntNum.putInt("CntNum_Key", cntNum);
-//
-//	}
-
 	/**
-	 * ボタン押下回数カウントと操作ガイド表示を行うメソッド。 ボタン押下回数をカウント。押下回数2回目と3回目には操作ガイド用のトーストを表示する。
+	 * ボタン押下回数カウントを行うメソッド。
 	 */
 	void btnCount() {
 		cntNum++;

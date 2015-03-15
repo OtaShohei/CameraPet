@@ -1,6 +1,8 @@
 package jp.egaonohon.camerapet;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -9,8 +11,15 @@ import android.database.sqlite.SQLiteOpenHelper;
  * SQLiteOpenHelperを継承してこのクラスを作っている。
  */
 public class SimpleDatabaseHelper extends SQLiteOpenHelper {
-	// データベースファイル名に制限事項はありません。
-	static final private String DBNAME = "CameraPetUser";// 名前は何でもいいし拡張子がなくてもいいが今回はsample.sqliteにしている。
+	/**
+	 *  データベースファイル名。
+	 *  命名はに制限事項はありません。名前は何でもいいし拡張子 *.sqlite があってもいいが今回はCameraPetUserにしている。
+	 */
+	static final private String DBNAME = "CameraPetUser";// 
+	/** 初回起動日時保存用Preferencesのメンバ変数確保 */
+	SharedPreferences pref;
+	/** Preferencesへの書き込み用Editor */
+	Editor editor;
 	/*
 	 * この番号はフレームワーク側で利用されています。バージョンとはSQLiteOpenHelperが見ている数字。
 	 * データベースを改修（レコードを追加するなど）するときにこのバージョン番号を上げるとデータベースを作りなおしてくれる。しかも自動で。
@@ -44,6 +53,7 @@ public class SimpleDatabaseHelper extends SQLiteOpenHelper {
 				+ "user TEXT PRIMARY KEY, petType TEXT, shotCnt INTEGER)");//isbnをキーにして、タイトルとプライスを入れる。
 		db.execSQL("INSERT INTO pet(user, petType, shotCnt)"
 				+ " VALUES('default', 'lv01', 0)");//ここでは初期データも同時に突っ込んでいる以下同様。
+		
 	}
 
 	/*

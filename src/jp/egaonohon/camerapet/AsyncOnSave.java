@@ -118,9 +118,9 @@ public class AsyncOnSave extends AsyncTaskLoader<String> {
 		long id = db.insert("pet", null, cv);// SQLのINSERTに相当するinsert()メソッドで追加される。引数は、テーブル名とレコードが入っているcv。
 		String msg = "";
 		if (id != -1) {// 戻り値を確認して成否を確認。戻り値-1の時は、テーブルがないなどの異常時。
-			msg = "データの登録に成功しました。今回の撮影回数は" + intShotCnt + "これまでの合計撮影回数は" + totalShotCnt;
+			msg = "先ほどの撮影回数は" + intShotCnt + "回。今までの合計撮影回数は" + totalShotCnt + "回です！";
 		} else {
-			msg = "データの登録に失敗しました。撮影回数は" + intShotCnt;
+			msg = "データの登録に失敗しました。撮影回数は" + intShotCnt + "回";
 		}
 
 		return msg;

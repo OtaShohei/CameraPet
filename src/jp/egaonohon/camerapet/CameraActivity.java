@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
@@ -51,7 +52,7 @@ public class CameraActivity extends Activity {
 	}
 
 	public void findViewById() {
-//		shot = (Button) findViewById(R.id.shotBtn);// 撮影ボタンの参照を引っ張ってくる
+		// shot = (Button) findViewById(R.id.shotBtn);// 撮影ボタンの参照を引っ張ってくる
 		back = (Button) findViewById(R.id.returnBtn);// 戻るボタンの参照を引っ張ってくる
 	}
 
