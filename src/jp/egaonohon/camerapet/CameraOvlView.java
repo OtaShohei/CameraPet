@@ -1,12 +1,13 @@
 package jp.egaonohon.camerapet;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.RectF;
 import android.view.View;
 
+@SuppressLint("DrawAllocation")
 public class CameraOvlView extends View {
 
 	// コンストラクタはそのまま。
@@ -33,14 +34,6 @@ public class CameraOvlView extends View {
 		Paint paint = new Paint();
 		paint.setARGB(255, 255, 255, 255);
 		paint.setStyle(Paint.Style.STROKE);
-
-		// 表示
-//		int radial = height / 10;
-		// canvas.drawCircle(width / 2, height / 2, radial * 5, paint);
-		// canvas.drawCircle(width / 2, height / 2, radial * 4, paint);
-		// canvas.drawCircle(width / 2, height / 2, radial * 3, paint);
-		// canvas.drawCircle(width / 2, height / 2, radial * 2, paint);
-		// canvas.drawCircle(width / 2, height / 2, radial * 1, paint);
 
 		// 縦線
 		canvas.drawLine((float) width / 3, (float) 0.0, (float) width / 3,

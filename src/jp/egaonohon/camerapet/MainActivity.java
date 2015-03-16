@@ -18,8 +18,7 @@ import android.widget.Toast;
 
 /**
  *
- * CameraPetのMainActivityのクラスです。
- * onClickFacebookBtnとonClickTwitterBtnボタンは要差し替え。
+ * CameraPetのMainActivityのクラスです。 onClickFacebookBtnとonClickTwitterBtnボタンは要差し替え。
  *
  * @author 1107AND
  *
@@ -36,6 +35,8 @@ public class MainActivity extends Activity implements LoaderCallbacks<String> {
 	/** BGM用変数 */
 	private MediaPlayer mp, mp2;
 	private boolean bgmOn = true;
+	/** pet動き用のSurfaceView */
+//	PetMove pet;
 	/** SNS連携用のメンバ変数 */
 	private final String[] sharePackages = { "com.facebook.katana",
 			"com.twitter.android" };
@@ -53,6 +54,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<String> {
 		mp.setLooping(true);
 		mp.start(); // SEを鳴らす
 		bgmOn = true;
+
 
 		/** プリファレンスの準備 */
 		pref = this.getSharedPreferences("shotCnt", Context.MODE_PRIVATE);
@@ -73,7 +75,6 @@ public class MainActivity extends Activity implements LoaderCallbacks<String> {
 		} else {
 			mp.pause();
 			bgmOn = false;
-
 		}
 
 		/**

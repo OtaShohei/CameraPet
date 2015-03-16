@@ -3,7 +3,7 @@ package jp.egaonohon.camerapet;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Calendar;
-
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -31,9 +31,9 @@ import android.widget.Toast;
  * @author 1107AND
  *
  */
+@SuppressLint("ClickableViewAccessibility")
 public class CameraView extends SurfaceView {
 	private Camera petCam;
-	private static final String SD_CARD = "/sdcard/";
 	private static ContentResolver contentResolver = null;
 	private boolean afStart = false;
 	/** ボタン押下回数用 */
