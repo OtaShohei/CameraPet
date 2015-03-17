@@ -3,12 +3,13 @@ package jp.egaonohon.camerapet;
 import android.content.AsyncTaskLoader;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
+//import android.content.SharedPreferences;
+//import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.widget.Toast;
+
 
 public class AsyncOnSave extends AsyncTaskLoader<String> {
 
@@ -21,8 +22,11 @@ public class AsyncOnSave extends AsyncTaskLoader<String> {
 	private Integer intShotCnt = null;
 	/** 前回の撮影回数の初期値 */
 	private Integer intBeforeShotCnt = null;
+//	/** 撮影回数保存用Preferences */
+//	private SharedPreferences pref;
+//	/** Preferencesへの書き込み用Editor */
+//	private Editor editor;
 
-	
 	public AsyncOnSave(Context context, Integer shotCnt) {
 		super(context);
 		intShotCnt = shotCnt;
@@ -74,7 +78,8 @@ public class AsyncOnSave extends AsyncTaskLoader<String> {
 			// txtPrice.setText(Integer.toString(price));
 		} else {
 			// データがなかったので、その旨を表示する
-			Toast.makeText(getContext(), "データがありません。", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getContext(), "データがありません。", Toast.LENGTH_SHORT)
+					.show();
 		}
 
 		Log.v("CAMERA", "前回の撮影回数取得に成功");
@@ -90,7 +95,7 @@ public class AsyncOnSave extends AsyncTaskLoader<String> {
 		 * Toast.LENGTH_SHORT).show();
 		 */
 
-		/**前回の登録Dataを削除。 */
+		/** 前回の登録Dataを削除。 */
 		// 書き込み・読み込み用のデータベースオブジェクトを取得。newじゃないのか。
 		db = helper.getWritableDatabase();
 		// レコード削除する
@@ -105,12 +110,12 @@ public class AsyncOnSave extends AsyncTaskLoader<String> {
 		 * dbへの書き込み
 		 */
 		db = helper.getWritableDatabase();
-		
+
 		/**
 		 * 合計撮影回数の算出。
 		 */
 		Integer totalShotCnt = intBeforeShotCnt + intShotCnt;
-		
+
 		// カラム（？　これだと行になるが列では？）名とデータの組わせで1レコードのデータを作成している
 		// ContentValuesでは、キーが項目名になる。cvがレコードのフォーマットに合わせる入れ物。HashMapみたいなものかな？
 		ContentValues cv = new ContentValues();
@@ -125,14 +130,23 @@ public class AsyncOnSave extends AsyncTaskLoader<String> {
 		long id = db.insert("pet", null, cv);// SQLのINSERTに相当するinsert()メソッドで追加される。引数は、テーブル名とレコードが入っているcv。
 		String msg = "";
 		if (id != -1) {// 戻り値を確認して成否を確認。戻り値-1の時は、テーブルがないなどの異常時。
-			msg = "先ほどの撮影回数は" + intShotCnt + "回。今までの合計撮影回数は" + totalShotCnt + "回です！";
-			
+			msg = "先ほどの撮影回数は" + intShotCnt + "回。今までの合計撮影回数は" + totalShotCnt
+					+ "回です！";
+
 		} else {
 			msg = "データの登録に失敗しました。撮影回数は" + intShotCnt + "回";
 		}
-		
+
+//		/** プリファレンスの準備 */
+//		pref = this.getSharedPreferences("shotCnt", Context.MODE_PRIVATE);
+//		/** プリファレンスに書き込むためのEditorオブジェクト取得 */
+//		editor = pref.edit();
+//		/** 撮影回数を0にリセットする。 */
+//		editor.putInt("shotCnt", 0);
+//		editor.commit();
+
 		/**
-		 * 直近撮影済み枚数をプリファレンスにGetPh用に保存。
+		 * 餌クラスの元素材となるBitmap生成のために直近撮影済み枚数をプリファレンスにGetPh用に保存。
 		 */
 		TakenPhNum.save(getContext(), intShotCnt);
 		return msg;

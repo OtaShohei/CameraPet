@@ -112,9 +112,6 @@ public class MainActivity extends Activity implements LoaderCallbacks<String> {
 			 * 第2引数:パラメータ格納用（onCreateLoaderメソッド（このアクティビティにあるメソッド）の第2引数に渡される）
 			 * 第3引数:LoaderCallbackインターフェースを実装したクラス（すなわちこのアクティビティ）
 			 */
-
-			/** CameraActivityから戻ってきた時の処理を終えたことを記す */
-
 		}
 	}
 
@@ -126,12 +123,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<String> {
 
 		/** BGMの一時停止 */
 		mp.pause();
-
-		/** 撮影回数を0にリセットする。 */
-		editor.putInt("shotCnt", 0);
-		editor.commit();
 		Log.v("CAMERA", "MainActivityOnPause");
-
 	}
 
 	@Override
