@@ -35,8 +35,10 @@ public class MainActivity extends Activity implements LoaderCallbacks<String> {
 	/** BGM用変数 */
 	private MediaPlayer mp, mp2;
 	private boolean bgmOn = true;
-	/** pet動き用のSurfaceView */
-//	PetMove pet;
+	/** CameraActivityから戻ってきた直後を判定するBoolean */
+	private boolean returnCam = false;
+	private boolean returnFb = false;
+	private boolean returnTw = false;
 	/** SNS連携用のメンバ変数 */
 	private final String[] sharePackages = { "com.facebook.katana",
 			"com.twitter.android" };
@@ -54,7 +56,6 @@ public class MainActivity extends Activity implements LoaderCallbacks<String> {
 		mp.setLooping(true);
 		mp.start(); // SEを鳴らす
 		bgmOn = true;
-
 
 		/** プリファレンスの準備 */
 		pref = this.getSharedPreferences("shotCnt", Context.MODE_PRIVATE);
@@ -77,22 +78,44 @@ public class MainActivity extends Activity implements LoaderCallbacks<String> {
 			bgmOn = false;
 		}
 
-		/**
-		 * プリファレンスから撮影回数を取り出す。
-		 */
-		intShotCnt = loadShotCnt(this);
+		/** CameraActivityから明示的インテントで戻ってきた場合の前処理 */
+		Intent intent = getIntent();
+		Log.v("CAMERA", "intent取得");
+		if (intent != null) {
+			returnCam = true;
+			Log.v("CAMERA", "Cameraから戻ってきた場合の前処理完了");
+		}
 
 		/**
-		 * LoaderManagerを実行して撮影回数を読み込み。
-		 * こうしてLoaderの初期化。LoaderManagerがローダーを識別するid0番を付けてる。
-		 * 第2引数に情報を格納したbundle。onCreateLoader（LoaderCallbacksの3つのメソッドの一つ）へここから飛ぶ。
+		 * CameraActivityから戻ってきた場合は以下の処理を実行。
 		 */
-		getLoaderManager().initLoader(0, null, this);
-		/*
-		 * initLoaderの引数について。 第1引数:Loaderを識別するID値（onCreateLoaderメソッドの第1引数に渡される）
-		 * 第2引数:パラメータ格納用（onCreateLoaderメソッド（このアクティビティにあるメソッド）の第2引数に渡される）
-		 * 第3引数:LoaderCallbackインターフェースを実装したクラス（すなわちこのアクティビティ）
-		 */
+		if (returnCam && !returnFb && !returnTw) {
+			returnCam = false;
+			returnFb = false;
+			returnTw = false;
+
+			/**
+			 * プリファレンスから撮影回数を取り出す。
+			 */
+			intShotCnt = loadShotCnt(this);
+
+			/**
+			 * LoaderManagerを実行して撮影回数を読み込み。
+			 * こうしてLoaderの初期化。LoaderManagerがローダーを識別するid0番を付けてる。
+			 * 第2引数に情報を格納したbundle
+			 * 。onCreateLoader（LoaderCallbacksの3つのメソッドの一つ）へここから飛ぶ。
+			 */
+			getLoaderManager().initLoader(0, null, this);
+			/*
+			 * initLoaderの引数について。
+			 * 第1引数:Loaderを識別するID値（onCreateLoaderメソッドの第1引数に渡される）
+			 * 第2引数:パラメータ格納用（onCreateLoaderメソッド（このアクティビティにあるメソッド）の第2引数に渡される）
+			 * 第3引数:LoaderCallbackインターフェースを実装したクラス（すなわちこのアクティビティ）
+			 */
+
+			/** CameraActivityから戻ってきた時の処理を終えたことを記す */
+
+		}
 	}
 
 	/** Cameraへの移動や他アプリへの遷移時にBGMの停止などを行う。 */
@@ -103,12 +126,6 @@ public class MainActivity extends Activity implements LoaderCallbacks<String> {
 
 		/** BGMの一時停止 */
 		mp.pause();
-		bgmOn = false;
-
-		if (bgmOn) {
-			mp.pause();
-		} else {
-		}
 
 		/** 撮影回数を0にリセットする。 */
 		editor.putInt("shotCnt", 0);
@@ -146,13 +163,16 @@ public class MainActivity extends Activity implements LoaderCallbacks<String> {
 
 	/**
 	 * Facebook投稿メソッド。
-	 * 
+	 *
 	 * @param v
 	 */
 	public void onClickFacebookBtn(View v) {
 		if (bgmOn) {
 			mp2.start(); // SEを鳴らす
 		}
+
+		/** Facebookから戻ってくることを示す */
+		returnFb = true;
 
 		if (isShareAppInstall(FACEBOOK_ID)) {
 			Intent intent = new Intent();
@@ -172,13 +192,16 @@ public class MainActivity extends Activity implements LoaderCallbacks<String> {
 
 	/**
 	 * Twitter投稿メソッド。
-	 * 
+	 *
 	 * @param v
 	 */
 	public void onClickTwitterBtn(View v) {
 		if (bgmOn) {
 			mp2.start(); // SEを鳴らす
 		}
+
+		/** Twitterから戻ってくることを示す */
+		returnTw = true;
 
 		if (isShareAppInstall(TWITTER_ID)) {
 			Intent intent = new Intent();
@@ -199,13 +222,16 @@ public class MainActivity extends Activity implements LoaderCallbacks<String> {
 
 	/**
 	 * カメラ機能呼び出しメソッド。
-	 * 
+	 *
 	 * @param v
 	 */
 	public void onClickGoCamBtn(View v) {
 		if (bgmOn) {
 			mp2.start(); // SEを鳴らす
 		}
+
+		/** CameraActivityから戻ってくることを示す */
+		returnCam = true;
 
 		/**
 		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
@@ -220,7 +246,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<String> {
 
 	/**
 	 * BGMオン・オフメソッド。
-	 * 
+	 *
 	 * @param v
 	 */
 	public void onClickSoundBtn(View v) {
@@ -232,18 +258,43 @@ public class MainActivity extends Activity implements LoaderCallbacks<String> {
 			mp.start();
 			bgmOn = true;
 		}
+
 	}
 
 	/**
 	 * ペット図鑑呼び出しメソッド。
-	 * 
+	 *
 	 * @param v
 	 */
 	public void onClickEncyclopedia(View v) {
 		if (bgmOn) {
 			mp2.start(); // SEを鳴らす
+		} else {
 		}
-		// 未実装機能です。
+
+		// /**
+		// * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
+		// */
+		// Intent intent = new Intent(MainActivity.this, GetPh.class);
+		//
+		// /**
+		// * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
+		// * 第二引数の requestCode は GetPhの onActivityResult の
+		// 第一引数に渡される値で、条件分岐のための数値。
+		// */
+		// startActivityForResult(intent, 1);
+
+		/**
+		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
+		 * 撮影枚数をintentに詰め込んでGetPhクラスでその分を取得するように修正する。
+		 */
+		Intent intent = new Intent(MainActivity.this, GetPh.class);
+
+		/**
+		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
+		 */
+		startActivity(intent);
+
 	}
 
 	/**

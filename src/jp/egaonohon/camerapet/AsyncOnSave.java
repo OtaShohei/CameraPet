@@ -3,6 +3,8 @@ package jp.egaonohon.camerapet;
 import android.content.AsyncTaskLoader;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -11,10 +13,15 @@ import android.widget.Toast;
 public class AsyncOnSave extends AsyncTaskLoader<String> {
 
 	private SimpleDatabaseHelper helper = new SimpleDatabaseHelper(getContext());// このメンバ変数は、SimpleDatabaseHelperクラスの参照になっている。
-	private String txtUser = "default";// ユーザー名の初期値
-	private String txtPetType = "lv01";// Petの種類の初期値
-	private Integer intShotCnt = null;// 撮影回数の初期値
-	private Integer intBeforeShotCnt = null;// 前回の撮影回数の初期値
+	/** ユーザー名の初期値 */
+	private String txtUser = "default";
+	/** Petの種類の初期値 */
+	private String txtPetType = "lv01";
+	/** 撮影回数の初期値 */
+	private Integer intShotCnt = null;
+	/** 前回の撮影回数の初期値 */
+	private Integer intBeforeShotCnt = null;
+
 	
 	public AsyncOnSave(Context context, Integer shotCnt) {
 		super(context);
@@ -119,10 +126,15 @@ public class AsyncOnSave extends AsyncTaskLoader<String> {
 		String msg = "";
 		if (id != -1) {// 戻り値を確認して成否を確認。戻り値-1の時は、テーブルがないなどの異常時。
 			msg = "先ほどの撮影回数は" + intShotCnt + "回。今までの合計撮影回数は" + totalShotCnt + "回です！";
+			
 		} else {
 			msg = "データの登録に失敗しました。撮影回数は" + intShotCnt + "回";
 		}
-
+		
+		/**
+		 * 直近撮影済み枚数をプリファレンスにGetPh用に保存。
+		 */
+		TakenPhNum.save(getContext(), intShotCnt);
 		return msg;
 	}
 

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <string name="app_name">摄像头宠物</string>
-    <string name="goCamBtn">相机</string>
-    <string name="action_settings">环境</string>
-    <string name="returnBtn">回去</string>
-    <string name="shotBtn">射击</string>
-</resources>

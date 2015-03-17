@@ -12,8 +12,5 @@
     <string name="shotBtn">TakePic</string>
     <string name="autofocusBtn">AF</string>
     <string name="direction">F/R</string>
-    <string name="title_activity_shutter">ShutterActivity</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="title_activity_camera_activity2">CameraActivity2</string>
 
 </resources>
