@@ -3,15 +3,18 @@ package jp.egaonohon.camerapet;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.Button;
 
 public class CameraActivity extends Activity {
-	Button shot;
-	Button back;
+
+	/** メンバ変数 */
+	private Button shot;
+	private Button back;
+	/** Logのタグを定数で確保 */
+	private static final String TAG = "CameraActivity";
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -56,7 +59,7 @@ public class CameraActivity extends Activity {
 		 */
 		Intent intent = new Intent(CameraActivity.this, MainActivity.class);
 		intent.putExtra("returnCam", "true");
-		Log.v("CAMERA", "CameraActivityからputExtra完了");
+		CameLog.setLog(TAG, "CameraActivityからputExtra完了");
 
 		/**
 		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。

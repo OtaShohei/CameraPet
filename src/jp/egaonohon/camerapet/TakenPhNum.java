@@ -3,7 +3,6 @@ package jp.egaonohon.camerapet;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.util.Log;
 
 /**
  * 直近撮影済み写真枚数を保存&読み出すクラス。
@@ -19,10 +18,13 @@ public class TakenPhNum {
 	private static SharedPreferences pref;
 	/** Preferencesへの書き込み用Editor */
 	private static Editor editor;
+	/** Logのタグを定数で確保 */
+	private static final String TAG = "TakenPhNum";
+
 
 	/**
 	 * GetPh()で使用するCursorNum（直近撮影済み枚数）を取得するメソッド。
-	 * 
+	 *
 	 * @param context
 	 * @param intShotCnt
 	 */
@@ -44,7 +46,8 @@ public class TakenPhNum {
 		 * 書き込みの確定（実際にファイルに書き込む）
 		 */
 		editor.commit();
-		Log.d("CAMERA", "CursorNum" + intShotCnt+"枚");
+		CameLog.setLog(TAG, "CursorNum" + intShotCnt+"枚");
+
 	}
 
 	/** プリファレンスから「撮影回数」を取り出す。登録されていなければ 0 を返す */

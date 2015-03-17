@@ -3,11 +3,8 @@ package jp.egaonohon.camerapet;
 import android.content.AsyncTaskLoader;
 import android.content.ContentValues;
 import android.content.Context;
-//import android.content.SharedPreferences;
-//import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 import android.widget.Toast;
 
 
@@ -22,6 +19,8 @@ public class AsyncOnSave extends AsyncTaskLoader<String> {
 	private Integer intShotCnt = null;
 	/** 前回の撮影回数の初期値 */
 	private Integer intBeforeShotCnt = null;
+	/** Logのタグを定数で確保 */
+	private static final String TAG = "AsyncOnSave";
 //	/** 撮影回数保存用Preferences */
 //	private SharedPreferences pref;
 //	/** Preferencesへの書き込み用Editor */
@@ -82,7 +81,7 @@ public class AsyncOnSave extends AsyncTaskLoader<String> {
 					.show();
 		}
 
-		Log.v("CAMERA", "前回の撮影回数取得に成功");
+		CameLog.setLog(TAG, "前回の撮影回数取得に成功");
 
 		/*
 		 * 検索時にSQL文を直接送る場合はちょっと構文が違う。DELETEやINSERT時のようなexecSQLではない。 例えばこんな感じ。
@@ -104,7 +103,7 @@ public class AsyncOnSave extends AsyncTaskLoader<String> {
 		// 第三引数：Where句の指定データ
 		// 戻り値は、影響を受けた行数。このパターンだとISBNの重複はないので1が戻り値。
 		int ct = db.delete("pet", "user = ?", params);// 第1引数はテーブル名。第2引数は軸とするISBN。第三引数がisbnが入った配列。
-		Log.v("CAMERA", "前回のユーザーデータ" + ct + "個の削除に成功");
+		CameLog.setLog(TAG, "前回のユーザーデータ" + ct + "個の削除に成功");
 
 		/**
 		 * dbへの書き込み

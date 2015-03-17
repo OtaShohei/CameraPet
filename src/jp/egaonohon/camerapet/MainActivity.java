@@ -12,7 +12,6 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -35,6 +34,8 @@ public class MainActivity extends Activity implements LoaderCallbacks<String> {
 	/** BGM用変数 */
 	private MediaPlayer mp, mp2;
 	private boolean bgmOn = true;
+	/** Logのタグを定数で確保 */
+	private static final String TAG = "MainActivity";
 	/** CameraActivityから戻ってきた直後を判定するBoolean */
 	private boolean returnCam = false;
 	private boolean returnFb = false;
@@ -80,10 +81,10 @@ public class MainActivity extends Activity implements LoaderCallbacks<String> {
 
 		/** CameraActivityから明示的インテントで戻ってきた場合の前処理 */
 		Intent intent = getIntent();
-		Log.v("CAMERA", "intent取得");
+		CameLog.setLog(TAG, "intent取得");
 		if (intent != null) {
 			returnCam = true;
-			Log.v("CAMERA", "Cameraから戻ってきた場合の前処理完了");
+			CameLog.setLog(TAG, "Cameraから戻ってきた場合の前処理完了");
 		}
 
 		/**
@@ -123,14 +124,14 @@ public class MainActivity extends Activity implements LoaderCallbacks<String> {
 
 		/** BGMの一時停止 */
 		mp.pause();
-		Log.v("CAMERA", "MainActivityOnPause");
+		CameLog.setLog(TAG, "onPause");
+
 	}
 
 	@Override
 	public Loader<String> onCreateLoader(int id, Bundle args) {
-		// TODO 自動生成されたメソッド・スタブ
 		// intShotCnt = args.getInt("CntNum_Key");
-		Log.v("CAMERA", "onCreateLoader");
+		CameLog.setLog(TAG, "onCreateLoader");
 		return new AsyncOnSave(this, intShotCnt);
 
 	}
@@ -139,14 +140,14 @@ public class MainActivity extends Activity implements LoaderCallbacks<String> {
 	public void onLoadFinished(Loader<String> loader, String data) {
 		// TODO 自動生成されたメソッド・スタブ
 		Toast.makeText(this, data, Toast.LENGTH_LONG).show();
-		Log.v("CAMERA", "onLoadFinished");
+		CameLog.setLog(TAG, "onLoadFinished");
 
 	}
 
 	@Override
 	public void onLoaderReset(Loader<String> loader) {
 		// TODO 自動生成されたメソッド・スタブ
-		Log.v("CAMERA", "onLoaderReset");
+		CameLog.setLog(TAG, "onLoaderReset");
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////////

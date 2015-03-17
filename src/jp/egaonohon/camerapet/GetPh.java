@@ -1,5 +1,7 @@
 package jp.egaonohon.camerapet;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.database.Cursor;
@@ -8,12 +10,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.widget.GridView;
-import java.util.ArrayList;
 
 /**
  * 直近撮影済み写真を取得するクラス。 参考↓
  * http://dev.classmethod.jp/smartphone/basic-android-component-04-gridview/
- * 
+ *
  * @author OtaShohei
  *
  */
@@ -23,6 +24,9 @@ public class GetPh extends Activity {
 	 * メンバ変数。直近撮影枚数を取得。
 	 */
 	int takenPhNum;
+	/** Logのタグを定数で確保 */
+	private static final String TAG = "GetPh";
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +52,7 @@ public class GetPh extends Activity {
 		ArrayList<Bitmap> list = new ArrayList<Bitmap>();
 		ContentResolver cr = getContentResolver();
 		Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-		Cursor c = managedQuery(uri, null, null, null, null);
+		Cursor c = getContentResolver().query(uri, null, null, null, null);
 		c.moveToFirst();
 		for (int i = 0; i < c.getCount(); i++) {
 			// for (int i = 0; i < CursorNum; i++) {

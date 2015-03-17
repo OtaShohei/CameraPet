@@ -3,6 +3,7 @@ package jp.egaonohon.camerapet;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Calendar;
+
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -19,7 +20,6 @@ import android.hardware.Camera.Size;
 import android.net.Uri;
 import android.provider.MediaStore.Images.Media;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -43,6 +43,8 @@ public class CameraView extends SurfaceView {
 	SharedPreferences pref;
 	/** Preferencesへの書き込み用Editor */
 	Editor editor;
+	/** Logのタグを定数で確保 */
+	private static final String TAG = "CameraView";
 
 	/*
 	 * コンストラクタ3種ー＞オリジナルの部品XMLからの利用を可能にするため
@@ -136,7 +138,7 @@ public class CameraView extends SurfaceView {
 	@Override
 	public boolean onTouchEvent(MotionEvent e) {
 		if (e.getAction() == MotionEvent.ACTION_DOWN) {
-			Log.v("CAMERA", "ontouch");
+			CameLog.setLog(TAG, "onTouchEvent");
 			btnCount();
 			// AutoFoucusする要求を発行！
 			if (afStart == false)

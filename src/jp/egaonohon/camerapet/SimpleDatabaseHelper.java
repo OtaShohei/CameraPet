@@ -12,14 +12,16 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class SimpleDatabaseHelper extends SQLiteOpenHelper {
 	/**
-	 *  データベースファイル名。
-	 *  命名はに制限事項はありません。名前は何でもいいし拡張子 *.sqlite があってもいいが今回はCameraPetUserにしている。
+	 *  データベースファイル名をメンバ変数として宣言。
+	 *  命名に制限事項はありません。名前は何でもいいし拡張子 *.sqlite があってもいい。今回はCameraPetUserにしている。
 	 */
-	static final private String DBNAME = "CameraPetUser";// 
+	static final private String DBNAME = "CameraPetUser";//
 	/** 初回起動日時保存用Preferencesのメンバ変数確保 */
 	SharedPreferences pref;
 	/** Preferencesへの書き込み用Editor */
 	Editor editor;
+	/** Logのタグを定数で確保 */
+	private static final String TAG = "SimpleDatabaseHelper";
 	/*
 	 * この番号はフレームワーク側で利用されています。バージョンとはSQLiteOpenHelperが見ている数字。
 	 * データベースを改修（レコードを追加するなど）するときにこのバージョン番号を上げるとデータベースを作りなおしてくれる。しかも自動で。
@@ -46,14 +48,14 @@ public class SimpleDatabaseHelper extends SQLiteOpenHelper {
 	// 初めて呼ばれたタイミングで、DBがないときにこのonCreateが呼び出される!!　特にアクティビティ側で呼び出すような記述をしなくていい。
 	//それがSQLiteOpenhelperの役目。
 	//ただし、一度テーブルを作ると二度とこのメソッドは呼び出されない。
-	
+
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE pet ("
 				+ "user TEXT PRIMARY KEY, petType TEXT, shotCnt INTEGER)");//isbnをキーにして、タイトルとプライスを入れる。
 		db.execSQL("INSERT INTO pet(user, petType, shotCnt)"
 				+ " VALUES('default', 'lv01', 0)");//ここでは初期データも同時に突っ込んでいる以下同様。
-		
+
 	}
 
 	/*

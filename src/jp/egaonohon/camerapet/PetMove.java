@@ -2,9 +2,6 @@ package jp.egaonohon.camerapet;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.SurfaceView;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,8 +9,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
-import android.view.SurfaceHolder;
 import android.graphics.PorterDuff;
+import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 
 public class PetMove extends SurfaceView implements SurfaceHolder.Callback,
 		Runnable {
@@ -29,26 +29,31 @@ public class PetMove extends SurfaceView implements SurfaceHolder.Callback,
 	private Thread thread;
 	/** 画像 */
 	private Bitmap petPh;
+	/** SurfaceHolderをメンバ変数として確保 */
+	private SurfaceHolder holder;
+	/** 画面サイズ。ペットなどの表示の機種ごとの差異を吸収するため。 */
+	private int width;
+	private int height;
+	/** Logのタグを定数で確保 */
+	private static final String TAG = "PetMove";
 
 	// /** 初動加速の判断用 */
 	// private boolean speedMove = false;
 
 	/**
-	 * コンストラクタ。
-	 * 
+	 * コンストラクタ引数1つのここに記述すると例外発生。SurfaceViewを全画面に用いてないから?
+	 *
 	 * @param context
-	 * @param attrs
-	 * @param defStyle
 	 */
-	public PetMove(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-		// TODO 自動生成されたコンストラクター・スタブ
+	public PetMove(Context context) {
+		super(context);
 	}
 
 	/**
 	 * カスタムビューとしてXMLに定義するときに必要なコンストラクタ
-	 * 
+	 *
 	 * @param context
+	 * @param attrs
 	 */
 	public PetMove(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -57,7 +62,7 @@ public class PetMove extends SurfaceView implements SurfaceHolder.Callback,
 		petPh = BitmapFactory.decodeResource(res, R.drawable.alpaca02);
 
 		// SurfaceHolder の取得
-		SurfaceHolder holder = getHolder();
+		holder = getHolder();
 
 		// SurfaceHolder に コールバックを設定
 		holder.addCallback(this);
@@ -67,6 +72,17 @@ public class PetMove extends SurfaceView implements SurfaceHolder.Callback,
 		setFocusable(true);
 
 		initialize();
+	}
+
+	/**
+	 * コンストラクタ。
+	 *
+	 * @param context
+	 * @param attrs
+	 * @param defStyle
+	 */
+	public PetMove(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
 	}
 
 	private void initialize() {
@@ -88,34 +104,59 @@ public class PetMove extends SurfaceView implements SurfaceHolder.Callback,
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		// boolean retry = true;
-		//
-		// synchronized (holder) { // 同期処理
-		// threadRun = false; // メンバ変数　終了フラグを立てる
-		// }
-		//
-		// while (retry) {
-		// try {
-		// thread.join(); // 別スレッドが終了するまで待つ
-		// retry = false;
-		// } catch (InterruptedException e) {
-		// }
-		// }
+//		boolean retry = true;
+//
+//		synchronized (holder) { // 同期処理
+//			threadRun = false; // メンバ変数　終了フラグを立てる
+//		}
+//
+//		while (retry) {
+//			try {
+//				thread.join(); // 別スレッドが終了するまで待つ
+//				retry = false;
+//			} catch (InterruptedException e) {
+//			}
+//		}
 		thread = null; // スレッド終了
 	}
 
 	@Override
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
+		/**
+		 * 例外対策として以下の3行を追加。2行目と3行目はsurfaceCreatedからこちらへ移動してみた。
+		 */
+		this.holder = holder;
+		thread = new Thread(this);
+		thread.start();
 
+		/**
+		 * 機種間の画面サイズ大小によって見た目が変化するのを防ぐために画面サイズをとる。
+		 * このメソッドの引数に.widthとheightがあるのでこれを利用する。
+		 *
+		 * 変数を縦横で入れるときは、width→heightの順に必ずしておく。 そうすると引数に数字をいれるときに悩まなくて済む。
+		 *
+		 * これらの数字で移動距離を出す。
+		 *
+		 * @param context
+		 */
+		this.width = width;
+		this.height = height;
 	}
 
 	@Override
 	public void run() {
+
 		/**
 		 * どうしても安全にスレッドを停止できないのでtry-catchで囲みます…。
 		 */
 		try {
+			/**
+			 * ペットの表示サイズをここで調整。
+			 * ペットが正方形なのでともにwidth/3で設定
+			 */
+			petPh = Bitmap.createScaledBitmap(petPh, width/3, width/3, true);
+
 			while (thread != null) {
 				// ホルダーからキャンバスの取得
 				Canvas canvas = getHolder().lockCanvas();
