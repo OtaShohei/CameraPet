@@ -41,7 +41,8 @@ public class PetMove extends SurfaceView implements SurfaceHolder.Callback,
 	// private boolean speedMove = false;
 
 	/**
-	 * コンストラクタ引数1つのここに記述すると例外発生。SurfaceViewを全画面に用いてないから?
+	 * 引数1つのコンストラクタ。
+	 * ここに記述すると例外発生する。SurfaceViewを全画面に用いてないからか?
 	 *
 	 * @param context
 	 */
@@ -50,32 +51,33 @@ public class PetMove extends SurfaceView implements SurfaceHolder.Callback,
 	}
 
 	/**
-	 * カスタムビューとしてXMLに定義するときに必要なコンストラクタ
+	 * 引数2つのコンストラクタ。
+	 * カスタムビューとしてXMLに定義するときに必要なコンストラクタ。
 	 *
 	 * @param context
 	 * @param attrs
 	 */
 	public PetMove(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		// 画像の読み込み
+		/** 画像の読み込み */
 		Resources res = getResources();
 		petPh = BitmapFactory.decodeResource(res, R.drawable.alpaca02);
 
-		// SurfaceHolder の取得
+		/** SurfaceHolder の取得 */
 		holder = getHolder();
 
-		// SurfaceHolder に コールバックを設定
+		/** SurfaceHolder に コールバックを設定 */
 		holder.addCallback(this);
 		holder.setFixedSize(getWidth(), getHeight());
 
-		// フォーカスをあてる
+		/** フォーカスをあてる */
 		setFocusable(true);
 
 		initialize();
 	}
 
 	/**
-	 * コンストラクタ。
+	 * 引数3つのコンストラクタ。
 	 *
 	 * @param context
 	 * @param attrs
@@ -85,6 +87,9 @@ public class PetMove extends SurfaceView implements SurfaceHolder.Callback,
 		super(context, attrs, defStyle);
 	}
 
+	/**
+	 * イニシャライズメソッド。
+	 */
 	private void initialize() {
 		// 半透明を設定
 		getHolder().setFormat(PixelFormat.TRANSLUCENT);
@@ -104,19 +109,6 @@ public class PetMove extends SurfaceView implements SurfaceHolder.Callback,
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
-//		boolean retry = true;
-//
-//		synchronized (holder) { // 同期処理
-//			threadRun = false; // メンバ変数　終了フラグを立てる
-//		}
-//
-//		while (retry) {
-//			try {
-//				thread.join(); // 別スレッドが終了するまで待つ
-//				retry = false;
-//			} catch (InterruptedException e) {
-//			}
-//		}
 		thread = null; // スレッド終了
 	}
 
@@ -158,17 +150,17 @@ public class PetMove extends SurfaceView implements SurfaceHolder.Callback,
 			petPh = Bitmap.createScaledBitmap(petPh, width/3, width/3, true);
 
 			while (thread != null) {
-				// ホルダーからキャンバスの取得
+				/** ホルダーからキャンバスの取得 */
 				Canvas canvas = getHolder().lockCanvas();
 
-				// 描画処理
+				/** 描画処理 */
 				draw(canvas);
 
-				// 描画内容の確定
+				/** 描画内容の確定 */
 				getHolder().unlockCanvasAndPost(canvas);
 
-				// 移動処理
-				moveProc();
+				/** 移動処理*/
+				moveProc(); 
 			}
 		} catch (Exception e) {
 			// TODO 自動生成された catch ブロック
@@ -181,7 +173,7 @@ public class PetMove extends SurfaceView implements SurfaceHolder.Callback,
 	 */
 	@Override
 	public void draw(Canvas canvas) {
-		// 現在の状態を保存
+		/** 現在の状態を保存*/
 		canvas.save();
 
 		Paint paint = new Paint();
@@ -191,10 +183,10 @@ public class PetMove extends SurfaceView implements SurfaceHolder.Callback,
 		 */
 		canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
-		// 画像の描画
+		/** 画像の描画*/
 		canvas.drawBitmap(petPh, currentX, currentY, paint);
 
-		// 現在の状態の変更
+		/** 現在の状態の変更*/
 		canvas.restore();
 	}
 

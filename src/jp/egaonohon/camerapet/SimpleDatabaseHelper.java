@@ -6,9 +6,10 @@ import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-/*
- * SimpleDatabaseHelperは、スマホ内のアプリで自分が使いたいデータベースを構築するのSQLiteOpenHelperを継承して作ったクラス。
- * SQLiteOpenHelperを継承してこのクラスを作っている。
+/**
+ * CameraPetで使用するデータベースを構築するためにSQLiteOpenHelperを継承して作ったクラス。
+ * @author OtaShohei
+ *
  */
 public class SimpleDatabaseHelper extends SQLiteOpenHelper {
 	/**
@@ -22,8 +23,8 @@ public class SimpleDatabaseHelper extends SQLiteOpenHelper {
 	Editor editor;
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "SimpleDatabaseHelper";
-	/*
-	 * この番号はフレームワーク側で利用されています。バージョンとはSQLiteOpenHelperが見ている数字。
+	/**
+	 * 以下の定数はフレームワーク側で利用されています。バージョンとはSQLiteOpenHelperが見ている数字。
 	 * データベースを改修（レコードを追加するなど）するときにこのバージョン番号を上げるとデータベースを作りなおしてくれる。しかも自動で。
 	 * ただし、バージョンナンバーは下げられない。上げる。下げるとエラー。
 	 */
@@ -34,9 +35,7 @@ public class SimpleDatabaseHelper extends SQLiteOpenHelper {
 		super(context, DBNAME, null, VERSION);
 	}
 
-	// 検索ではSELECT分を使用。
-
-	/*
+	/**
 	 * このスマホに初めてアプリを入れたら
 	 */
 	@Override
@@ -44,36 +43,22 @@ public class SimpleDatabaseHelper extends SQLiteOpenHelper {
 		super.onOpen(db);
 	}
 
-	// アクティビティ側でgetWritableDatabase();か、getReadableDatabase();でデータベースを呼ばれたら
-	// 初めて呼ばれたタイミングで、DBがないときにこのonCreateが呼び出される!!　特にアクティビティ側で呼び出すような記述をしなくていい。
-	//それがSQLiteOpenhelperの役目。
-	//ただし、一度テーブルを作ると二度とこのメソッドは呼び出されない。
-
+	/**
+	 * アクティビティ側でgetWritableDatabase();か、getReadableDatabase();でデータベースを呼ばれたら
+	 * 初めて呼ばれたタイミングで、DBがないときにこのonCreateが呼び出される!!　特にアクティビティ側で呼び出すような記述をしなくていい。
+	 * それがSQLiteOpenhelperの役目。
+	 * ただし、一度テーブルを作ると二度とこのメソッドは呼び出されない。
+	 */
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		db.execSQL("CREATE TABLE pet ("
-				+ "user TEXT PRIMARY KEY, petType TEXT, shotCnt INTEGER)");//isbnをキーにして、タイトルとプライスを入れる。
-		db.execSQL("INSERT INTO pet(user, petType, shotCnt)"
-				+ " VALUES('default', 'lv01', 0)");//ここでは初期データも同時に突っ込んでいる以下同様。
+				+ "user TEXT PRIMARY KEY, petType TEXT, nowShotCnt INTEGER, totalShotCnt INTEGER)");//isbnをキーにして、タイトルとプライスを入れる。
+		db.execSQL("INSERT INTO pet(user, petType, nowshotCnt, totalShotCnt)"
+				+ " VALUES('default', 'lv01', 0, 0)");//ここでは初期データも同時に突っ込んでいる以下同様。
 
 	}
 
-	/*
-	 * @Override public void onCreate(SQLiteDatabase db) {
-	 * db.execSQL("CREATE TABLE books (" +
-	 * "isbn TEXT PRIMARY KEY, title TEXT, price INTEGER)"); String[] isbns = {
-	 * "111-1-1111-1111-1", "222-2-2222-2222-2", "333-3-3333-3333-3",
-	 * "444-4-4444-4444-4", "555-5-5555-5555-5" }; String[] titles = {
-	 * "Android入門1", "Android入門2", "Android入門3", "Android入門4", "Android入門5" };
-	 * int[] prices = { 1000, 2000, 3000, 4000, 5000 }; db.beginTransaction();
-	 * try { SQLiteStatement sql = db.compileStatement(
-	 * "INSERT INTO books(isbn, title, price) VALUES(?, ?, ?)"); for (int i = 0;
-	 * i < isbns.length; i++) { sql.bindString(1, isbns[i]); sql.bindString(2,
-	 * titles[i]); sql.bindLong(3, prices[i]); sql.executeInsert(); }
-	 * db.setTransactionSuccessful(); } finally { db.endTransaction(); } }
-	 */
-
-	/*
+	/**
 	 *  このメソッドonUpgradeはコンストラクタでバージョンが変更されているときにだけ自動的に呼び出される。
 	 *  ただ、事故の元なのでこのメソッドは慎重に使うべき。
 	 *  バージョン1→バージョン5など。バージョン1つずつ上げてもらえるとは限らない。
@@ -87,7 +72,5 @@ public class SimpleDatabaseHelper extends SQLiteOpenHelper {
 		// 本当はバックアップ等をする必要がある!!　要注意!!
 		onCreate(db);
 		// 本当はこの後で、バックアップしたデータを戻す作業をする必要がある！！！
-
 	}
-
 }

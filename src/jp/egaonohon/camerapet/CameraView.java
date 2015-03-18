@@ -32,13 +32,12 @@ import android.widget.Toast;
  *
  */
 @SuppressLint("ClickableViewAccessibility")
-public class CameraView extends SurfaceView {
+public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 	private Camera petCam;
 	private static ContentResolver contentResolver = null;
 	private boolean afStart = false;
 	/** ボタン押下回数用 */
 	private int cntNum = 0;
-	String strCntNum;
 	/** 撮影回数保存用Preferences */
 	SharedPreferences pref;
 	/** Preferencesへの書き込み用Editor */
@@ -46,7 +45,7 @@ public class CameraView extends SurfaceView {
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "CameraView";
 
-	/*
+	/**
 	 * コンストラクタ3種ー＞オリジナルの部品XMLからの利用を可能にするため
 	 */
 	public CameraView(Context context, AttributeSet attrs, int defStyle) {
@@ -109,17 +108,7 @@ public class CameraView extends SurfaceView {
 
 		Toast.makeText(getContext(), "画面タップで撮影できます。", Toast.LENGTH_SHORT)
 		.show();
-
-		/**
-		 * 撮影回数保存用Preferencesのインスタンス生成
-		 */
-		pref = getContext().getSharedPreferences("shotCnt",
-				Context.MODE_PRIVATE);
-
-		/**
-		 * プリファレンスに書き込むためのEditorオブジェクト取得
-		 */
-		editor = pref.edit();
+		CameLog.setLog(TAG, "init");
 	}
 
 	// カメラに対して画像のサイズの指定をしている。
@@ -140,9 +129,10 @@ public class CameraView extends SurfaceView {
 		if (e.getAction() == MotionEvent.ACTION_DOWN) {
 			CameLog.setLog(TAG, "onTouchEvent");
 			btnCount();
-			// AutoFoucusする要求を発行！
+			/** AutoFoucusする要求を発行する */
 			if (afStart == false)
 				onAutoFocus();
+			CameLog.setLog(TAG, "onTouchEvent");
 		}
 		return true;
 	}
@@ -179,7 +169,11 @@ public class CameraView extends SurfaceView {
 		});
 	}
 
-	// コンテンツプロバイダ経由で保存するメソッド(ギャラリーに登録される)
+	/**
+	 *  コンテンツプロバイダ経由で保存するメソッド(ギャラリーに登録される)
+	 * @param data
+	 * @param dataName
+	 */
 	private void saveDataToURI(byte[] data, String dataName) {
 		Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
 		ContentValues values = new ContentValues();
@@ -194,6 +188,7 @@ public class CameraView extends SurfaceView {
 			outStream.close();
 		} catch (Exception e) {
 		}
+		CameLog.setLog(TAG, "saveDataToURI");
 	}
 
 	/**
@@ -201,14 +196,29 @@ public class CameraView extends SurfaceView {
 	 */
 	void btnCount() {
 		cntNum++;
-		// "shotCnt" というキーで撮影回数を登録
-		editor.putInt("shotCnt", cntNum);
-		// 書き込みの確定（実際にファイルに書き込む）
-		editor.commit();
 
+		/**
+		 * 撮影回数を記録。
+		 */
+		CamPeDb.saveNowCount(getContext(), cntNum);
 		Toast.makeText(getContext(), "撮影回数" + cntNum, Toast.LENGTH_SHORT)
 				.show();
-
+		CameLog.setLog(TAG, "btnCount");
 	}
 
+	@Override
+	public void surfaceCreated(SurfaceHolder holder) {
+		CameLog.setLog(TAG, "surfaceCreated");
+	}
+
+	@Override
+	public void surfaceChanged(SurfaceHolder holder, int format, int width,
+			int height) {
+		CameLog.setLog(TAG, "surfaceChanged");
+	}
+
+	@Override
+	public void surfaceDestroyed(SurfaceHolder holder) {
+		CameLog.setLog(TAG, "surfaceDestroyed");
+	}
 }

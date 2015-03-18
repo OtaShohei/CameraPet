@@ -11,7 +11,6 @@ import android.widget.Button;
 public class CameraActivity extends Activity {
 
 	/** メンバ変数 */
-	private Button shot;
 	private Button back;
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "CameraActivity";
