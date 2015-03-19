@@ -18,12 +18,8 @@ public class CamPeDb {
 	private static String txtPetType = "lv01";
 	/** 未保存の直近撮影回数 */
 	private static Integer nonSavedNewShotCnt = null;
-	/** DB保存ずみ直近の撮影回数 */
-	private static Integer savedNewShot = null;
 	/** DB保存済み累積撮影回数 */
-	private static Integer intTotalShotCnt = null;
-	/** DB保存済み直近撮影回数と未保存の直近撮影回数の差分 */
-	private static Integer sabunNewShotCnt = null;
+	private static Integer savedTotalShotCnt = null;
 	/** 新たに保存する累積撮影回数 */
 	private static Integer newTotalShotCnt = null;
 	/** Logのタグを定数で確保 */
@@ -61,7 +57,7 @@ public class CamPeDb {
 			// データがあれば、それを取得する
 			// txtTitle.setText(cs.getString(1));//
 			// タイトルを引っ張ってくる。(1)は列を示す。一番左が0から始まる。
-			intTotalShotCnt = cs.getInt(3);// 撮影回数を引っ張ってくる
+			savedTotalShotCnt = cs.getInt(3);// 撮影回数を引っ張ってくる
 			// String strPrice=cs.getString(2);
 			// Toast.makeText(this, strPrice,
 			// Toast.LENGTH_SHORT).show();
@@ -70,12 +66,12 @@ public class CamPeDb {
 			// データがなかったので、その旨を表示する
 			Toast.makeText(context, "データがありません。", Toast.LENGTH_SHORT).show();
 		}
-		Toast.makeText(context, "これまでの撮影回数は" + intTotalShotCnt + "です",
+		Toast.makeText(context, "これまでの撮影回数は" + savedTotalShotCnt + "です",
 				Toast.LENGTH_SHORT).show();
 		/**
 		 * 戻り値としてこれまでの累積撮影回数を渡す。
 		 */
-		return intTotalShotCnt;
+		return savedTotalShotCnt;
 	}
 
 	/**
@@ -143,10 +139,8 @@ public class CamPeDb {
 				null);// DBからの戻り値のCursorをこの後扱っていく。
 		// データがあれば、データを取得する。なければ、無い！
 		if (cs.moveToFirst()) {
-			/** 直近撮影回数を引っ張ってくる */
-			savedNewShot = cs.getInt(2);
 			/** 累積撮影回数を引っ張ってくる */
-			intTotalShotCnt = cs.getInt(3);
+			savedTotalShotCnt = cs.getInt(3);
 		} else {
 			// データがなかったので、その旨を表示する
 			Toast.makeText(context, "データがありません。", Toast.LENGTH_SHORT).show();
@@ -162,7 +156,7 @@ public class CamPeDb {
 		/**
 		 * 合計撮影回数の算出。
 		 */
-		newTotalShotCnt = nonSavedNewShotCnt + intTotalShotCnt;
+		newTotalShotCnt = nonSavedNewShotCnt + savedTotalShotCnt;
 
 		// カラム（？　これだと行になるが列では？）名とデータの組わせで1レコードのデータを作成している
 		// ContentValuesでは、キーが項目名になる。cvがレコードのフォーマットに合わせる入れ物。HashMapみたいなものかな？

@@ -8,8 +8,6 @@ import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
@@ -35,18 +33,15 @@ import android.widget.Toast;
 public class CameraView extends SurfaceView {
 	private Camera petCam;
 	private static ContentResolver contentResolver = null;
+	/** 写真保存完了まで次の写真撮影をさせないためのboolean値*/
 	private boolean afStart = false;
 	/** ボタン押下回数用 */
 	private int cntNum = 0;
-	/** 撮影回数保存用Preferences */
-	SharedPreferences pref;
-	/** Preferencesへの書き込み用Editor */
-	Editor editor;
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "CameraView";
 
 	/**
-	 * コンストラクタ3種ー＞オリジナルの部品XMLからの利用を可能にするため
+	 * コンストラクタ3種ー＞オリジナルの部品XMLからの利用を可能にするため。
 	 */
 	public CameraView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);

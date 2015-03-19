@@ -5,8 +5,8 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 /**
- * 画面上で動かすペットのクラス。
- *
+ * 画面上で動かすペットのクラス。 2015-03-19時点では未完成です。
+ * 
  * @author 1107AND
  *
  */
@@ -53,7 +53,6 @@ public class Pet {
 	public void setTargetY(int targetY) {
 		this.targetY = targetY;
 	}
-
 
 	/**
 	 * 現在地を取得するgetter
@@ -117,13 +116,14 @@ public class Pet {
 	}
 
 	Paint paint;
+
 	/**
 	 * SurfaceView上にペットを描画するメソッドをSurfaceViewのクラスではなくこちらがわに書くのがすっきりするし主流なので行ってみる。
+	 * 
 	 * @param canvas
 	 */
-	public void draw(Canvas canvas ) {
+	public void draw(Canvas canvas) {
 		canvas.drawBitmap(bitmap, nowX, nowY, paint);
 	}
 
 }
-
