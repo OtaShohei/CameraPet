@@ -184,29 +184,29 @@ public class CamPeDb {
 		CameLog.setLog(TAG, msg);
 		return msg;
 	}
-
-	// /**
-	// * 以下、SQLiteTIPSメモ
-	// *
-	// * 検索時にSQL文を直接送る場合はちょっと構文が違う。DELETEやINSERT時のようなexecSQLではない。 例えばこんな感じ。
-	// * db.rawQuery("select * from books where",null);
-	// *
-	// * String msg = ""; boolean eol = cs.moveToFirst(); while (eol) { msg +=
-	// * cs.getString(1); eol = cs.moveToNext(); } Toast.makeText(this, msg,
-	// * Toast.LENGTH_SHORT).show();
-	// */
-	//
-	// /** 前回の登録Dataを削除。 */
-	// /** 書き込み・読み込み用のデータベースオブジェクトを取得。newじゃないのか。 */
-	// db = helper.getWritableDatabase();
-	// /**
-	// * レコード削除する
-	// * 第一引数：テーブル名
-	// * 第二引数：Where句に相当する。検索条件。
-	// * 第三引数：Where句の指定データ
-	// * 戻り値は、影響を受けた行数。このパターンだとISBNの重複はないので1が戻り値。
-	// */
-	// int ct = db.delete("pet", "user = ?", params);//
-	// 第1引数はテーブル名。第2引数は軸とするISBN。第三引数がisbnが入った配列。
-	// CameLog.setLog(TAG, "前回のユーザーデータ" + ct + "個の削除に成功");
 }
+
+// /**
+// * 以下、SQLiteTIPSメモ
+// *
+// * 検索時にSQL文を直接送る場合はちょっと構文が違う。DELETEやINSERT時のようなexecSQLではない。 例えばこんな感じ。
+// * db.rawQuery("select * from books where",null);
+// *
+// * String msg = ""; boolean eol = cs.moveToFirst(); while (eol) { msg +=
+// * cs.getString(1); eol = cs.moveToNext(); } Toast.makeText(this, msg,
+// * Toast.LENGTH_SHORT).show();
+// */
+//
+// /** 前回の登録Dataを削除。 */
+// /** 書き込み・読み込み用のデータベースオブジェクトを取得。newじゃないのか。 */
+// db = helper.getWritableDatabase();
+// /**
+// * レコード削除する
+// * 第一引数：テーブル名
+// * 第二引数：Where句に相当する。検索条件。
+// * 第三引数：Where句の指定データ
+// * 戻り値は、影響を受けた行数。このパターンだとISBNの重複はないので1が戻り値。
+// */
+// int ct = db.delete("pet", "user = ?", params);//
+// 第1引数はテーブル名。第2引数は軸とするISBN。第三引数がisbnが入った配列。
+// CameLog.setLog(TAG, "前回のユーザーデータ" + ct + "個の削除に成功");

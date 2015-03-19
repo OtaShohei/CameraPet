@@ -2,13 +2,9 @@ package jp.egaonohon.camerapet;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 /**
  * CameraPetのMainActivityのクラスです。 onClickFacebookBtnとonClickTwitterBtnボタンは要差し替え。
@@ -18,10 +14,6 @@ import android.widget.Toast;
  */
 public class MainActivity extends Activity {
 
-	private final int FACEBOOK_ID = 0;
-	private final int TWITTER_ID = 1;
-	/** 直近撮影回数 */
-	private Integer intShotCnt = 0;
 	/** BGM用変数 */
 	private MediaPlayer mp, mp2;
 	private boolean bgmOn = true;
@@ -31,9 +23,6 @@ public class MainActivity extends Activity {
 	private boolean returnCam = false;
 	private boolean returnFb = false;
 	private boolean returnTw = false;
-	/** SNS連携用のメンバ変数 */
-	private final String[] sharePackages = { "com.facebook.katana",
-			"com.twitter.android" };
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +42,6 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
-//		getLoaderManager().initLoader(0, null, this);
 
 		/** BGMの制御 */
 		if (bgmOn) {
@@ -94,20 +81,8 @@ public class MainActivity extends Activity {
 		/** Facebookから戻ってくることを示す */
 		returnFb = true;
 
-		if (isShareAppInstall(FACEBOOK_ID)) {
-			Intent intent = new Intent();
-			intent.setAction(Intent.ACTION_SEND);
-			intent.setPackage(sharePackages[FACEBOOK_ID]);
-			intent.setType("text/plain");
-			/**
-			 * 　URLは、CameraPetのダウンロードページに差し替えること!
-			 */
-			intent.putExtra(Intent.EXTRA_TEXT,
-					"https://play.google.com/store/apps/");
-			startActivity(intent);
-		} else {
-			shareAppDl(FACEBOOK_ID);
-		}
+		/** Facebookへ投稿実行 */
+		SnsBtn.goFacebook(this);
 	}
 
 	/**
@@ -123,21 +98,8 @@ public class MainActivity extends Activity {
 		/** Twitterから戻ってくることを示す */
 		returnTw = true;
 
-		if (isShareAppInstall(TWITTER_ID)) {
-			Intent intent = new Intent();
-			intent.setAction(Intent.ACTION_SEND);
-			intent.setPackage(sharePackages[TWITTER_ID]);
-			intent.setType("image/png");
-			/**
-			 * 　URLは、CameraPetのダウンロードページに差し替えること!
-			 */
-			intent.putExtra(Intent.EXTRA_TEXT,
-					"Androidアプリ「CameraPet」で飼っているペットです！"
-							+ "https://play.google.com/store/apps/");
-			startActivity(intent);
-		} else {
-			shareAppDl(TWITTER_ID);
-		}
+		/** Twitterへ投稿実行 */
+		SnsBtn.goTwitter(this);
 	}
 
 	/**
@@ -201,38 +163,6 @@ public class MainActivity extends Activity {
 		/**
 		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
 		 */
-		startActivity(intent);
-	}
-
-	/**
-	 * アプリがインストールされているかチェックするメソッド。
-	 *
-	 * @param shareId
-	 * @return
-	 */
-	private Boolean isShareAppInstall(int shareId) {
-		try {
-			PackageManager pm = getPackageManager();
-			pm.getApplicationInfo(sharePackages[shareId],
-					PackageManager.GET_META_DATA);
-			return true;
-		} catch (NameNotFoundException e) {
-			/**
-			 * エラー発生時のトースト。
-			 */
-			Toast.makeText(this, "何らかのエラーが発生しました", Toast.LENGTH_SHORT).show();
-			return false;
-		}
-	}
-
-	/**
-	 * アプリが無かったのでGooglePalyに飛ばすメソッド。
-	 *
-	 * @param shareId
-	 */
-	private void shareAppDl(int shareId) {
-		Uri uri = Uri.parse("market://details?id=" + sharePackages[shareId]);
-		Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 		startActivity(intent);
 	}
 }
