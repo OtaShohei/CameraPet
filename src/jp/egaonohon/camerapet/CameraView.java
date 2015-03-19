@@ -32,7 +32,7 @@ import android.widget.Toast;
  *
  */
 @SuppressLint("ClickableViewAccessibility")
-public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
+public class CameraView extends SurfaceView {
 	private Camera petCam;
 	private static ContentResolver contentResolver = null;
 	private boolean afStart = false;
@@ -75,6 +75,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				CameLog.setLog(TAG, "surfaceCreated");
 			}
 
 			public void surfaceChanged(SurfaceHolder holder, int format,
@@ -96,18 +97,24 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 				petCam.setParameters(params);
 				setCameraParameters(petCam);
 				petCam.startPreview();
+				CameLog.setLog(TAG, "surfaceChanged");
 
 			}
 
 			public void surfaceDestroyed(SurfaceHolder holder) {
 				petCam.release();
 				petCam = null;
+				CameLog.setLog(TAG, "surfaceDestroyed");
+				/**
+				 * 撮影回数をDatabaseファイルに記録。
+				 */
+				CamPeDb.saveNowCount(getContext(), cntNum);
 			}
 		});
 		// holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
 		Toast.makeText(getContext(), "画面タップで撮影できます。", Toast.LENGTH_SHORT)
-		.show();
+				.show();
 		CameLog.setLog(TAG, "init");
 	}
 
@@ -139,7 +146,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 
 	public void onAutoFocus() {
 		afStart = true;
-		petCam.autoFocus(new AutoFocusCallback() {// c.autoFocusでオートフォーカスの支持を出す。
+		petCam.autoFocus(new AutoFocusCallback() {// c.autoFocusでオートフォーカスの指示を出す。
 			@Override
 			public void onAutoFocus(boolean success, Camera camera) {
 				camera.takePicture(new ShutterCallback() {
@@ -170,7 +177,8 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 	}
 
 	/**
-	 *  コンテンツプロバイダ経由で保存するメソッド(ギャラリーに登録される)
+	 * コンテンツプロバイダ経由で保存するメソッド(ギャラリーに登録される)
+	 *
 	 * @param data
 	 * @param dataName
 	 */
@@ -178,7 +186,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 		Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
 		ContentValues values = new ContentValues();
 		values.put(Media.DISPLAY_NAME, dataName);
-		values.put(Media.DESCRIPTION, "taken with G1");
+		values.put(Media.DESCRIPTION, "taken with CameraPet");
 		values.put(Media.MIME_TYPE, "image/jpeg");
 		values.put(Media.DATE_TAKEN, System.currentTimeMillis());
 		Uri uri = contentResolver.insert(Media.EXTERNAL_CONTENT_URI, values);
@@ -198,27 +206,10 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
 		cntNum++;
 
 		/**
-		 * 撮影回数を記録。
+		 * 撮影回数を表示。
 		 */
-		CamPeDb.saveNowCount(getContext(), cntNum);
 		Toast.makeText(getContext(), "撮影回数" + cntNum, Toast.LENGTH_SHORT)
 				.show();
 		CameLog.setLog(TAG, "btnCount");
-	}
-
-	@Override
-	public void surfaceCreated(SurfaceHolder holder) {
-		CameLog.setLog(TAG, "surfaceCreated");
-	}
-
-	@Override
-	public void surfaceChanged(SurfaceHolder holder, int format, int width,
-			int height) {
-		CameLog.setLog(TAG, "surfaceChanged");
-	}
-
-	@Override
-	public void surfaceDestroyed(SurfaceHolder holder) {
-		CameLog.setLog(TAG, "surfaceDestroyed");
 	}
 }

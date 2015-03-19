@@ -11,7 +11,7 @@ import android.provider.MediaStore;
 
 /**
  * 直近撮影写真をBitmapで管理するクラス。
- * 
+ *
  * @author OtaShohei
  *
  */
@@ -27,7 +27,7 @@ public class CamPePh {
 	/**
 	 * 直近撮影写真をBitmapで取得するメソッド。
 	 * 2015-03-18時点では未完成です。
-	 * 
+	 *
 	 * @param context
 	 * @return
 	 */

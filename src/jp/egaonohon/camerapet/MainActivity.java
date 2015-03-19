@@ -1,9 +1,7 @@
 package jp.egaonohon.camerapet;
 
 import android.app.Activity;
-import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Intent;
-import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.media.MediaPlayer;

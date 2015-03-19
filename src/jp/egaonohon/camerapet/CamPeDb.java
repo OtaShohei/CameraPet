@@ -1,10 +1,10 @@
 package jp.egaonohon.camerapet;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.widget.Toast;
-import android.content.Context;
 
 public class CamPeDb {
 	/**
@@ -31,7 +31,7 @@ public class CamPeDb {
 
 	/**
 	 * データベースから累積撮影回数を取得するメソッド。
-	 * 
+	 *
 	 * @param context
 	 * @return
 	 */
@@ -80,7 +80,7 @@ public class CamPeDb {
 
 	/**
 	 * データベースから直近撮影回数を取得するメソッド。
-	 * 
+	 *
 	 * @param context
 	 * @return
 	 */
@@ -89,7 +89,7 @@ public class CamPeDb {
 		// db.queryの第二引数を作る
 		// select文のカラムの指定する文字列をString型の配列に記述。ここは3つのカラムすべてということか…。
 		String[] cols = { "user", "petType", "nowShotCnt", "totalShotCnt" };
-		// Select文の行を特定する（where句）文字列を取得（ISBNの指定）。ISBNを引っ張ってこいよ!て感じ。
+		// Select文の行を特定する（where句）文字列を取得（ユーザー名の指定）。ユーザーを引っ張ってこいよ!て感じ。
 		String[] params = { txtUser };
 
 		// 実際にselect文に相当するメソッドを実行。
@@ -97,8 +97,8 @@ public class CamPeDb {
 				null);// DBからの戻り値のCursorをこの後扱っていく。
 		// データがあれば、データを取得する。なければ、無い！
 		if (cs.moveToFirst()) {
-			// タイトルを引っ張ってくる。(1)は列を示す。一番左が0から始まる。
-			nonSavedNewShotCnt = cs.getInt(2);// 撮影回数を引っ張ってくる
+			// 撮影回数を引っ張ってくる(2)は列を示す。一番左が0から始まる。
+			nonSavedNewShotCnt = cs.getInt(2);
 		} else {
 			// データがなかったので、その旨を表示する
 			Toast.makeText(context, "データがありません。", Toast.LENGTH_SHORT).show();
@@ -113,7 +113,7 @@ public class CamPeDb {
 
 	/**
 	 * 直近写真撮影回数のみをデータベースに保存するメソッド。
-	 * 
+	 *
 	 * @param cntNum
 	 * @return
 	 */
@@ -122,7 +122,7 @@ public class CamPeDb {
 		nonSavedNewShotCnt = cntNum;
 
 		/**
-		 * SimpleDatabaseHelperを取得。
+		 * まずは、SimpleDatabaseHelperを取得。
 		 */
 		helper = new SimpleDatabaseHelper(context);
 
@@ -154,36 +154,15 @@ public class CamPeDb {
 
 		CameLog.setLog(TAG, "累計撮影回数取得に成功");
 
-		/*
-		 * 検索時にSQL文を直接送る場合はちょっと構文が違う。DELETEやINSERT時のようなexecSQLではない。 例えばこんな感じ。
-		 * db.rawQuery("select * from books where",null);
-		 * 
-		 * String msg = ""; boolean eol = cs.moveToFirst(); while (eol) { msg +=
-		 * cs.getString(1); eol = cs.moveToNext(); } Toast.makeText(this, msg,
-		 * Toast.LENGTH_SHORT).show();
-		 */
-
-		/** 前回の登録Dataを削除。 */
-		// 書き込み・読み込み用のデータベースオブジェクトを取得。newじゃないのか。
-		db = helper.getWritableDatabase();
-		// レコード削除する
-		// 第一引数：テーブル名
-		// 第二引数：Where句に相当する。検索条件。
-		// 第三引数：Where句の指定データ
-		// 戻り値は、影響を受けた行数。このパターンだとISBNの重複はないので1が戻り値。
-		int ct = db.delete("pet", "user = ?", params);// 第1引数はテーブル名。第2引数は軸とするISBN。第三引数がisbnが入った配列。
-		CameLog.setLog(TAG, "前回のユーザーデータ" + ct + "個の削除に成功");
-
 		/**
-		 * dbへの書き込み
+		 * 撮影枚数アップデート。
 		 */
 		db = helper.getWritableDatabase();
-		
+
 		/**
 		 * 合計撮影回数の算出。
 		 */
-		sabunNewShotCnt = nonSavedNewShotCnt - savedNewShot;
-		newTotalShotCnt = sabunNewShotCnt + intTotalShotCnt;
+		newTotalShotCnt = nonSavedNewShotCnt + intTotalShotCnt;
 
 		// カラム（？　これだと行になるが列では？）名とデータの組わせで1レコードのデータを作成している
 		// ContentValuesでは、キーが項目名になる。cvがレコードのフォーマットに合わせる入れ物。HashMapみたいなものかな？
@@ -192,112 +171,48 @@ public class CamPeDb {
 		cv.put("petType", txtPetType);
 		cv.put("nowShotCnt", nonSavedNewShotCnt);
 		cv.put("totalShotCnt", newTotalShotCnt);
-		// レコードの追加を実施する
-		// 第一引数：テーブル名
-		// 第二引数：nullColumHack(項目がnullの場合の処理方法の指定)。通常はあまり考えられない。
-		// 第三引数：ContentValues(レコードデータ)
-		// 戻り値：long型　row　idが返却される
-		long id = db.insert("pet", null, cv);// SQLのINSERTに相当するinsert()メソッドで追加される。引数は、テーブル名とレコードが入っているcv。
+		/**
+		 * レコードの更新を実施する 第一引数：テーブル名 第二引数：ContentValueオブジェクト。
+		 * 第三引数：whereClauseには、更新するデータのWHERE条件を指定します
+		 * 。この値をnullに指定すると、すべての行が更新対象となります。
+		 * 第四引数:更新するデータのwhere条件を「?」を使ってパラメータで指定した場合のパラメータ値をString配列で指定。
+		 * WHERE条件に「?」パラメータが無い場合は、nullを指定。 戻り値：更新した行数が返却される
+		 */
+		long id = db.update("pet", cv, null, null);// SQLのupdateに相当するupdate()メソッドで上書きされる。引数は、テーブル名とレコードが入っているcv。
 		String msg = "";
 		if (id != -1) {// 戻り値を確認して成否を確認。戻り値-1の時は、テーブルがないなどの異常時。
-			msg = "先ほどの撮影回数は" + nonSavedNewShotCnt + "回。合計撮影回数は" + newTotalShotCnt + "です！";
+			msg = "先ほどの撮影回数は" + nonSavedNewShotCnt + "回。合計撮影回数は"
+					+ newTotalShotCnt + "です！";
 		} else {
-			msg = "データの登録に失敗しました。先ほどの撮影回数は" + nonSavedNewShotCnt + newTotalShotCnt + "回です。";
+			msg = "データの登録に失敗しました。先ほどの撮影回数は" + nonSavedNewShotCnt
+					+ newTotalShotCnt + "回です。";
 		}
-
 		CameLog.setLog(TAG, msg);
 		return msg;
 	}
 
-//	/**
-//	 * 累計写真撮影回数を算出してデータベースに保存するメソッド。
-//	 * 
-//	 * @param cntNum
-//	 * @return
-//	 */
-//	public static Integer saveTotalCount(Context context) {
-//		/**
-//		 * SimpleDatabaseHelperを取得。
-//		 */
-//		helper = new SimpleDatabaseHelper(context);
-//
-//		/**
-//		 * ローカル変数を宣言
-//		 */
-//
-//		int nowShot = 0;
-//		int oldTotalShot = 0;
-//
-//		/**
-//		 * 前回の登録Dataから撮影回数を取得。
-//		 */
-//		SQLiteDatabase db = helper.getReadableDatabase();// getReadableDatabase()メソッドを使う。getWritableDatabaseもできるがあえて書き込み権限は不要なので今回は使わない。
-//		// db.queryの第二引数を作る
-//		// select文のカラムの指定する文字列をString型の配列に記述。ここは3つのカラムすべてということか…。
-//		String[] cols = { "user", "petType", "nowShotCnt", "totalShotCnt" };
-//		// Select文の行を特定する（where句）文字列を取得（ISBNの指定）。ISBNを引っ張ってこいよ!て感じ。
-//		String[] params = { txtUser };
-//
-//		// 実際にselect文に相当するメソッドを実行。
-//		// 戻り値は、返却されたレコード群を示すCursor（カーソル）が返却される
-//		Cursor cs = db.query("pet", cols, "user = ?", params, null, null, null,
-//				null);// DBからの戻り値のCursorをこの後扱っていく。
-//		// データがあれば、データを取得する。なければ、無い！
-//		if (cs.moveToFirst()) {
-//			/** 直近撮影回数を引っ張ってくる */
-//			nowShot = cs.getInt(2);
-//			/** 累積撮影回数を引っ張ってくる */
-//			oldTotalShot = cs.getInt(3);
-//		} else {
-//			// データがなかったので、その旨を表示する
-//			Toast.makeText(context, "データがありません。", Toast.LENGTH_SHORT).show();
-//		}
-//
-//		CameLog.setLog(TAG, "前回の撮影回数取得に成功");
-//
-//		/** 前回の登録Dataを削除。 */
-//		// 書き込み・読み込み用のデータベースオブジェクトを取得。
-//		db = helper.getWritableDatabase();
-//		// レコード削除する
-//		// 第一引数：テーブル名
-//		// 第二引数：Where句に相当する。検索条件。
-//		// 第三引数：Where句の指定データ
-//		// 戻り値は、影響を受けた行数。このパターンだとISBNの重複はないので1が戻り値。
-//		int ct = db.delete("pet", "user = ?", params);// 第1引数はテーブル名。第2引数は軸とするISBN。第三引数がユーザー名が入った配列。
-//		CameLog.setLog(TAG, "前回のユーザーデータ" + ct + "個の削除に成功");
-//
-//		/**
-//		 * dbへの書き込み
-//		 */
-//		db = helper.getWritableDatabase();
-//
-//		/**
-//		 * 合計撮影回数の算出。
-//		 */
-//		Integer newTotalShotCnt = nowShot + oldTotalShot;
-//
-//		// カラム（？　これだと行になるが列では？）名とデータの組わせで1レコードのデータを作成している
-//		// ContentValuesでは、キーが項目名になる。cvがレコードのフォーマットに合わせる入れ物。HashMapみたいなものかな？
-//		ContentValues cv = new ContentValues();
-//		cv.put("user", txtUser);// キーとデータの組み合せで入れていく（.put)
-//		cv.put("petType", txtPetType);
-//		cv.put("nowShotCnt", nowShot);
-//		cv.put("totalShotCnt", newTotalShotCnt);
-//		// レコードの追加を実施する
-//		// 第一引数：テーブル名
-//		// 第二引数：nullColumHack(項目がnullの場合の処理方法の指定)。通常はあまり考えられない。
-//		// 第三引数：ContentValues(レコードデータ)
-//		// 戻り値：long型　row　idが返却される
-//		long id = db.insert("pet", null, cv);// SQLのINSERTに相当するinsert()メソッドで追加される。引数は、テーブル名とレコードが入っているcv。
-//		String msg = "";
-//		if (id != -1) {// 戻り値を確認して成否を確認。戻り値-1の時は、テーブルがないなどの異常時。
-//			msg = "先ほどの撮影回数は" + nonSavedNewShotCnt + "回。今までの合計撮影回数は" + newTotalShotCnt
-//					+ "回です！";
-//		} else {
-//			msg = "データの登録に失敗しました。先ほどの撮影回数は" + nonSavedNewShotCnt + "回です。";
-//		}
-//
-//		CameLog.setLog(TAG, msg);
-//		return newTotalShotCnt;
-//	}
+	// /**
+	// * 以下、SQLiteTIPSメモ
+	// *
+	// * 検索時にSQL文を直接送る場合はちょっと構文が違う。DELETEやINSERT時のようなexecSQLではない。 例えばこんな感じ。
+	// * db.rawQuery("select * from books where",null);
+	// *
+	// * String msg = ""; boolean eol = cs.moveToFirst(); while (eol) { msg +=
+	// * cs.getString(1); eol = cs.moveToNext(); } Toast.makeText(this, msg,
+	// * Toast.LENGTH_SHORT).show();
+	// */
+	//
+	// /** 前回の登録Dataを削除。 */
+	// /** 書き込み・読み込み用のデータベースオブジェクトを取得。newじゃないのか。 */
+	// db = helper.getWritableDatabase();
+	// /**
+	// * レコード削除する
+	// * 第一引数：テーブル名
+	// * 第二引数：Where句に相当する。検索条件。
+	// * 第三引数：Where句の指定データ
+	// * 戻り値は、影響を受けた行数。このパターンだとISBNの重複はないので1が戻り値。
+	// */
+	// int ct = db.delete("pet", "user = ?", params);//
+	// 第1引数はテーブル名。第2引数は軸とするISBN。第三引数がisbnが入った配列。
+	// CameLog.setLog(TAG, "前回のユーザーデータ" + ct + "個の削除に成功");
 }

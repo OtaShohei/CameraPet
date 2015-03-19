@@ -15,7 +15,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-public class PetMove extends SurfaceView implements SurfaceHolder.Callback,
+public class PetAsobiBa extends SurfaceView implements SurfaceHolder.Callback,
 		Runnable {
 	/** 描画開始位置：X軸 */
 	private int currentX;
@@ -35,7 +35,7 @@ public class PetMove extends SurfaceView implements SurfaceHolder.Callback,
 	private int width;
 	private int height;
 	/** Logのタグを定数で確保 */
-	private static final String TAG = "PetMove";
+	private static final String TAG = "PetAsobiBa";
 
 	// /** 初動加速の判断用 */
 	// private boolean speedMove = false;
@@ -46,7 +46,7 @@ public class PetMove extends SurfaceView implements SurfaceHolder.Callback,
 	 *
 	 * @param context
 	 */
-	public PetMove(Context context) {
+	public PetAsobiBa(Context context) {
 		super(context);
 	}
 
@@ -57,7 +57,7 @@ public class PetMove extends SurfaceView implements SurfaceHolder.Callback,
 	 * @param context
 	 * @param attrs
 	 */
-	public PetMove(Context context, AttributeSet attrs) {
+	public PetAsobiBa(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		/** 画像の読み込み */
 		Resources res = getResources();
@@ -83,7 +83,7 @@ public class PetMove extends SurfaceView implements SurfaceHolder.Callback,
 	 * @param attrs
 	 * @param defStyle
 	 */
-	public PetMove(Context context, AttributeSet attrs, int defStyle) {
+	public PetAsobiBa(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 	}
 
@@ -105,11 +105,7 @@ public class PetMove extends SurfaceView implements SurfaceHolder.Callback,
 	public void surfaceCreated(SurfaceHolder holder) {
 		thread = new Thread(this);
 		thread.start();
-	}
-
-	@Override
-	public void surfaceDestroyed(SurfaceHolder holder) {
-		thread = null; // スレッド終了
+		CameLog.setLog(TAG, "surfaceCreated");
 	}
 
 	@Override
@@ -134,6 +130,13 @@ public class PetMove extends SurfaceView implements SurfaceHolder.Callback,
 		 */
 		this.width = width;
 		this.height = height;
+		CameLog.setLog(TAG, "surfaceChanged");
+	}
+
+	@Override
+	public void surfaceDestroyed(SurfaceHolder holder) {
+		thread = null; // スレッド終了
+		CameLog.setLog(TAG, "surfaceDestroyed");
 	}
 
 	@Override
@@ -160,7 +163,7 @@ public class PetMove extends SurfaceView implements SurfaceHolder.Callback,
 				getHolder().unlockCanvasAndPost(canvas);
 
 				/** 移動処理*/
-				moveProc(); 
+				moveProc();
 			}
 		} catch (Exception e) {
 			// TODO 自動生成された catch ブロック
@@ -196,16 +199,18 @@ public class PetMove extends SurfaceView implements SurfaceHolder.Callback,
 		float x = event.getX(); // X座標を取得
 		float y = event.getY(); // Y座標を取得
 		// speedMove = true;
-		move(x, y);
+		getMoveSize(x, y);
+		CameLog.setLog(TAG, "onTouchEvent");
 		return true;
 	}
 
 	/**
 	 * 移動量取得
 	 */
-	public void move(float x, float y) {
+	public void getMoveSize(float x, float y) {
 		moveX = (int) (x / 100);
 		moveY = (int) (y / 100);
+		CameLog.setLog(TAG, "onTouchEvent");
 	}
 
 	/**
