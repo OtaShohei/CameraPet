@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 
 /**
- * CameraPetのMainActivityのクラスです。 onClickFacebookBtnとonClickTwitterBtnボタンは要差し替え。
+ * CameraPetのMainActivityのクラスです。 
  *
  * @author 1107AND
  *
@@ -63,11 +63,9 @@ public class MainActivity extends Activity {
 		CameLog.setLog(TAG, "onPause");
 
 	}
-
 	// //////////////////////////////////////////////////////////////////////////////////
 	// 以下、非オーバーライド系メソッド。
 	// //////////////////////////////////////////////////////////////////////////////////
-
 	/**
 	 * Facebook投稿メソッド。
 	 *

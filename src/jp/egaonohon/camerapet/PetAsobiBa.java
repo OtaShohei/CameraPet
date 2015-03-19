@@ -15,6 +15,11 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+/**
+ * メイン画面内のペットが動き回るエリアを司るクラス。
+ * @author OtaShohei
+ *
+ */
 public class PetAsobiBa extends SurfaceView implements SurfaceHolder.Callback,
 		Runnable {
 	/** 描画開始位置：X軸 */

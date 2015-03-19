@@ -8,7 +8,7 @@ import android.net.Uri;
 import android.widget.Toast;
 
 /**
- * SNS投稿クラス。
+ * SNS投稿クラス。 TWEETTXTとoFACEBOOKTXTは要差し替え。
  * 
  * @author OtaShohei
  *
@@ -19,9 +19,13 @@ public class SnsBtn {
 	 */
 	private final static int FACEBOOK_ID = 0;
 	private final static int TWITTER_ID = 1;
+	private static final String TWEETTXT = "Androidアプリ「CameraPet」で飼っているペットです！ https://play.google.com/store/apps/";
+	private static final String FACEBOOKTXT = "https://play.google.com/store/apps/";
 	/** SNS連携用のメンバ変数 */
-	private final static String[] sharePackages = { "com.facebook.katana",
+	private final static String[] SHAREPACKAGES = { "com.facebook.katana",
 			"com.twitter.android" };
+	/** Logのタグを定数で確保 */
+	private static final String TAG = "SnsBtn";
 
 	/**
 	 * Facebook投稿メソッド。
@@ -32,13 +36,9 @@ public class SnsBtn {
 		if (isShareAppInstall(context, FACEBOOK_ID)) {
 			Intent intent = new Intent();
 			intent.setAction(Intent.ACTION_SEND);
-			intent.setPackage(sharePackages[FACEBOOK_ID]);
+			intent.setPackage(SHAREPACKAGES[FACEBOOK_ID]);
 			intent.setType("text/plain");
-			/**
-			 * 　URLは、CameraPetのダウンロードページに差し替えること!
-			 */
-			intent.putExtra(Intent.EXTRA_TEXT,
-					"https://play.google.com/store/apps/");
+			intent.putExtra(Intent.EXTRA_TEXT, FACEBOOKTXT);
 			context.startActivity(intent);
 		} else {
 			shareAppDl(context, FACEBOOK_ID);
@@ -54,14 +54,9 @@ public class SnsBtn {
 		if (isShareAppInstall(context, TWITTER_ID)) {
 			Intent intent = new Intent();
 			intent.setAction(Intent.ACTION_SEND);
-			intent.setPackage(sharePackages[TWITTER_ID]);
+			intent.setPackage(SHAREPACKAGES[TWITTER_ID]);
 			intent.setType("image/png");
-			/**
-			 * 　URLは、CameraPetのダウンロードページに差し替えること!
-			 */
-			intent.putExtra(Intent.EXTRA_TEXT,
-					"Androidアプリ「CameraPet」で飼っているペットです！"
-							+ "https://play.google.com/store/apps/");
+			intent.putExtra(Intent.EXTRA_TEXT, TWEETTXT);
 			context.startActivity(intent);
 		} else {
 			shareAppDl(context, TWITTER_ID);
@@ -77,7 +72,7 @@ public class SnsBtn {
 	private static Boolean isShareAppInstall(Context context, int shareId) {
 		try {
 			PackageManager pm = context.getPackageManager();
-			pm.getApplicationInfo(sharePackages[shareId],
+			pm.getApplicationInfo(SHAREPACKAGES[shareId],
 					PackageManager.GET_META_DATA);
 			return true;
 		} catch (NameNotFoundException e) {
@@ -96,7 +91,7 @@ public class SnsBtn {
 	 * @param shareId
 	 */
 	private static void shareAppDl(Context context, int shareId) {
-		Uri uri = Uri.parse("market://details?id=" + sharePackages[shareId]);
+		Uri uri = Uri.parse("market://details?id=" + SHAREPACKAGES[shareId]);
 		Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 		context.startActivity(intent);
 	}

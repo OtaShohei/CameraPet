@@ -1,5 +1,10 @@
 package jp.egaonohon.camerapet;
 
+/**
+ * ホーム画面内のゲームエリアで降ってくるペットの餌（=UserPH)を司るクラス。
+ * @author OtaShohei
+ *
+ */
 public class Esa {
 
 	/**

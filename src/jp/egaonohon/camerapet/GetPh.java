@@ -14,7 +14,7 @@ import android.widget.GridView;
 /**
  * 直近撮影済み写真を取得するクラス。 参考↓
  * http://dev.classmethod.jp/smartphone/basic-android-component-04-gridview/
- *
+ * CamPePHクラスが実装されたら不要となるクラスです。
  * @author OtaShohei
  *
  */

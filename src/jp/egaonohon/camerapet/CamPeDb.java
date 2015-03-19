@@ -6,6 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.widget.Toast;
 
+/**
+ * このCameraPetアプリの様々なデータを保存取得するためのクラスです。
+ * @author OtaShohei
+ *
+ */
 public class CamPeDb {
 	/**
 	 * フィールド各種。
