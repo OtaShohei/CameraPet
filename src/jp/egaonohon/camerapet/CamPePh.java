@@ -25,8 +25,7 @@ public class CamPePh {
 	private static final String TAG = "CamPePH";
 
 	/**
-	 * 直近撮影写真をBitmapで取得するメソッド。
-	 * 2015-03-18時点では未完成です。
+	 * 直近撮影写真をArrayList<Bitmap>で取得するメソッド。 2015-03-18時点では未完成です。
 	 *
 	 * @param context
 	 * @return
@@ -35,10 +34,21 @@ public class CamPePh {
 		this.context = context;
 
 		/**
-		 * 直近撮影済み枚数を取得
+		 * 直近撮影済み枚数を取得。0枚の場合は1を返す仕様です。
 		 */
-		takenPhNum = CamPeDb.getNowShotCnt(context);
+		try {
+			takenPhNum = CamPeDb.getNowShotCnt(context);
+			if (takenPhNum == 0) {
+				takenPhNum = 1;
+				CameLog.setLog(TAG, "直近画像0枚だったので1枚にリセット");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		CameLog.setLog(TAG, "直近撮影済み枚数を取得。" + takenPhNum + "枚です！");
 		ArrayList<Bitmap> list = load();
+
+		CameLog.setLog(TAG, "直近撮影済み写真を取得。" + list.size() + "枚です！");
 		return list;
 	}
 

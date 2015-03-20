@@ -103,9 +103,11 @@ public class CamPeDb {
 		} else {
 			// データがなかったので、その旨を表示する
 			Toast.makeText(context, "データがありません。", Toast.LENGTH_SHORT).show();
+			CameLog.setLog(TAG, "直近撮影枚数データがありません。");
 		}
 		Toast.makeText(context, "先ほどの撮影回数は" + nonSavedNewShotCnt + "です",
 				Toast.LENGTH_SHORT).show();
+		CameLog.setLog(TAG, "先ほどの撮影回数は" + nonSavedNewShotCnt + "です");
 		/**
 		 * 戻り値として直近撮影回数を渡す。
 		 */
@@ -113,7 +115,7 @@ public class CamPeDb {
 	}
 
 	/**
-	 * 直近写真撮影回数のみをデータベースに保存するメソッド。
+	 * 直近写真撮影回数とそれを加えた累計撮影回数をデータベースに保存するメソッド。
 	 *
 	 * @param cntNum
 	 * @return

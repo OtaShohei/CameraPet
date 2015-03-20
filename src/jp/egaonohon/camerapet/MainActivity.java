@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 
 /**
- * CameraPetのMainActivityのクラスです。 
+ * CameraPetのMainActivityのクラスです。
  *
  * @author 1107AND
  *
@@ -154,7 +154,6 @@ public class MainActivity extends Activity {
 
 		/**
 		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
-		 * 撮影枚数をintentに詰め込んでGetPhクラスでその分を取得するように修正する。
 		 */
 		Intent intent = new Intent(MainActivity.this, GetPh.class);
 

@@ -17,12 +17,12 @@ public class SnsBtn {
 	/**
 	 * メンバ変数
 	 */
-	private final static int FACEBOOK_ID = 0;
-	private final static int TWITTER_ID = 1;
-	private static final String TWEETTXT = "Androidアプリ「CameraPet」で飼っているペットです！ https://play.google.com/store/apps/";
+	private static final int FACEBOOK_ID = 0;
+	private static final int TWITTER_ID = 1;
+	private static final String TWEETTXT = "スマホアプリ「CameraPet」で飼っているペットです！ https://play.google.com/store/apps/";
 	private static final String FACEBOOKTXT = "https://play.google.com/store/apps/";
 	/** SNS連携用のメンバ変数 */
-	private final static String[] SHAREPACKAGES = { "com.facebook.katana",
+	private static final String[] SHAREPACKAGES = { "com.facebook.katana",
 			"com.twitter.android" };
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "SnsBtn";

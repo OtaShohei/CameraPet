@@ -1,5 +1,7 @@
 package jp.egaonohon.camerapet;
 
+import java.util.ArrayList;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
@@ -17,23 +19,38 @@ import android.view.SurfaceView;
 
 /**
  * メイン画面内のペットが動き回るエリアを司るクラス。
+ *
  * @author OtaShohei
  *
  */
 public class PetAsobiBa extends SurfaceView implements SurfaceHolder.Callback,
 		Runnable {
-	/** 描画開始位置：X軸 */
-	private int currentX;
-	/** 描画開始位置：Y軸 */
-	private int currentY;
-	/** 移動距離：X軸 */
-	private int moveX = 3;
-	/** 移動距離：Y軸 */
-	private int moveY = 5;
+	/** Pet描画開始位置：X軸 */
+	private int petCurrentX;
+	/** Pet描画開始位置：Y軸 */
+	private int petCurrentY;
+	/** Pet移動距離：X軸 */
+	private int petMoveX = 3;
+	/** Pet移動距離：Y軸 */
+	private int petMoveY = 5;
+
+	/** 餌の数 */
+	private int esaCnt = 0;
+	/** 餌描画開始位置：X軸 */
+	private int esaCurrentX = 5;
+	/** 餌描画開始位置：Y軸 */
+	private int esaCurrentY = 0;
+	/** 餌移動距離：X軸 */
+	private int esaMoveX = 0;
+	/** 餌移動距離：Y軸 */
+	private int esaMoveY = 5;
+
 	/** 描画用スレッド */
 	private Thread thread;
-	/** 画像 */
+	/** ペット画像 */
 	private Bitmap petPh;
+	/** 餌画像 */
+	private ArrayList<Bitmap> esaPhList;
 	/** SurfaceHolderをメンバ変数として確保 */
 	private SurfaceHolder holder;
 	/** 画面サイズ。ペットなどの表示の機種ごとの差異を吸収するため。 */
@@ -46,8 +63,7 @@ public class PetAsobiBa extends SurfaceView implements SurfaceHolder.Callback,
 	// private boolean speedMove = false;
 
 	/**
-	 * 引数1つのコンストラクタ。
-	 * ここに記述すると例外発生する。SurfaceViewを全画面に用いてないからか?
+	 * 引数1つのコンストラクタ。 ここに記述すると例外発生する。SurfaceViewを全画面に用いてないからか?
 	 *
 	 * @param context
 	 */
@@ -56,8 +72,7 @@ public class PetAsobiBa extends SurfaceView implements SurfaceHolder.Callback,
 	}
 
 	/**
-	 * 引数2つのコンストラクタ。
-	 * カスタムビューとしてXMLに定義するときに必要なコンストラクタ。
+	 * 引数2つのコンストラクタ。 カスタムビューとしてXMLに定義するときに必要なコンストラクタ。
 	 *
 	 * @param context
 	 * @param attrs
@@ -67,7 +82,11 @@ public class PetAsobiBa extends SurfaceView implements SurfaceHolder.Callback,
 		/** 画像の読み込み */
 		Resources res = getResources();
 		petPh = BitmapFactory.decodeResource(res, R.drawable.alpaca02);
+		CamPePh camPePh = new CamPePh();
+		esaPhList = camPePh.get(context);
+		esaCnt = esaPhList.size();
 
+		CameLog.setLog(TAG, "コンストラクタにて画像の読み込み完了。餌Phは" + esaCnt + "枚");
 		/** SurfaceHolder の取得 */
 		holder = getHolder();
 
@@ -152,10 +171,15 @@ public class PetAsobiBa extends SurfaceView implements SurfaceHolder.Callback,
 		 */
 		try {
 			/**
-			 * ペットの表示サイズをここで調整。
-			 * ペットが正方形なのでともにwidth/3で設定
+			 * ペットの表示サイズをここで調整。 ペットが正方形なのでともにwidth/3で設定
 			 */
-			petPh = Bitmap.createScaledBitmap(petPh, width/3, width/3, true);
+			petPh = Bitmap
+					.createScaledBitmap(petPh, width / 3, width / 3, true);
+			/** 餌画像の描画 */
+			for (int i = 0; i < esaPhList.size(); i++) {
+				Bitmap.createScaledBitmap(esaPhList.get(i), width / 10,
+						width / 10, true);
+			}
 
 			while (thread != null) {
 				/** ホルダーからキャンバスの取得 */
@@ -167,7 +191,7 @@ public class PetAsobiBa extends SurfaceView implements SurfaceHolder.Callback,
 				/** 描画内容の確定 */
 				getHolder().unlockCanvasAndPost(canvas);
 
-				/** 移動処理*/
+				/** 移動処理 */
 				moveProc();
 			}
 		} catch (Exception e) {
@@ -181,7 +205,7 @@ public class PetAsobiBa extends SurfaceView implements SurfaceHolder.Callback,
 	 */
 	@Override
 	public void draw(Canvas canvas) {
-		/** 現在の状態を保存*/
+		/** 現在の状態を保存 */
 		canvas.save();
 
 		Paint paint = new Paint();
@@ -191,11 +215,19 @@ public class PetAsobiBa extends SurfaceView implements SurfaceHolder.Callback,
 		 */
 		canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
-		/** 画像の描画*/
-		canvas.drawBitmap(petPh, currentX, currentY, paint);
-
-		/** 現在の状態の変更*/
+		/** 画像の描画 */
+		canvas.drawBitmap(petPh, petCurrentX, petCurrentY, paint);
+		/** 餌画像の描画 */
+		for (int i = 0; i < esaPhList.size(); i++) {
+			/**
+			 * 画面幅の20分の1ずつ出現位置をずらす。
+			 */
+			canvas.drawBitmap(esaPhList.get(i), esaCurrentX *((i+1) * (width/20)), esaCurrentY, paint);
+			CameLog.setLog(TAG, "餌画像の描画" + i + "枚目");
+		}
+		/** 現在の状態の変更 */
 		canvas.restore();
+//        holder.unlockCanvasAndPost(canvas);
 	}
 
 	@SuppressLint("ClickableViewAccessibility")
@@ -213,8 +245,8 @@ public class PetAsobiBa extends SurfaceView implements SurfaceHolder.Callback,
 	 * 移動量取得
 	 */
 	public void getMoveSize(float x, float y) {
-		moveX = (int) (x / 100);
-		moveY = (int) (y / 100);
+		petMoveX = (int) (x / 100);
+		petMoveY = (int) (y / 100);
 		CameLog.setLog(TAG, "onTouchEvent");
 	}
 
@@ -222,17 +254,40 @@ public class PetAsobiBa extends SurfaceView implements SurfaceHolder.Callback,
 	 * 移動処理
 	 */
 	private void moveProc() {
+
+		/**
+		 * Pet移動処理
+		 */
 		// 画面端のチェック：X軸
-		if (currentX < 0 || getWidth() - petPh.getWidth() < currentX) {
-			moveX = -moveX;
+		if (petCurrentX < 0 || getWidth() - petPh.getWidth() < petCurrentX) {
+			petMoveX = -petMoveX;
 		}
 		// 画面端のチェック：Y軸
-		if (currentY < 0 || getHeight() - petPh.getHeight() < currentY) {
-			moveY = -moveY;
+		if (petCurrentY < 0 || getHeight() - petPh.getHeight() < petCurrentY) {
+			petMoveY = -petMoveY;
 		}
 
 		// 描画座標の更新
-		currentX += moveX;
-		currentY += moveY;
+		petCurrentX += petMoveX;
+		petCurrentY += petMoveY;
+
+		/**
+		 * 餌移動処理。
+		 */
+			// 画面端のチェック：X軸
+			if (esaCurrentX < 0
+					|| getWidth() - getWidth() / 10 /* petPh.getWidth() */< esaCurrentX) {
+				esaMoveX = -esaMoveX;
+			}
+			// 画面端のチェック：Y軸
+			if (esaCurrentY < 0
+					|| getHeight() - getWidth() / 10 /* petPh.getWidth() */< esaCurrentY) {
+				esaMoveY = -esaMoveY;
+				CameLog.setLog(TAG, "餌移動処理Y軸");
+			}
+
+			// 描画座標の更新
+			esaCurrentX += esaMoveX;
+			esaCurrentY += esaMoveY;
 	}
 }
