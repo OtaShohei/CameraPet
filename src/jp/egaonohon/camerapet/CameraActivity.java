@@ -56,7 +56,7 @@ public class CameraActivity extends Activity {
 		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定。
 		 * インテントにはCameraActivityから戻ってきたことを示す文字を念のために格納。
 		 */
-		Intent intent = new Intent(CameraActivity.this, MainActivity.class);
+		Intent intent = new Intent(CameraActivity.this, CPMainActivity.class);
 		intent.putExtra("returnCam", "true");
 		CameLog.setLog(TAG, "CameraActivityからputExtra完了");
 

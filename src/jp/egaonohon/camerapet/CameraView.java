@@ -16,7 +16,9 @@ import android.hardware.Camera.Parameters;
 import android.hardware.Camera.ShutterCallback;
 import android.hardware.Camera.Size;
 import android.net.Uri;
+import android.provider.MediaStore.Images.ImageColumns;
 import android.provider.MediaStore.Images.Media;
+import android.provider.MediaStore.MediaColumns;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -63,6 +65,7 @@ public class CameraView extends SurfaceView {
 
 		SurfaceHolder holder = getHolder();
 		holder.addCallback(new SurfaceHolder.Callback() {
+			@Override
 			public void surfaceCreated(SurfaceHolder holder) {
 				petCam = Camera.open(0);
 				try {
@@ -73,6 +76,7 @@ public class CameraView extends SurfaceView {
 				CameLog.setLog(TAG, "surfaceCreated");
 			}
 
+			@Override
 			public void surfaceChanged(SurfaceHolder holder, int format,
 					int width, int height) {
 				petCam.stopPreview();
@@ -96,6 +100,7 @@ public class CameraView extends SurfaceView {
 
 			}
 
+			@Override
 			public void surfaceDestroyed(SurfaceHolder holder) {
 				petCam.release();
 				petCam = null;
@@ -145,6 +150,7 @@ public class CameraView extends SurfaceView {
 			@Override
 			public void onAutoFocus(boolean success, Camera camera) {
 				camera.takePicture(new ShutterCallback() {
+					@Override
 					public void onShutter() {
 					}
 				}, null, new Camera.PictureCallback() {
@@ -180,10 +186,10 @@ public class CameraView extends SurfaceView {
 	private void saveDataToURI(byte[] data, String dataName) {
 		Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
 		ContentValues values = new ContentValues();
-		values.put(Media.DISPLAY_NAME, dataName);
-		values.put(Media.DESCRIPTION, "taken with CameraPet");
-		values.put(Media.MIME_TYPE, "image/jpeg");
-		values.put(Media.DATE_TAKEN, System.currentTimeMillis());
+		values.put(MediaColumns.DISPLAY_NAME, dataName);
+		values.put(ImageColumns.DESCRIPTION, "taken with CameraPet");
+		values.put(MediaColumns.MIME_TYPE, "image/jpeg");
+		values.put(ImageColumns.DATE_TAKEN, System.currentTimeMillis());
 		Uri uri = contentResolver.insert(Media.EXTERNAL_CONTENT_URI, values);
 		try {
 			OutputStream outStream = contentResolver.openOutputStream(uri);

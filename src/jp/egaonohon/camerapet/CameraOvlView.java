@@ -37,16 +37,16 @@ public class CameraOvlView extends View {
 
 		// 縦線
 		canvas.drawLine((float) width / 3, (float) 0.0, (float) width / 3,
-				(float) height, paint);
+				height, paint);
 
-		canvas.drawLine((float) (width / 3 * 2), (float) 0.0,
-				(float) (width / 3 * 2), (float) height, paint);
+		canvas.drawLine(width / 3 * 2, (float) 0.0,
+				width / 3 * 2, height, paint);
 
 		// 横線
-		canvas.drawLine((float) 0.0, (float) height / 3, (float) width,
+		canvas.drawLine((float) 0.0, (float) height / 3, width,
 				(float) height / 3, paint);
-		canvas.drawLine((float) 0.0, (float) (height / 3 * 2), (float) width,
-				(float) (height / 3 * 2), paint);
+		canvas.drawLine((float) 0.0, height / 3 * 2, width,
+				height / 3 * 2, paint);
 
 		// 文字表示
 		// paint.setARGB(255, 255, 255, 255);

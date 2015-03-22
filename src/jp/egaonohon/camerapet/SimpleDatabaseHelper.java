@@ -1,8 +1,6 @@
 package jp.egaonohon.camerapet;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -17,10 +15,13 @@ public class SimpleDatabaseHelper extends SQLiteOpenHelper {
 	 *  命名に制限事項はありません。名前は何でもいいし拡張子 *.sqlite があってもいい。今回はCameraPetUserにしている。
 	 */
 	static final private String DBNAME = "CameraPetUser";//
-	/** 初回起動日時保存用Preferencesのメンバ変数確保 */
-	SharedPreferences pref;
-	/** Preferencesへの書き込み用Editor */
-	Editor editor;
+//	/** 初回起動日時保存用Preferencesのメンバ変数確保 */
+//	SharedPreferences pref;
+//	/** Preferencesへの書き込み用Editor */
+//	Editor editor;
+	
+//	/** インストール日時 */
+//	long birthDay;
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "SimpleDatabaseHelper";
 	/**
@@ -41,6 +42,8 @@ public class SimpleDatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onOpen(SQLiteDatabase db) {
 		super.onOpen(db);
+//		/** インストール日時を取得 */
+//		birthDay = System.currentTimeMillis();
 	}
 
 	/**
@@ -51,10 +54,20 @@ public class SimpleDatabaseHelper extends SQLiteOpenHelper {
 	 */
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		db.execSQL("CREATE TABLE pet ("
-				+ "user TEXT PRIMARY KEY, petType TEXT, nowShotCnt INTEGER, totalShotCnt INTEGER)");//isbnをキーにして、タイトルとプライスを入れる。
-		db.execSQL("INSERT INTO pet(user, petType, nowshotCnt, totalShotCnt)"
-				+ " VALUES('default', 'lv01', 0, 0)");//ここでは初期データも同時に突っ込んでいる以下同様。
+
+		try {
+//			db.execSQL("CREATE TABLE pet ("
+//					+ "user TEXT PRIMARY KEY, petType TEXT, nowShotCnt INTEGER, totalShotCnt INTEGER, birthDay INTEGER)");//isbnをキーにして、タイトルとプライスを入れる。
+//			db.execSQL("INSERT INTO pet(user, petType, nowshotCnt, totalShotCnt, birthDay,)"
+//					+ " VALUES('default', 'lv01', 0, 0, birthDay)");//ここでは初期データも同時に突っ込んでいる以下同様。
+			db.execSQL("CREATE TABLE pet ("
+					+ "user TEXT PRIMARY KEY, petType TEXT, nowShotCnt INTEGER, totalShotCnt INTEGER)");//isbnをキーにして、タイトルとプライスを入れる。
+			db.execSQL("INSERT INTO pet(user, petType, nowshotCnt, totalShotCnt)"
+					+ " VALUES('default', 'lv01', 0, 0)");//ここでは初期データも同時に突っ込んでいる以下同様。
+		} catch (Exception e) {
+			// TODO: handle exception
+			CameLog.setLog(TAG, "DB作成に失敗");
+		}
 
 	}
 

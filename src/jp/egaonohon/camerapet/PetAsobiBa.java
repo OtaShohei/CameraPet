@@ -83,7 +83,7 @@ public class PetAsobiBa extends SurfaceView implements SurfaceHolder.Callback,
 		Resources res = getResources();
 		petPh = BitmapFactory.decodeResource(res, R.drawable.alpaca02);
 		CamPePh camPePh = new CamPePh();
-		esaPhList = camPePh.get(context);
+		esaPhList = camPePh.get(context, CamPeDb.getNowShotCnt(context));
 		esaCnt = esaPhList.size();
 
 		CameLog.setLog(TAG, "コンストラクタにて画像の読み込み完了。餌Phは" + esaCnt + "枚");

@@ -1,0 +1,196 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/back_ground"
+    android:orientation="vertical"
+    tools:context="jp.egaonohon.camerapet.MainActivity" >
+
+    <!-- android:paddingBottom="@dimen/activity_vertical_margin" -->
+    <!-- android:paddingLeft="@dimen/activity_horizontal_margin" -->
+    <!-- android:paddingRight="@dimen/activity_horizontal_margin" -->
+    <!-- android:paddingTop="@dimen/activity_vertical_margin" -->
+
+
+    <!-- <LinearLayout -->
+    <!-- android:layout_width="match_parent" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:layout_weight="2" -->
+    <!-- android:orientation="vertical" > -->
+    <!-- </LinearLayout> -->
+
+
+    <!-- <LinearLayout -->
+    <!-- android:id="@+id/petSpace" -->
+    <!-- android:layout_width="match_parent" -->
+    <!-- android:layout_height="0dp" -->
+    <!-- android:layout_weight="6" -->
+    <!-- android:orientation="vertical" > -->
+    <!-- </LinearLayout> -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="5dp"
+        android:layout_weight="0.5"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <RatingBar
+            android:id="@+id/ratingBar1"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="3dp"
+            android:gravity="left"
+            android:numStars="10"
+            android:paddingTop="2dp" />
+
+        <TextView
+            android:id="@+id/petAgeTV"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="3dp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="0th day"
+            android:textColor="#ed7621"
+            android:textSize="16sp"
+            android:textStyle="bold|italic" />
+
+        <TextView
+            android:id="@+id/savedTotalShotCntTV"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="3dp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="TextView"
+            android:textColor="#ed7621"
+            android:textSize="16sp"
+            android:textStyle="bold|italic" />
+    </LinearLayout>
+
+    <jp.egaonohon.camerapet.CPGameSurfaceView
+        android:id="@+id/petSpace"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="8.5" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#dcdcdc"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.5"
+        android:orientation="horizontal"
+        android:paddingTop="5dp" >
+
+        <!-- <Button -->
+        <!-- android:id="@+id/goFacebook" -->
+        <!-- android:layout_width="0dp" -->
+        <!-- android:layout_height="match_parent" -->
+        <!-- android:layout_weight="1" -->
+        <!-- android:onClick="onClickFacebookBtn" -->
+        <!-- android:text="@string/facebook" /> -->
+
+        <ImageButton
+            android:id="@+id/goFacebook"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="3dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:onClick="onClickFacebookBtn"
+            android:src="@drawable/fb_btn" />
+
+        <!-- <Button -->
+        <!-- android:id="@+id/goTwitter" -->
+        <!-- android:layout_width="0dp" -->
+        <!-- android:layout_height="match_parent" -->
+        <!-- android:layout_weight="1" -->
+        <!-- android:onClick="onClickTwitterBtn" -->
+        <!-- android:text="@string/tweet" /> -->
+
+        <ImageButton
+            android:id="@+id/goTwitter"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="3dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:onClick="onClickTwitterBtn"
+            android:src="@drawable/twt_btn" />
+
+        <ImageButton
+            android:id="@+id/stopSound"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="3dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:onClick="onClickSoundBtn"
+            android:src="@drawable/sound_btn" />
+
+        <!-- <Button -->
+        <!-- android:id="@+id/stopSound" -->
+        <!-- android:layout_width="0dp" -->
+        <!-- android:layout_height="match_parent" -->
+        <!-- android:layout_weight="1" -->
+        <!-- android:onClick="onClickSoundBtn" -->
+        <!-- android:text="@string/sound" /> -->
+
+        <ImageButton
+            android:id="@+id/goCamBtn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="3dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:onClick="onClickGoCamBtn"
+            android:src="@drawable/cam_btn" />
+
+        <!-- <Button -->
+        <!-- android:id="@+id/goCamBtn" -->
+        <!-- android:layout_width="0dp" -->
+        <!-- android:layout_height="match_parent" -->
+        <!-- android:layout_weight="1" -->
+        <!-- android:onClick="onClickGoCamBtn" -->
+        <!-- android:text="@string/goCamBtn" /> -->
+
+        <ImageButton
+            android:id="@+id/encyclopedia"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="3dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:onClick="onClickEncyclopedia"
+            android:src="@drawable/encyclo_btn" />
+
+        <!-- <Button -->
+        <!-- android:id="@+id/encyclopedia" -->
+        <!-- android:layout_width="0dp" -->
+        <!-- android:layout_height="match_parent" -->
+        <!-- android:layout_weight="1" -->
+        <!-- android:onClick="onClickEncyclopedia" -->
+        <!-- android:text="@string/wchEncycl" /> -->
+
+
+        <!-- <TextView -->
+        <!-- android:id="@+id/textView1" -->
+        <!-- android:layout_width="0dp" -->
+        <!-- android:layout_height="wrap_content" -->
+        <!-- android:layout_weight="0.5" -->
+        <!-- android:text=" " /> -->
+
+    </LinearLayout>
+
+</LinearLayout>

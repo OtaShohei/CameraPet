@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 /**
  * このCameraPetアプリの様々なデータを保存取得するためのクラスです。
+ * 
  * @author OtaShohei
  *
  */
@@ -22,11 +23,13 @@ public class CamPeDb {
 	/** Petの種類 */
 	private static String txtPetType = "lv01";
 	/** 未保存の直近撮影回数 */
-	private static Integer nonSavedNewShotCnt = null;
+	private static Integer nonSavedNewShotCnt = 0;
 	/** DB保存済み累積撮影回数 */
-	private static Integer savedTotalShotCnt = null;
+	private static Integer savedTotalShotCnt = 0;
 	/** 新たに保存する累積撮影回数 */
-	private static Integer newTotalShotCnt = null;
+	private static Integer newTotalShotCnt = 0;
+	/** CameraPetインストール日時 */
+	private static Long birthDay = null;
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "CamPeDb";
 
@@ -86,32 +89,39 @@ public class CamPeDb {
 	 * @return
 	 */
 	public static int getNowShotCnt(Context context) {
-		SQLiteDatabase db = helper.getReadableDatabase();// getReadableDatabase()メソッドを使う。getWritableDatabaseもできるがあえて書き込み権限は不要なので今回は使わない。
-		// db.queryの第二引数を作る
-		// select文のカラムの指定する文字列をString型の配列に記述。ここは3つのカラムすべてということか…。
-		String[] cols = { "user", "petType", "nowShotCnt", "totalShotCnt" };
-		// Select文の行を特定する（where句）文字列を取得（ユーザー名の指定）。ユーザーを引っ張ってこいよ!て感じ。
-		String[] params = { txtUser };
+		try {
+			SQLiteDatabase db = helper.getReadableDatabase();// getReadableDatabase()メソッドを使う。getWritableDatabaseもできるがあえて書き込み権限は不要なので今回は使わない。
+			// db.queryの第二引数を作る
+			// select文のカラムの指定する文字列をString型の配列に記述。ここは3つのカラムすべてということか…。
+			String[] cols = { "user", "petType", "nowShotCnt", "totalShotCnt" };
+			// Select文の行を特定する（where句）文字列を取得（ユーザー名の指定）。ユーザーを引っ張ってこいよ!て感じ。
+			String[] params = { txtUser };
 
-		// 実際にselect文に相当するメソッドを実行。
-		Cursor cs = db.query("pet", cols, "user = ?", params, null, null, null,
-				null);// DBからの戻り値のCursorをこの後扱っていく。
-		// データがあれば、データを取得する。なければ、無い！
-		if (cs.moveToFirst()) {
-			// 撮影回数を引っ張ってくる(2)は列を示す。一番左が0から始まる。
-			nonSavedNewShotCnt = cs.getInt(2);
-		} else {
-			// データがなかったので、その旨を表示する
-			Toast.makeText(context, "データがありません。", Toast.LENGTH_SHORT).show();
-			CameLog.setLog(TAG, "直近撮影枚数データがありません。");
+			// 実際にselect文に相当するメソッドを実行。
+			Cursor cs = db.query("pet", cols, "user = ?", params, null, null,
+					null, null);// DBからの戻り値のCursorをこの後扱っていく。
+			// データがあれば、データを取得する。なければ、無い！
+			if (cs.moveToFirst()) {
+				// 撮影回数を引っ張ってくる(2)は列を示す。一番左が0から始まる。
+				nonSavedNewShotCnt = cs.getInt(2);
+			} else {
+				// // データがなかったので、その旨を表示する
+				// Toast.makeText(context, "データがありません。",
+				// Toast.LENGTH_SHORT).show();
+				CameLog.setLog(TAG, "直近撮影枚数データがありません。");
+			}
+			// Toast.makeText(context, "先ほどの撮影回数は" + nonSavedNewShotCnt + "です",
+			// Toast.LENGTH_SHORT).show();
+			CameLog.setLog(TAG, "先ほどの撮影回数は" + nonSavedNewShotCnt + "です");
+			/**
+			 * 戻り値として直近撮影回数を渡す。
+			 */
+			return nonSavedNewShotCnt;
+		} catch (Exception e) {
+			// TODO 自動生成された catch ブロック
+			e.printStackTrace();
+			return 10;
 		}
-		Toast.makeText(context, "先ほどの撮影回数は" + nonSavedNewShotCnt + "です",
-				Toast.LENGTH_SHORT).show();
-		CameLog.setLog(TAG, "先ほどの撮影回数は" + nonSavedNewShotCnt + "です");
-		/**
-		 * 戻り値として直近撮影回数を渡す。
-		 */
-		return nonSavedNewShotCnt;
 	}
 
 	/**
@@ -137,6 +147,11 @@ public class CamPeDb {
 		// db.queryの第二引数を作る
 		// select文のカラムの指定する文字列をString型の配列に記述。ここは3つのカラムすべてということか…。
 		String[] cols = { "user", "petType", "nowShotCnt", "totalShotCnt" };
+
+		// 誕生日記録失敗コメントアウト
+		// String[] cols = { "user", "petType", "nowShotCnt",
+		// "totalShotCnt","birthDay" };
+
 		// Select文の行を特定する（where句）文字列を取得（ISBNの指定）。ISBNを引っ張ってこいよ!て感じ。
 		String[] params = { txtUser };
 
@@ -148,6 +163,10 @@ public class CamPeDb {
 		if (cs.moveToFirst()) {
 			/** 累積撮影回数を引っ張ってくる */
 			savedTotalShotCnt = cs.getInt(3);
+			// 誕生日記録失敗コメントアウト
+			// /** インストール日時を引っ張ってくる */
+			// birthDay = cs.getLong(4);
+
 		} else {
 			// データがなかったので、その旨を表示する
 			Toast.makeText(context, "データがありません。", Toast.LENGTH_SHORT).show();
@@ -172,6 +191,10 @@ public class CamPeDb {
 		cv.put("petType", txtPetType);
 		cv.put("nowShotCnt", nonSavedNewShotCnt);
 		cv.put("totalShotCnt", newTotalShotCnt);
+		
+		// 誕生日記録失敗コメントアウト
+		// cv.put("birthDay", birthDay);
+		
 		/**
 		 * レコードの更新を実施する 第一引数：テーブル名 第二引数：ContentValueオブジェクト。
 		 * 第三引数：whereClauseには、更新するデータのWHERE条件を指定します
@@ -184,6 +207,7 @@ public class CamPeDb {
 		if (id != -1) {// 戻り値を確認して成否を確認。戻り値-1の時は、テーブルがないなどの異常時。
 			msg = "先ほどの撮影回数は" + nonSavedNewShotCnt + "回。合計撮影回数は"
 					+ newTotalShotCnt + "です！";
+
 		} else {
 			msg = "データの登録に失敗しました。先ほどの撮影回数は" + nonSavedNewShotCnt
 					+ newTotalShotCnt + "回です。";

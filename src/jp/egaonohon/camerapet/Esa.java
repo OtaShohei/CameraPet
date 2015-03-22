@@ -45,7 +45,7 @@ public class Esa implements Runnable {
 	int cnt;
 
 	/** Logのタグを定数で確保 */
-	private static final String TAG = "PetAsobiBa";
+	private static final String TAG = "Esa";
 
 	/** 描画用スレッド */
 	private Thread thread;
@@ -75,11 +75,24 @@ public class Esa implements Runnable {
 	public Esa(int esaWidth, int esaHeight, int viewWidth, int viewHeight,
 			Context esaContext) {
 		super();
+		/**
+		 * 餌用の直近撮影写真を取得。
+		 */
+		CamPePh camPePh = new CamPePh();
+//		esaPhList = camPePh.get(esaContext);
+		esaCnt = esaPhList.size();
+
+		CameLog.setLog(TAG, "コンストラクタにて画像の読み込み完了。餌Phは" + esaCnt + "枚");
+		
+//		this.bmAry = bmAry;
 		this.esaWidth = esaWidth;
 		this.esaHeight = esaHeight;
 		this.viewWidth = viewWidth;
 		this.viewHeight = viewHeight;
 		this.esaContext = esaContext;
+		
+		thread = new Thread(this);
+		thread.start();
 	}
 
 	public void move() {
@@ -92,7 +105,7 @@ public class Esa implements Runnable {
 		if (esaCurrentY < 0
 				|| viewHeight - viewHeight / 10 /* petPh.getWidth() */< esaCurrentY) {
 			esaMoveY = -esaMoveY;
-			CameLog.setLog(TAG, "餌移動処理Y軸");
+//			CameLog.setLog(TAG, "餌移動処理Y軸");
 		}
 
 		// 描画座標の更新
@@ -102,6 +115,7 @@ public class Esa implements Runnable {
 		cnt++;
 		rect.set(esaCurrentX, esaCurrentY, esaCurrentX + esaWidth, esaCurrentY
 				+ esaHeight);
+		CameLog.setLog(TAG, "move");
 	}
 
 	// public ArrayList<Bitmap> make(Context context) {
@@ -141,7 +155,7 @@ public class Esa implements Runnable {
 		 * 餌用の直近撮影写真を取得。
 		 */
 		CamPePh camPePh = new CamPePh();
-		esaPhList = camPePh.get(esaContext);
+//		esaPhList = camPePh.get(esaContext);
 		esaCnt = esaPhList.size();
 
 		CameLog.setLog(TAG, "コンストラクタにて画像の読み込み完了。餌Phは" + esaCnt + "枚");
@@ -175,6 +189,7 @@ public class Esa implements Runnable {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+			CameLog.setLog(TAG, "run");
 		}
 	}
 
