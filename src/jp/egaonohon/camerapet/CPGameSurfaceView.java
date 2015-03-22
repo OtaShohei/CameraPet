@@ -26,8 +26,6 @@ class CPGameSurfaceView extends SurfaceView implements SurfaceHolder.Callback,
 	int viewHeight = getHeight();
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "CPGameSurfaceView";
-	/** MainActivityにて定義した操作を行うリスナーを確保 */
-	OnFcsChangeListener listener;
 
 	private CPGameMgr gameMgr = new CPGameMgr(context, viweWidth, viewHeight);
 	private Thread thread;
@@ -130,14 +128,5 @@ class CPGameSurfaceView extends SurfaceView implements SurfaceHolder.Callback,
 		CameLog.setLog(TAG, "onTouchEvent");
 		// listener.onFcsChange(i);
 		return true;
-	}
-
-	/**
-	 * これが、MainActivityでセットしているlistener。
-	 * 
-	 * @param listener
-	 */
-	public void setOnFcsChangeListener(OnFcsChangeListener listener) {
-		this.listener = listener;
 	}
 }

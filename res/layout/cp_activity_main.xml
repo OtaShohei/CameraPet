@@ -93,104 +93,80 @@
         android:orientation="horizontal"
         android:paddingTop="5dp" >
 
-        <!-- <Button -->
-        <!-- android:id="@+id/goFacebook" -->
-        <!-- android:layout_width="0dp" -->
-        <!-- android:layout_height="match_parent" -->
-        <!-- android:layout_weight="1" -->
-        <!-- android:onClick="onClickFacebookBtn" -->
-        <!-- android:text="@string/facebook" /> -->
+        <!-- イメージボタン配置のコツは… -->
+        <!-- android:layout_margin="3dp" -->
+        <!-- は指定しない。 -->
+        <!-- android:cropToPadding="false" -->
+        <!-- android:scaleType="centerInside" -->
+        <!-- を必ず入れる。そうすればボタン画像がトリミングされるのを防げる。 -->
+        <!-- android:background="@null" -->
+        <!-- を指定してボタンの背景を透明にするのもやろう。 -->
+        <!-- android:padding="8dp" -->
+        <!-- を調整して隣のボタンとの隙間は調整。 -->
 
         <ImageButton
             android:id="@+id/goFacebook"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_margin="3dp"
             android:layout_weight="1"
+            android:adjustViewBounds="true"
             android:background="@null"
+            android:cropToPadding="false"
             android:onClick="onClickFacebookBtn"
+            android:padding="10dp"
+            android:scaleType="centerInside"
             android:src="@drawable/fb_btn" />
-
-        <!-- <Button -->
-        <!-- android:id="@+id/goTwitter" -->
-        <!-- android:layout_width="0dp" -->
-        <!-- android:layout_height="match_parent" -->
-        <!-- android:layout_weight="1" -->
-        <!-- android:onClick="onClickTwitterBtn" -->
-        <!-- android:text="@string/tweet" /> -->
 
         <ImageButton
             android:id="@+id/goTwitter"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_margin="3dp"
             android:layout_weight="1"
             android:background="@null"
+            android:cropToPadding="false"
             android:onClick="onClickTwitterBtn"
+            android:padding="10dp"
+            android:scaleType="centerInside"
             android:src="@drawable/twt_btn" />
 
+<!--         @drawable/sound_button_image -->
+<!--         でボタンを押す度に表示されるボタンを切り替える。values内のsoudn_button_imageを参照している。 -->
+        
         <ImageButton
             android:id="@+id/stopSound"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_margin="3dp"
             android:layout_weight="1"
             android:background="@null"
+            android:cropToPadding="false"
             android:onClick="onClickSoundBtn"
+            android:padding="10dp"
+            android:scaleType="centerInside"
             android:src="@drawable/sound_btn" />
-
-        <!-- <Button -->
-        <!-- android:id="@+id/stopSound" -->
-        <!-- android:layout_width="0dp" -->
-        <!-- android:layout_height="match_parent" -->
-        <!-- android:layout_weight="1" -->
-        <!-- android:onClick="onClickSoundBtn" -->
-        <!-- android:text="@string/sound" /> -->
 
         <ImageButton
             android:id="@+id/goCamBtn"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_margin="3dp"
             android:layout_weight="1"
             android:background="@null"
+            android:cropToPadding="false"
             android:onClick="onClickGoCamBtn"
+            android:padding="10dp"
+            android:scaleType="centerInside"
             android:src="@drawable/cam_btn" />
-
-        <!-- <Button -->
-        <!-- android:id="@+id/goCamBtn" -->
-        <!-- android:layout_width="0dp" -->
-        <!-- android:layout_height="match_parent" -->
-        <!-- android:layout_weight="1" -->
-        <!-- android:onClick="onClickGoCamBtn" -->
-        <!-- android:text="@string/goCamBtn" /> -->
 
         <ImageButton
             android:id="@+id/encyclopedia"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_margin="3dp"
             android:layout_weight="1"
             android:background="@null"
+            android:cropToPadding="false"
             android:onClick="onClickEncyclopedia"
+            android:padding="10dp"
+            android:scaleType="centerInside"
             android:src="@drawable/encyclo_btn" />
-
-        <!-- <Button -->
-        <!-- android:id="@+id/encyclopedia" -->
-        <!-- android:layout_width="0dp" -->
-        <!-- android:layout_height="match_parent" -->
-        <!-- android:layout_weight="1" -->
-        <!-- android:onClick="onClickEncyclopedia" -->
-        <!-- android:text="@string/wchEncycl" /> -->
-
-
-        <!-- <TextView -->
-        <!-- android:id="@+id/textView1" -->
-        <!-- android:layout_width="0dp" -->
-        <!-- android:layout_height="wrap_content" -->
-        <!-- android:layout_weight="0.5" -->
-        <!-- android:text=" " /> -->
-
     </LinearLayout>
 
 </LinearLayout>

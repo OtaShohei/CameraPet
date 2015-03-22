@@ -16,5 +16,10 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
+    
+ <!--     button押下時のアピアランス設定。 -->
+<!--     	<style name="style_btn"> -->
+<!-- 		<item name="android:background">@drawable/btn_state</item> -->
+<!-- 	</style> -->
 
 </resources>

@@ -40,7 +40,7 @@ public class CamPePh {
 	}
 	
 	/**
-	 * 直近撮影写真をArrayList<Bitmap>で取得するメソッド。 2015-03-18時点では未完成です。
+	 * 直近撮影写真をArrayList<Bitmap>で取得するメソッド。 
 	 *
 	 * @param context
 	 * @return

@@ -26,7 +26,7 @@ public class CPDiagramCalcr {
 	}
 
 	/** 線分EsaとPet（円cir）が当たっていればtrueを返す */
-	public static boolean CollisionLC(Esa esa, Circle cir) {
+	public static boolean CollisionLC(CPEsa esa, Circle cir) {
 		return false;
 	}
 
