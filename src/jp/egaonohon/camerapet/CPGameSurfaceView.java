@@ -27,12 +27,14 @@ class CPGameSurfaceView extends SurfaceView implements SurfaceHolder.Callback,
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "CPGameSurfaceView";
 
-	private CPGameMgr gameMgr = new CPGameMgr(context, viweWidth, viewHeight);
+	private CPGameMgr gameMgr;
 	private Thread thread;
+
 
 	/**
 	 * 引数1つのコンストラクタ
-	 * 
+	 *
+	 *
 	 * @param context
 	 */
 	public CPGameSurfaceView(Context context) {
@@ -42,7 +44,7 @@ class CPGameSurfaceView extends SurfaceView implements SurfaceHolder.Callback,
 
 	/**
 	 * 引数2つのコンストラクタ。
-	 * 
+	 * 2回initializeが動いているようなので一旦コメントアウト。
 	 * @param context
 	 * @param attrs
 	 */
@@ -55,6 +57,14 @@ class CPGameSurfaceView extends SurfaceView implements SurfaceHolder.Callback,
 	 * いずれのコンストラクタが呼ばれてもこのメソッドが動作する。
 	 */
 	private void initialize() {
+
+		/** Viewの幅。ペットなどの表示の機種ごとの差異を吸収するため。 */
+		int viweWidth = getWidth();
+		/** Viewの高さ。ペットなどの表示の機種ごとの差異を吸収するため。 */
+		int viewHeight = getHeight();
+		/** initialize時点でのViewの高さをLogで確認 */
+		CameLog.setLog(TAG, "initialize()時点でのViewの幅は" + viweWidth + "Viewの高さは" + viewHeight);
+
 		/** SurfaceHolder の取得 */
 		holder = getHolder();
 
@@ -81,6 +91,10 @@ class CPGameSurfaceView extends SurfaceView implements SurfaceHolder.Callback,
 		this.holder = holder;
 		this.viweWidth = width;
 		this.viewHeight = height;
+
+		/** CPGameMgrインスタンスを生成。フィールドから移動した */
+		gameMgr = new CPGameMgr(context, viweWidth, viewHeight);
+		CameLog.setLog(TAG, "GameSurfaceViewからCPGameSurfaceViewをnewした時点のviewの幅は" + viweWidth + "viewの高さは" + viewHeight);
 
 		thread = new Thread(this); // 別スレッドでメインループを作る
 		thread.start();

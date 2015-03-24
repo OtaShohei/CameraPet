@@ -45,15 +45,6 @@ public class CPMainActivity extends Activity {
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);// フルスクリーンに設定
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
-		try {
-			savedTotalShotCnt = CamPeDb.getTotalShotCnt(this);
-		} catch (Exception e) {
-			e.printStackTrace();
-			CameLog.setLog(TAG, "累積撮影回数取得に失敗@onCreate");
-		}
-
-		CameLog.setLog(TAG, "累積撮影回数取得に成功@onCreate");
-		
 		/** SurfaceViewの生成 */
 		cpGameview = new CPGameSurfaceView(this);
 
@@ -96,13 +87,23 @@ public class CPMainActivity extends Activity {
 			bgmOn = false;
 		}
 		
+		try {
+			savedTotalShotCnt = CamPeDb.getTotalShotCnt(this);
+		} catch (Exception e) {
+			e.printStackTrace();
+			CameLog.setLog(TAG, "累積撮影回数取得に失敗@onCreate");
+		}
+
+		CameLog.setLog(TAG, "累積撮影回数取得に成功@onCreate");
+
+		
 		/** 累積撮影回数表示 */
 		try {
 			savedTotalShotCntTV.setText(String.valueOf(savedTotalShotCnt) + "Pt");
 		} catch (Exception e) {
 			CameLog.setLog(TAG, "累積撮影回数表示に失敗@onResume");
 		}
-		CameLog.setLog(TAG, "累積撮影回数表示に成功@onResume");
+		CameLog.setLog(TAG, "累積撮影回数" + savedTotalShotCnt + "の表示に成功@onResume");
 	}
 
 	@Override
