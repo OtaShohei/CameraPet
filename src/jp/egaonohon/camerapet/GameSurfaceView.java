@@ -6,9 +6,12 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.PixelFormat;
-import android.graphics.Rect;
 import android.graphics.RectF;
+import android.media.MediaPlayer;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -29,7 +32,7 @@ public class GameSurfaceView extends SurfaceView implements
 	/** Viewの幅 */
 	int viewWidth;
 	/** Viewの高さ */
-	int viweHeight;
+	int viewHeight;
 	/** ペットの参照 */
 	Pet myPet;
 	/** ペット画像右向き */
@@ -37,7 +40,7 @@ public class GameSurfaceView extends SurfaceView implements
 	/** ペット画像右向き */
 	private Bitmap petPhL;
 
-	/** 取得した餌の数 */
+	/** 直近撮影枚数（=エサの数） */
 	int esaCnt;
 	/** 複数餌画像 */
 	private ArrayList<Bitmap> esaPhList;
@@ -45,6 +48,11 @@ public class GameSurfaceView extends SurfaceView implements
 	private int esaDefaultX = 1;
 	/** 餌初期位置：Y軸。 */
 	private int esaDefaultY = 0;
+
+	/** エサゲット時サウンド用変数 */
+	private MediaPlayer bakubakuSE;
+	/** エサゲット時カウント */
+	private int esaGetCnt;
 
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "GameSurfaceView";
@@ -79,22 +87,25 @@ public class GameSurfaceView extends SurfaceView implements
 		/** Viewの幅。ペットなどの表示の機種ごとの差異を吸収するため。 */
 		viewWidth = getWidth();
 		/** Viewの高さ。ペットなどの表示の機種ごとの差異を吸収するため。 */
-		viweHeight = getHeight();
+		viewHeight = getHeight();
 		/** initialize時点でのViewの高さをLogで確認 */
 		CameLog.setLog(TAG, "initialize()時点でのViewの幅は" + viewWidth + "Viewの高さは"
-				+ viweHeight);
+				+ viewHeight);
 
 		/** SurfaceHolder の取得 */
 		holder = getHolder();
 
 		/** SurfaceHolder に コールバックを設定 */
-		holder.setFixedSize(viewWidth, viweHeight);
-		CameLog.setLog(TAG, "Viewの幅は" + viewWidth + "Viewの高さは" + viweHeight);
+		holder.setFixedSize(viewWidth, viewHeight);
+		CameLog.setLog(TAG, "Viewの幅は" + viewWidth + "Viewの高さは" + viewHeight);
 
 		/** 半透明を設定 */
 		holder.setFormat(PixelFormat.TRANSLUCENT);
 		/** フォーカスをあてる */
 		setFocusable(true);
+
+		/** サウンドエフェクトのインスタンス生成し準備 */
+		bakubakuSE = MediaPlayer.create(context, R.raw.poka);
 
 		/** このViewをトップにする */
 		setZOrderOnTop(true);
@@ -126,6 +137,18 @@ public class GameSurfaceView extends SurfaceView implements
 						// CameLog.setLog(TAG,
 						// "camPeItems.get(i).getRectF()がnull");
 						// }
+						// CameLog.setLog(TAG,
+						// "ペットleft" + myPet.getRectF().left + "ペットtop"
+						// + myPet.getRectF().top + "ペットright"
+						// + myPet.getRectF().right + "ペットbottom"
+						// + myPet.getRectF().bottom);
+						// CameLog.setLog(TAG, "エサleft"
+						// + camPeItems.get(i).getRectF().left + "エサtop"
+						// + camPeItems.get(i).getRectF().top + "エサright"
+						// + camPeItems.get(i).getRectF().right
+						// + "エサbottom"
+						// + camPeItems.get(i).getRectF().bottom);
+
 						if (RectF.intersects(myPet.getRectF(), camPeItems
 								.get(i).getRectF())) {
 							// CameLog.setLog(TAG, "myPetのrectは"
@@ -133,10 +156,42 @@ public class GameSurfaceView extends SurfaceView implements
 							// CameLog.setLog(TAG, "Esaのrectは"
 							// + camPeItems.get(i).getRectF().toString());
 
-							// camPeItems.remove(i);
+							/**
+							 * レーティングをUpする(今回のエサ総数に占める1個割合相当のfloat値分。10
+							 * は表示している星の数） (1 / esaCnt) * 10
+							 */
+//							MainActivity.ratingUp((float) esaCnt / 10);
+							esaGetCnt++;
+							/** エサをすべて獲得したらレイティングをリセット */
+							if (esaCnt == esaGetCnt) {
+								esaGetCnt = 0;
+							}
+
+							/** 獲得したエサを削除する */
+							camPeItems.remove(i);
+							bakubakuSE.start();
 							// CameLog.setLog(TAG, "Petとエサの接触を検知しました!");
 						}
 					}
+
+					/** レイティングバー風の記述 */
+					Paint paint = new Paint();
+					/** レイティングバーにテーマカラー設定 */
+					paint.setColor(Color.argb(130, 237, 118, 33));
+					/** 進捗部分を塗る */
+					RectF ratingRect = new RectF(viewWidth / 40, viewHeight / 20,
+							(((viewWidth / 3)/10)/esaCnt)*esaGetCnt, (viewHeight / 40) * 3);
+
+//					RectF ratingRect = new RectF(viewWidth / 40, viewHeight / 20,
+//							((viewWidth / 3)*(esaCnt/esaGetCnt)), (viewHeight / 40) * 3);
+
+					/** 進捗部分描画実行 */
+					canvas.drawRect(ratingRect, paint);
+					/** レイティングバー外枠設定 */
+				    paint.setStyle(Style.STROKE);
+				    /** レイティングバー外枠描画実行 */
+				    canvas.drawRect(viewWidth / 40, viewHeight / 20,
+							viewWidth / 3, (viewHeight / 40) * 3, paint);
 				}
 				holder.unlockCanvasAndPost(canvas);
 			}
@@ -150,6 +205,7 @@ public class GameSurfaceView extends SurfaceView implements
 					e.printStackTrace();
 				}
 			}
+
 		}
 	}
 
@@ -161,13 +217,15 @@ public class GameSurfaceView extends SurfaceView implements
 	public void surfaceChanged(SurfaceHolder holder, int format, int width,
 			int height) {
 		this.viewWidth = width;
-		this.viweHeight = height;
+		this.viewHeight = height;
 		this.holder = holder;
 
 		CameLog.setLog(TAG, "Viewの幅は" + width + "。Viewの高さは" + height);
 
 		/** 直近撮影枚数をプリファレンスから取得 */
 		esaCnt = CamPePref.loadNowShotCnt(context);
+		// /** エサゲームレーティングのステップ幅算出のためエサ獲得数をMainActivityに伝える */
+		// MainActivity.setGameRatingStep(esaCnt);
 		CameLog.setLog(TAG, "プリファレンスから次の枚数を取り出した→" + esaCnt);
 		/** プリファレンスからも取り出せない時は、初期値3を渡す */
 		if (esaCnt == -1) {
@@ -183,8 +241,8 @@ public class GameSurfaceView extends SurfaceView implements
 				R.drawable.alpaca_left);
 
 		/** ペット作成 */
-		myPet = new Pet(petPhR, petPhL, viewWidth / 5, viewWidth / 5, 0, 0,
-				viewWidth, viweHeight);
+		myPet = new Pet(petPhR, petPhL, viewWidth / 5, viewWidth / 5, 0,
+				viewWidth / 2, viewWidth, viewHeight);
 
 		camPeItems.add(myPet);
 		CameLog.setLog(TAG, "ペット作成");
@@ -203,7 +261,7 @@ public class GameSurfaceView extends SurfaceView implements
 			for (int i = 0; i < esaPhList.size(); i++) {
 				/**
 				 * 複数写真使用での餌インスタンス生成
-				 * 
+				 *
 				 * @param itemPh
 				 *            エサ写真
 				 * @param width
@@ -222,7 +280,7 @@ public class GameSurfaceView extends SurfaceView implements
 				camPeItems.add(new Esa(esaPhList.get(i), viewWidth / 8,
 						viewWidth / 8,
 						(int) ((esaDefaultX * (Math.random() * 10)) * 90),
-						esaDefaultY, viewWidth, viweHeight, (int) (1 * (Math
+						esaDefaultY, viewWidth, viewHeight, (int) (1 * (Math
 								.random() * 10))));
 			}
 			CameLog.setLog(TAG, "複数写真使用で餌作成");
@@ -238,7 +296,7 @@ public class GameSurfaceView extends SurfaceView implements
 				camPeItems.add(new Esa(esaPhList.get(i), viewWidth / 8,
 						viewWidth / 8,
 						(int) ((esaDefaultX * (Math.random() * 10)) * 90),
-						esaDefaultY, viewWidth, viweHeight, (int) (1 * (Math
+						esaDefaultY, viewWidth, viewHeight, (int) (1 * (Math
 								.random() * 10))));
 			}
 		}
@@ -261,4 +319,13 @@ public class GameSurfaceView extends SurfaceView implements
 		// listener.onFcsChange(i);
 		return true;
 	}
+
+//	public void rating() {
+//		Paint paint = new Paint();
+//		paint.setColor(Color.argb(130, 237, 118, 33));
+//
+//		RectF ratingRect = new RectF(viewWidth / 40, viewHeight / 20,
+//				viewWidth / 3, (viewHeight / 20) * 2);
+//		canvas.drawRect(rectF, paint);
+//	}
 }

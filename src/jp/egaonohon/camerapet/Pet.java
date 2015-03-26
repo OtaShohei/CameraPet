@@ -60,7 +60,7 @@ public class Pet extends CamPeItem implements Runnable {
 	/** ペットの歩くアニメーション効果用（歩数カウント） */
 	private int cnt;
 	/** ペットが動くスピード（移動および歩くアニメーションに影響） */
-	private long speed = 48;
+	private long speed = 56;
 
 	/** ペット用のスレッド */
 	private Thread petThread;
@@ -85,7 +85,7 @@ public class Pet extends CamPeItem implements Runnable {
 
 	/**
 	 * ペットのコンストラクタ。左右画像が必要です。
-	 * 
+	 *
 	 * @param petPhR
 	 * @param petPhL
 	 * @param itemWidth
@@ -186,7 +186,7 @@ public class Pet extends CamPeItem implements Runnable {
 
 		/** 衝突判定用RectFの更新 */
 		rectF.set(nowX, nowY, nowX + itemWidth, nowY + itemHeight);
-		
+
 //		/** 衝突判定用RectFにセットした数値の確認 */
 //		CameLog.setLog(TAG, "更新されたnowXは" + nowX + "。nowYは" + nowY
 //				+ "。nowX + itemWidthは" + (nowX + itemWidth)

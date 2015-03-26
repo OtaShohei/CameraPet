@@ -49,8 +49,8 @@ public abstract class CamPeItem {
 //	/** Item移動距離：Y軸 */
 //	private static int moveY;
 
-	/** 衝突判定用のRectF */
-	public static RectF rectF;
+	/** 衝突判定用のRectF。ここをstaticにするとペットかエサどちらか先にRectに数値をセットした方が確保してしまうので要注意。 */
+	public  RectF rectF;
 
 	/**
 	 * ゲーム登場Item抽象クラスのコンストラクタ。

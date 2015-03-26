@@ -1,6 +1,5 @@
 package jp.egaonohon.camerapet;
 
-import android.R.integer;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -66,7 +65,7 @@ public class Esa extends CamPeItem implements Runnable {
 
 	/**
 	 * エサのコンストラクタ。
-	 * 
+	 *
 	 * @param itemPh
 	 *            エサ写真
 	 * @param width
@@ -158,12 +157,12 @@ public class Esa extends CamPeItem implements Runnable {
 
 		/** 衝突判定用RectFの更新 */
 		rectF.set(nowX, nowY, nowX + itemWidth, nowY + itemHeight);
-		
+
 //		/** 衝突判定用RectFにセットした数値の確認 */
 //		CameLog.setLog(TAG, "更新されたnowXは" + nowX + "。nowYは" + nowY
 //				+ "。nowX + itemWidthは" + (nowX + itemWidth)
 //				+ "。nowY + itemHeightは" + (nowY + itemHeight));
-		
+
 		// CameLog.setLog(TAG, "onUpdateでesaRectの中身は空っぽ?" + esaRect.isEmpty());
 
 	}

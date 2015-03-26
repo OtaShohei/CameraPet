@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
@@ -23,13 +24,19 @@ public class MainActivity extends Activity {
 	/** BGM用変数 */
 	private MediaPlayer mp, mp2;
 	private boolean bgmOn = true;
+	/** 直近撮影枚数（=エサの数） */
+	static int esaCnt;
+	/** エサ食べさせ成功回数 */
+	private int gettedEsaCnt;
+	/** エサ食べさせ成功レイティング */
+	private static RatingBar esaGettedRating;
 	/** 累積撮影回数 */
-	int savedTotalShotCnt;
-	/** 累積撮影回数表示用 */
+	private int savedTotalShotCnt;
+	/** 累積撮影回数表示 */
 	private TextView savedTotalShotCntTV;
 	/** 生後日数 */
-	int petAge;
-	/** 生後日数表示用 */
+	private int petAge;
+	/** 生後日数画面表示 */
 	private TextView petAgeTV;
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "MainActivity";
@@ -43,16 +50,19 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 
 		/** フルスクリーンに設定 */
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);// 
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		setContentView(R.layout.activity_main);
 		/** SurfaceViewの生成 */
 		msv = (GameSurfaceView) findViewById(R.id.petSpace);
+		/** RatingBarの生成 */
+		esaGettedRating = new RatingBar(this);
 
-		/** TextViewにもidを付けて参照 */
+		/** TextViewとRatingBarもidを付けて参照 */
 		savedTotalShotCntTV = (TextView) findViewById(R.id.savedTotalShotCntTV);
 		petAgeTV = (TextView) findViewById(R.id.petAgeTV);
+		esaGettedRating = (RatingBar) findViewById(R.id.ratingBar1);
 
 		/** BGMインスタンス生成し準備 */
 		mp = MediaPlayer.create(MainActivity.this, R.raw.honwaka);
@@ -64,6 +74,8 @@ public class MainActivity extends Activity {
 		bgmOn = true;
 
 	}
+
+
 
 	@Override
 	protected void onResume() { // アクティビティが動き始める時呼ばれる
@@ -89,15 +101,22 @@ public class MainActivity extends Activity {
 
 		/** 累積撮影回数表示 */
 		try {
+			if (savedTotalShotCnt == -1) {
+				savedTotalShotCnt = 0;
+			}
 			savedTotalShotCntTV.setText(String.valueOf(savedTotalShotCnt)
 					+ "Pt");
 		} catch (Exception e) {
 			CameLog.setLog(TAG, "プリファレンスからの累積撮影回数表示に失敗@onResume");
 		}
 		CameLog.setLog(TAG, "プリファレンスからの累積撮影回数" + savedTotalShotCnt + "の表示に成功@onResume");
-		
+
 		/** 誕生日表示 */
 		petAgeTV.setText(Birthday.getAge(this));
+
+//		/** レーティングの最大値をセットする */
+//		esaGettedRating.setMax(CamPePref.loadNowShotCnt(this));
+
 	}
 
 	@Override
@@ -112,6 +131,25 @@ public class MainActivity extends Activity {
 	// //////////////////////////////////////////////////////////////////////////////////
 	// 以下、非オーバーライド系メソッド。
 	// //////////////////////////////////////////////////////////////////////////////////
+
+//	/** エサゲームのレーティングのステップ幅をセットする */
+//	public static void setGameRatingStep(int rating) {
+//		/** 直近撮影枚数（=エサの数） */
+//		esaCnt = rating;
+//		esaGettedRating.setStepSize(rating/10);
+//		 CameLog.setLog(TAG, "セットしたレーティングのステップ幅は" + esaGettedRating.getStepSize());
+//	}
+	/** エサゲームのエサ獲得ごとにレーティングに反映する */
+	public static void ratingUp(float rating) {
+		 CameLog.setLog(TAG, "レーティングをUp。Upする値は" + rating);
+		esaGettedRating.setRating(rating);
+		 CameLog.setLog(TAG, "レーティングをUp。現在のレーティングは" + esaGettedRating.getRating());
+		/** エサゲームのエサ獲得が星の数10と等しくなったら0に戻す */
+		if (esaGettedRating.getRating() >= 10) {
+			esaGettedRating.setRating(0);
+		}
+	}
+
 	/**
 	 * Facebook投稿メソッド。
 	 *
