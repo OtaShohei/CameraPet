@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="16"
+        android:minSdkVersion="15"
         android:targetSdkVersion="19" />
 
     <application
@@ -15,7 +15,7 @@
         android:largeHeap="true"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".CPMainActivity"
+            android:name="jp.egaonohon.camerapet.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
@@ -28,7 +28,7 @@
 
         <!-- Camera用Activity追加 -->
         <activity
-            android:name=".CameraActivity"
+            android:name="jp.egaonohon.camerapet.CameraActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >

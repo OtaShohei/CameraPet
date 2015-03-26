@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Calendar;
 
+import android.R.integer;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -35,7 +36,7 @@ import android.widget.Toast;
 public class CameraView extends SurfaceView {
 	private Camera petCam;
 	private static ContentResolver contentResolver = null;
-	/** 写真保存完了まで次の写真撮影をさせないためのboolean値*/
+	/** 写真保存完了まで次の写真撮影をさせないためのboolean値 */
 	private boolean afStart = false;
 	/** ボタン押下回数用 */
 	private int cntNum = 0;
@@ -108,7 +109,7 @@ public class CameraView extends SurfaceView {
 				/**
 				 * 撮影回数をDatabaseファイルに記録。
 				 */
-				CamPeDb.saveNowCount(getContext(), cntNum);
+				CamPeDb.saveNowCount(getContext());
 			}
 		});
 		// holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
@@ -205,10 +206,16 @@ public class CameraView extends SurfaceView {
 	 */
 	void btnCount() {
 		cntNum++;
+		/** プリファレンスから前回の累計撮影回数を取得 */
+		int totalShotCnt = CamPePref.loadTotalShotCnt(getContext());
 
-		/**
-		 * 撮影回数を表示。
-		 */
+		/** 合計撮影回数の算出 */
+		totalShotCnt = 1 + totalShotCnt;
+
+		/** プリファレンスに直近撮影回数と累計撮影回数を保存 */
+		CamPePref.saveNowAndTotalShotCnt(getContext(), cntNum, totalShotCnt);
+
+		/** 撮影回数を表示 */
 		Toast.makeText(getContext(), "撮影回数" + cntNum, Toast.LENGTH_SHORT)
 				.show();
 		CameLog.setLog(TAG, "btnCount");

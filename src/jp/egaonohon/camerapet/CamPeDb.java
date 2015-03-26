@@ -2,6 +2,8 @@ package jp.egaonohon.camerapet;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.widget.Toast;
@@ -23,9 +25,9 @@ public class CamPeDb {
 	/** Petの種類 */
 	private static String txtPetType = "lv01";
 	/** 未保存の直近撮影回数 */
-	private static Integer nonSavedNewShotCnt = 0;
+	private static Integer preferenceNewShotCnt = 0;
 	/** DB保存済み累積撮影回数 */
-	private static Integer savedTotalShotCnt = 0;
+	private static Integer preferenceTotalShotCnt = 0;
 	/** 新たに保存する累積撮影回数 */
 	private static Integer newTotalShotCnt = 0;
 	/** CameraPetインストール日時 */
@@ -65,7 +67,7 @@ public class CamPeDb {
 			// データがあれば、それを取得する
 			// txtTitle.setText(cs.getString(1));//
 			// タイトルを引っ張ってくる。(1)は列を示す。一番左が0から始まる。
-			savedTotalShotCnt = cs.getInt(3);// 撮影回数を引っ張ってくる
+			preferenceTotalShotCnt = cs.getInt(3);// 撮影回数を引っ張ってくる
 			// String strPrice=cs.getString(2);
 			// Toast.makeText(this, strPrice,
 			// Toast.LENGTH_SHORT).show();
@@ -74,12 +76,12 @@ public class CamPeDb {
 			// データがなかったので、その旨を表示する
 			Toast.makeText(context, "データがありません。", Toast.LENGTH_SHORT).show();
 		}
-		Toast.makeText(context, "これまでの撮影回数は" + savedTotalShotCnt + "です",
+		Toast.makeText(context, "これまでの撮影回数は" + preferenceTotalShotCnt + "です",
 				Toast.LENGTH_SHORT).show();
 		/**
 		 * 戻り値としてこれまでの累積撮影回数を渡す。
 		 */
-		return savedTotalShotCnt;
+		return preferenceTotalShotCnt;
 	}
 
 	/**
@@ -103,7 +105,7 @@ public class CamPeDb {
 			// データがあれば、データを取得する。なければ、無い！
 			if (cs.moveToFirst()) {
 				// 撮影回数を引っ張ってくる(2)は列を示す。一番左が0から始まる。
-				nonSavedNewShotCnt = cs.getInt(2);
+				preferenceNewShotCnt = cs.getInt(2);
 			} else {
 				// // データがなかったので、その旨を表示する
 				// Toast.makeText(context, "データがありません。",
@@ -112,15 +114,18 @@ public class CamPeDb {
 			}
 			// Toast.makeText(context, "先ほどの撮影回数は" + nonSavedNewShotCnt + "です",
 			// Toast.LENGTH_SHORT).show();
-			CameLog.setLog(TAG, "先ほどの撮影回数は" + nonSavedNewShotCnt + "です");
+			CameLog.setLog(TAG, "先ほどの撮影回数は" + preferenceNewShotCnt + "です");
 			/**
 			 * 戻り値として直近撮影回数を渡す。
 			 */
-			return nonSavedNewShotCnt;
+			return preferenceNewShotCnt;
 		} catch (Exception e) {
-			// TODO 自動生成された catch ブロック
+			/**
+			 * 戻り値として直近撮影回数を渡す。
+			 */
 			e.printStackTrace();
-			return 10;
+			CameLog.setLog(TAG, "直近撮影回数取得時に例外発生。デフォルト値の-1を戻します。");
+			return -1;
 		}
 	}
 
@@ -130,67 +135,26 @@ public class CamPeDb {
 	 * @param cntNum
 	 * @return
 	 */
-	public static String saveNowCount(Context context, int cntNum) {
+	public static String saveNowCount(Context context) {
 		/** 未保存の撮影回数。 */
-		nonSavedNewShotCnt = cntNum;
+		preferenceNewShotCnt = CamPePref.loadNowShotCnt(context);
+		
+		/** プリファレンスから累計撮影回数を取得 */
+		preferenceTotalShotCnt = CamPePref.loadTotalShotCnt(context);
 
-		/**
-		 * まずは、SimpleDatabaseHelperを取得。
-		 */
+		/** SimpleDatabaseHelperを取得 */
 		helper = new SimpleDatabaseHelper(context);
 
-		/**
-		 * 前回の登録Dataから撮影回数を取得。
-		 */
-		// 読み込み用のデータベースオブジェクトを取得。SQLの読み込みは結果が戻ってきてそれを処理するので重い作業になる。
-		SQLiteDatabase db = helper.getReadableDatabase();// getReadableDatabase()メソッドを使う。getWritableDatabaseもできるがあえて書き込み権限は不要なので今回は使わない。
-		// db.queryの第二引数を作る
-		// select文のカラムの指定する文字列をString型の配列に記述。ここは3つのカラムすべてということか…。
-		String[] cols = { "user", "petType", "nowShotCnt", "totalShotCnt" };
-
-		// 誕生日記録失敗コメントアウト
-		// String[] cols = { "user", "petType", "nowShotCnt",
-		// "totalShotCnt","birthDay" };
-
-		// Select文の行を特定する（where句）文字列を取得（ISBNの指定）。ISBNを引っ張ってこいよ!て感じ。
-		String[] params = { txtUser };
-
-		// 実際にselect文に相当するメソッドを実行。
-		// 戻り値は、返却されたレコード群を示すCursor（カーソル）が返却される
-		Cursor cs = db.query("pet", cols, "user = ?", params, null, null, null,
-				null);// DBからの戻り値のCursorをこの後扱っていく。
-		// データがあれば、データを取得する。なければ、無い！
-		if (cs.moveToFirst()) {
-			/** 累積撮影回数を引っ張ってくる */
-			savedTotalShotCnt = cs.getInt(3);
-			// 誕生日記録失敗コメントアウト
-			// /** インストール日時を引っ張ってくる */
-			// birthDay = cs.getLong(4);
-
-		} else {
-			// データがなかったので、その旨を表示する
-			Toast.makeText(context, "データがありません。", Toast.LENGTH_SHORT).show();
-		}
-
-		CameLog.setLog(TAG, "累計撮影回数取得に成功");
-
-		/**
-		 * 撮影枚数アップデート。
-		 */
-		db = helper.getWritableDatabase();
-
-		/**
-		 * 合計撮影回数の算出。
-		 */
-		newTotalShotCnt = nonSavedNewShotCnt + savedTotalShotCnt;
+		/** 書き込み用のデータベースオブジェクトを取得。SQLの読み込みは結果が戻ってきてそれを処理するので重い作業になる。*/
+		SQLiteDatabase db = helper.getWritableDatabase();
 
 		// カラム（？　これだと行になるが列では？）名とデータの組わせで1レコードのデータを作成している
 		// ContentValuesでは、キーが項目名になる。cvがレコードのフォーマットに合わせる入れ物。HashMapみたいなものかな？
 		ContentValues cv = new ContentValues();
 		cv.put("user", txtUser);// キーとデータの組み合せで入れていく（.put)
 		cv.put("petType", txtPetType);
-		cv.put("nowShotCnt", nonSavedNewShotCnt);
-		cv.put("totalShotCnt", newTotalShotCnt);
+		cv.put("nowShotCnt", preferenceNewShotCnt);
+		cv.put("totalShotCnt", preferenceTotalShotCnt);
 		
 		// 誕生日記録失敗コメントアウト
 		// cv.put("birthDay", birthDay);
@@ -205,14 +169,17 @@ public class CamPeDb {
 		long id = db.update("pet", cv, null, null);// SQLのupdateに相当するupdate()メソッドで上書きされる。引数は、テーブル名とレコードが入っているcv。
 		String msg = "";
 		if (id != -1) {// 戻り値を確認して成否を確認。戻り値-1の時は、テーブルがないなどの異常時。
-			msg = "先ほどの撮影回数は" + nonSavedNewShotCnt + "回。合計撮影回数は"
-					+ newTotalShotCnt + "です！";
+			msg = "先ほどの撮影回数は" + preferenceNewShotCnt + "回。合計撮影回数は"
+					+ preferenceTotalShotCnt + "です！";
 
 		} else {
-			msg = "データの登録に失敗しました。先ほどの撮影回数は" + nonSavedNewShotCnt
-					+ newTotalShotCnt + "回です。";
+			msg = "データの登録に失敗しました。先ほどの撮影回数は" + preferenceNewShotCnt
+					+ preferenceTotalShotCnt + "回です。";
 		}
 		CameLog.setLog(TAG, msg);
+		
+
+		
 		return msg;
 	}
 }

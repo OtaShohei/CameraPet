@@ -9,17 +9,17 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-public class CPMainActivity extends Activity {
+public class MainActivity extends Activity {
 
-//	/**
-//	 * @param savedTotalShotCnt セットする savedTotalShotCnt
-//	 */
-//	public void setSavedTotalShotCnt(int savedTotalShotCnt) {
-//		this.savedTotalShotCnt = savedTotalShotCnt;
-//	}
+	// /**
+	// * @param savedTotalShotCnt セットする savedTotalShotCnt
+	// */
+	// public void setSavedTotalShotCnt(int savedTotalShotCnt) {
+	// this.savedTotalShotCnt = savedTotalShotCnt;
+	// }
 
 	/** SurfaceView の参照 */
-	CPGameSurfaceView cpGameview;
+	GameSurfaceView msv;
 	/** BGM用変数 */
 	private MediaPlayer mp, mp2;
 	private boolean bgmOn = true;
@@ -42,42 +42,33 @@ public class CPMainActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);// フルスクリーンに設定
+		/** フルスクリーンに設定 */
+		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);// 
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		
+
+		setContentView(R.layout.activity_main);
 		/** SurfaceViewの生成 */
-		cpGameview = new CPGameSurfaceView(this);
+		msv = (GameSurfaceView) findViewById(R.id.petSpace);
 
-//		/** listenerをセット。無名クラス。 */
-//		cpGameview.setOnFcsChangeListener(new OnFcsChangeListener() {
-//			@Override
-//			public void onFcsChange(float x, float y) {// オンフォーカスChangelistener。自作。フォーカスが変わったら行うことを記述。buttonに対してクリックlistenerをつけていた時と同じ感じ。
-//				CPPet.setPetMoveX(x);
-//				CPPet.setPetMoveX(y);
-//				}
-//		});
+		/** TextViewにもidを付けて参照 */
+		savedTotalShotCntTV = (TextView) findViewById(R.id.savedTotalShotCntTV);
+		petAgeTV = (TextView) findViewById(R.id.petAgeTV);
 
-		setContentView(R.layout.cp_activity_main);
-		savedTotalShotCntTV = (TextView) findViewById(R.id.savedTotalShotCntTV); // TextViewにもidを付けて参照
-		petAgeTV = (TextView) findViewById(R.id.petAgeTV); // TextViewにもidを付けて参照
-		
-		// AcSensor.Inst().onCreate(this); // センサー初期化
 		/** BGMインスタンス生成し準備 */
-		mp = MediaPlayer.create(CPMainActivity.this, R.raw.honwaka);
-		mp2 = MediaPlayer.create(CPMainActivity.this, R.raw.poka);
+		mp = MediaPlayer.create(MainActivity.this, R.raw.honwaka);
+		mp2 = MediaPlayer.create(MainActivity.this, R.raw.poka);
 
 		/** BGMスタート */
 		mp.setLooping(true);
 		mp.start(); // SEを鳴らす
 		bgmOn = true;
-		
 
 	}
 
 	@Override
 	protected void onResume() { // アクティビティが動き始める時呼ばれる
 		super.onResume();
-		// AcSensor.Inst().onResume();// 開始時にセンサーを動かし始める
+
 		/** BGMの制御 */
 		if (bgmOn) {
 			mp.start();
@@ -86,24 +77,27 @@ public class CPMainActivity extends Activity {
 			mp.pause();
 			bgmOn = false;
 		}
-		
+
 		try {
-			savedTotalShotCnt = CamPeDb.getTotalShotCnt(this);
+			savedTotalShotCnt = CamPePref.loadTotalShotCnt(this);
 		} catch (Exception e) {
 			e.printStackTrace();
-			CameLog.setLog(TAG, "累積撮影回数取得に失敗@onCreate");
+			CameLog.setLog(TAG, "プリファレンスから累積撮影回数取得に失敗@onCreate");
 		}
 
-		CameLog.setLog(TAG, "累積撮影回数取得に成功@onCreate");
+		CameLog.setLog(TAG, "プリファレンスから累積撮影回数取得に成功@onCreate");
 
-		
 		/** 累積撮影回数表示 */
 		try {
-			savedTotalShotCntTV.setText(String.valueOf(savedTotalShotCnt) + "Pt");
+			savedTotalShotCntTV.setText(String.valueOf(savedTotalShotCnt)
+					+ "Pt");
 		} catch (Exception e) {
-			CameLog.setLog(TAG, "累積撮影回数表示に失敗@onResume");
+			CameLog.setLog(TAG, "プリファレンスからの累積撮影回数表示に失敗@onResume");
 		}
-		CameLog.setLog(TAG, "累積撮影回数" + savedTotalShotCnt + "の表示に成功@onResume");
+		CameLog.setLog(TAG, "プリファレンスからの累積撮影回数" + savedTotalShotCnt + "の表示に成功@onResume");
+		
+		/** 誕生日表示 */
+		petAgeTV.setText(Birthday.getAge(this));
 	}
 
 	@Override
@@ -168,13 +162,13 @@ public class CPMainActivity extends Activity {
 		/**
 		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
 		 */
-		Intent intent = new Intent(CPMainActivity.this, CameraActivity.class);
+		Intent intent = new Intent(MainActivity.this, CameraActivity.class);
 
 		/**
 		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
 		 */
 		startActivity(intent);
-		
+
 	}
 
 	/**
@@ -208,24 +202,11 @@ public class CPMainActivity extends Activity {
 		/**
 		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
 		 */
-		Intent intent = new Intent(CPMainActivity.this, GetPh.class);
+		Intent intent = new Intent(MainActivity.this, GetPh.class);
 
 		/**
 		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
 		 */
 		startActivity(intent);
 	}
-	
-//	cpGameview.setOnFcsChangeListener(new OnFcsChangeListener() {//listenerをセット。無名クラス。
-//		@Override
-//		public void onFcsChange(int num) {//オンフォーカスChangelistener。自作。フォーカスが変わったら行うことを記述。buttonに対してクリックlistenerをつけていた時と同じ感じ。
-//			tv.setText("ドロイド" + (num+1) + "号が選択されたよ");
-//		}
-//
-//	@Override
-//	public void onFcsChange(float x, float y) {
-//		// TODO 自動生成されたメソッド・スタブ
-//		
-//	}
-//	});
 }
