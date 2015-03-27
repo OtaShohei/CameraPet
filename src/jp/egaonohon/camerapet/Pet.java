@@ -54,13 +54,13 @@ public class Pet extends CamPeItem implements Runnable {
 	/** Item現在位置：Y軸 */
 	private int nowY = 0;
 	/** Item移動距離：X軸 */
-	private int moveX = 3;
+	private int moveX = 1;
 	/** Item移動距離：Y軸 */
-	private int moveY = 6;
+	private int moveY = 3;
 	/** ペットの歩くアニメーション効果用（歩数カウント） */
 	private int cnt;
 	/** ペットが動くスピード（移動および歩くアニメーションに影響） */
-	private long speed = 56;
+	private long speed = 60;
 
 	/** ペット用のスレッド */
 	private Thread petThread;
@@ -147,24 +147,34 @@ public class Pet extends CamPeItem implements Runnable {
 		/** 歩数を数える */
 		cnt++;
 
-		/** 画面端のチェック：X軸 */
-		if (nowX < 0 || this.viewWidth - itemWidth < nowX) {
+		/** 画面端のチェック：X軸。 (itemWidth/2)は、ペットの体の半分がはみ出ていたのでその調整 */
+		if (nowX < 0 || this.viewWidth - (itemWidth + (itemWidth / 2)) < nowX) {
 			if (itemPh.equals(petPhR)) {
 				itemPh = petPhL;
 			} else if (itemPh.equals(petPhL)) {
 				itemPh = petPhR;
 			}
-			moveX = -moveX;
+
+			/** 次の行のようにすると、左端に行った時も左へ向かってしまう */
+			// moveX = -moveX;
+			moveX *= -1;
 		}
 
-		/** 画面端のチェック：Y軸 */
-		if (nowY < 0 || this.viewHeight - itemHeight < nowY) {
-			moveY = -moveX;
+		/** 画面端のチェック：Y軸。(itemHeight/2)は、ペットの体の半分がはみ出ていたのでその調整 */
+		if (nowY < 0
+				|| this.viewHeight - (itemHeight + (itemHeight / 2)) < nowY) {
+
+			/** 次の行はそもそもXとYが食い違っているので動いているようだが妙な動きになってしまう。かつ、上下判定も変なことに */
+			// moveY = -moveX;
+			moveY *= -1;
 		}
 
 		/** 移動させる */
 		nowX = nowX + moveX;
 		nowY = nowY + moveY;
+
+		// CameLog.setLog(TAG, "move時点でのViewのWidthは" + this.viewWidth
+		// + "。ViewのHeightは" + this.viewHeight);
 
 		/**
 		 * 描画座標の更新。表示する座標を設定する。移動ベクトル_vecが指す方向に移動させる petCurrentX += petMoveX
@@ -179,7 +189,7 @@ public class Pet extends CamPeItem implements Runnable {
 		 * http://javadroid.blog.fc2.com/blog-entry-83.html
 		 * */
 		matrix.reset();
-		matrix.postTranslate(nowX, nowY);
+		matrix.setTranslate(nowX, nowY);
 
 		// /** matrixが存在しているか否かを確認 */
 		// CameLog.setLog(TAG, "matrixのハッシュ値は" + matrix.hashCode());
@@ -187,10 +197,10 @@ public class Pet extends CamPeItem implements Runnable {
 		/** 衝突判定用RectFの更新 */
 		rectF.set(nowX, nowY, nowX + itemWidth, nowY + itemHeight);
 
-//		/** 衝突判定用RectFにセットした数値の確認 */
-//		CameLog.setLog(TAG, "更新されたnowXは" + nowX + "。nowYは" + nowY
-//				+ "。nowX + itemWidthは" + (nowX + itemWidth)
-//				+ "。nowY + itemHeightは" + (nowY + itemHeight));
+		// /** 衝突判定用RectFにセットした数値の確認 */
+		// CameLog.setLog(TAG, "更新されたnowXは" + nowX + "。nowYは" + nowY
+		// + "。nowX + itemWidthは" + (nowX + itemWidth)
+		// + "。nowY + itemHeightは" + (nowY + itemHeight));
 	}
 
 	@Override

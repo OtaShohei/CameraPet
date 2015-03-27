@@ -51,7 +51,7 @@ public class Esa extends CamPeItem implements Runnable {
 	/** エサが移動するアニメーション効果用（歩数カウント） */
 	private int cnt;
 	/** エサが動くスピード（移動および歩くアニメーションに影響） */
-	private long speed = 48;
+	private long speed = 60;
 
 	/** エサの数 */
 	int esaCnt = 1;
@@ -80,6 +80,8 @@ public class Esa extends CamPeItem implements Runnable {
 	 *            エサが動くViewの幅
 	 * @param viewHeight
 	 *            エサが動くViewの高さ
+	 * @param moveY
+	 *            エサが落下するY方向dp値
 	 */
 	public Esa(Bitmap itemPh, int width, int height, int defaultX,
 			int defaultY, int viewWidth, int viewHeight, int moveY) {
@@ -88,7 +90,8 @@ public class Esa extends CamPeItem implements Runnable {
 		this.itemWidth = width;
 		this.itemHeight = height;
 		this.defaultX = defaultX;
-		this.defaultY = defaultY;
+		/** エサのY座標の初期位置をマイナスに設定して画面表示直後でのペットとの接触をさける */
+		this.defaultY = defaultY - 60;
 		this.viewWidth = viewWidth;
 		this.viewHeight = viewHeight;
 		this.moveY = moveY;
@@ -158,10 +161,10 @@ public class Esa extends CamPeItem implements Runnable {
 		/** 衝突判定用RectFの更新 */
 		rectF.set(nowX, nowY, nowX + itemWidth, nowY + itemHeight);
 
-//		/** 衝突判定用RectFにセットした数値の確認 */
-//		CameLog.setLog(TAG, "更新されたnowXは" + nowX + "。nowYは" + nowY
-//				+ "。nowX + itemWidthは" + (nowX + itemWidth)
-//				+ "。nowY + itemHeightは" + (nowY + itemHeight));
+		// /** 衝突判定用RectFにセットした数値の確認 */
+		// CameLog.setLog(TAG, "更新されたnowXは" + nowX + "。nowYは" + nowY
+		// + "。nowX + itemWidthは" + (nowX + itemWidth)
+		// + "。nowY + itemHeightは" + (nowY + itemHeight));
 
 		// CameLog.setLog(TAG, "onUpdateでesaRectの中身は空っぽ?" + esaRect.isEmpty());
 

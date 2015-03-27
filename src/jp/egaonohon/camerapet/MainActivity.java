@@ -7,17 +7,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.RatingBar;
-import android.widget.TextView;
 
+/**
+ * カメラペットのゲーム画面Activity（=MainActivity）のクラス。
+ * @author 1107AND
+ *
+ */
 public class MainActivity extends Activity {
-
-	// /**
-	// * @param savedTotalShotCnt セットする savedTotalShotCnt
-	// */
-	// public void setSavedTotalShotCnt(int savedTotalShotCnt) {
-	// this.savedTotalShotCnt = savedTotalShotCnt;
-	// }
 
 	/** SurfaceView の参照 */
 	GameSurfaceView msv;
@@ -28,22 +24,13 @@ public class MainActivity extends Activity {
 	static int esaCnt;
 	/** エサ食べさせ成功回数 */
 	private int gettedEsaCnt;
-	/** エサ食べさせ成功レイティング */
-	private static RatingBar esaGettedRating;
-	/** 累積撮影回数 */
-	private int savedTotalShotCnt;
-	/** 累積撮影回数表示 */
-	private TextView savedTotalShotCntTV;
-	/** 生後日数 */
-	private int petAge;
-	/** 生後日数画面表示 */
-	private TextView petAgeTV;
+
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "MainActivity";
 	/** CameraActivityから戻ってきた直後を判定するBoolean */
-	private boolean returnCam = false;
-	private boolean returnFb = false;
-	private boolean returnTw = false;
+	private static boolean returnCam = false;
+	private static boolean returnFb = false;
+	private static boolean returnTw = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -56,13 +43,6 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		/** SurfaceViewの生成 */
 		msv = (GameSurfaceView) findViewById(R.id.petSpace);
-		/** RatingBarの生成 */
-		esaGettedRating = new RatingBar(this);
-
-		/** TextViewとRatingBarもidを付けて参照 */
-		savedTotalShotCntTV = (TextView) findViewById(R.id.savedTotalShotCntTV);
-		petAgeTV = (TextView) findViewById(R.id.petAgeTV);
-		esaGettedRating = (RatingBar) findViewById(R.id.ratingBar1);
 
 		/** BGMインスタンス生成し準備 */
 		mp = MediaPlayer.create(MainActivity.this, R.raw.honwaka);
@@ -74,7 +54,6 @@ public class MainActivity extends Activity {
 		bgmOn = true;
 
 	}
-
 
 
 	@Override
@@ -89,34 +68,6 @@ public class MainActivity extends Activity {
 			mp.pause();
 			bgmOn = false;
 		}
-
-		try {
-			savedTotalShotCnt = CamPePref.loadTotalShotCnt(this);
-		} catch (Exception e) {
-			e.printStackTrace();
-			CameLog.setLog(TAG, "プリファレンスから累積撮影回数取得に失敗@onCreate");
-		}
-
-		CameLog.setLog(TAG, "プリファレンスから累積撮影回数取得に成功@onCreate");
-
-		/** 累積撮影回数表示 */
-		try {
-			if (savedTotalShotCnt == -1) {
-				savedTotalShotCnt = 0;
-			}
-			savedTotalShotCntTV.setText(String.valueOf(savedTotalShotCnt)
-					+ "Pt");
-		} catch (Exception e) {
-			CameLog.setLog(TAG, "プリファレンスからの累積撮影回数表示に失敗@onResume");
-		}
-		CameLog.setLog(TAG, "プリファレンスからの累積撮影回数" + savedTotalShotCnt + "の表示に成功@onResume");
-
-		/** 誕生日表示 */
-		petAgeTV.setText(Birthday.getAge(this));
-
-//		/** レーティングの最大値をセットする */
-//		esaGettedRating.setMax(CamPePref.loadNowShotCnt(this));
-
 	}
 
 	@Override
@@ -131,24 +82,6 @@ public class MainActivity extends Activity {
 	// //////////////////////////////////////////////////////////////////////////////////
 	// 以下、非オーバーライド系メソッド。
 	// //////////////////////////////////////////////////////////////////////////////////
-
-//	/** エサゲームのレーティングのステップ幅をセットする */
-//	public static void setGameRatingStep(int rating) {
-//		/** 直近撮影枚数（=エサの数） */
-//		esaCnt = rating;
-//		esaGettedRating.setStepSize(rating/10);
-//		 CameLog.setLog(TAG, "セットしたレーティングのステップ幅は" + esaGettedRating.getStepSize());
-//	}
-	/** エサゲームのエサ獲得ごとにレーティングに反映する */
-	public static void ratingUp(float rating) {
-		 CameLog.setLog(TAG, "レーティングをUp。Upする値は" + rating);
-		esaGettedRating.setRating(rating);
-		 CameLog.setLog(TAG, "レーティングをUp。現在のレーティングは" + esaGettedRating.getRating());
-		/** エサゲームのエサ獲得が星の数10と等しくなったら0に戻す */
-		if (esaGettedRating.getRating() >= 10) {
-			esaGettedRating.setRating(0);
-		}
-	}
 
 	/**
 	 * Facebook投稿メソッド。
@@ -165,6 +98,16 @@ public class MainActivity extends Activity {
 
 		/** Facebookへ投稿実行 */
 		SnsBtn.goFacebook(this);
+	}
+
+	/** SNSポイントを付与するメソッド */
+	public void giveSNSPoints() {
+		/** 現在の経験値を取得 */
+		int gettedtotalEXP = CamPePref.loadTotalExp(this);
+		/** ポイントを付与する */
+		int newTotalExp = 8 + gettedtotalEXP;
+		/** 加算したポイントをプリファレンスに保存する */
+		CamPePref.saveTotalExp(this, newTotalExp);
 	}
 
 	/**
@@ -246,5 +189,20 @@ public class MainActivity extends Activity {
 		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
 		 */
 		startActivity(intent);
+	}
+
+	/** Cameraから戻ってきたかどうかの判定を他のクラスに与えるメソッド */
+	public static boolean isReturnCam() {
+		return returnCam;
+	}
+
+	/** facebookから戻ってきたかどうかの判定を他のクラスに与えるメソッド */
+	public static boolean isReturnFb() {
+		return returnFb;
+	}
+
+	/** Twitterから戻ってきたかどうかの判定を他のクラスに与えるメソッド */
+	public static boolean isReturnTw() {
+		return returnTw;
 	}
 }

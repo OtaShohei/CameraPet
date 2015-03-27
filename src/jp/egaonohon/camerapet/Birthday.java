@@ -85,7 +85,7 @@ public class Birthday {
 		
 		long gettedBirthday =pref.getLong("birthday", -1);
 		
-		CameLog.setLog(TAG, "直近撮影回数"+ gettedBirthday +"をプリファレンスから取得");
+		CameLog.setLog(TAG, "誕生時間"+ gettedBirthday +"をプリファレンスから取得");
 		
 		/** "NowShotCnt" というキーで保存されている値を読み出す */
 		return gettedBirthday;

@@ -10,17 +10,26 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.PixelFormat;
+import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
+/**
+ * ゲーム画面の動作を司るSurfaceViewのクラス。
+ *
+ * @author OtaShohei
+ *
+ */
 public class GameSurfaceView extends SurfaceView implements
 		SurfaceHolder.Callback, Runnable {
 
-	/** SurfaceViewのスレッド */
+	/** SurfaceViewを呼び出したContext */
 	Context context;
 	ArrayList<CamPeItem> camPeItems = new ArrayList<CamPeItem>();
 	public static final long FPS = 1000 / 30;
@@ -33,6 +42,9 @@ public class GameSurfaceView extends SurfaceView implements
 	int viewWidth;
 	/** Viewの高さ */
 	int viewHeight;
+//	/** はてなマーク画像 */
+//	private Bitmap hatena_btn;
+
 	/** ペットの参照 */
 	Pet myPet;
 	/** ペット画像右向き */
@@ -53,6 +65,20 @@ public class GameSurfaceView extends SurfaceView implements
 	private MediaPlayer bakubakuSE;
 	/** エサゲット時カウント */
 	private int esaGetCnt;
+
+	/** ペット年齢 */
+	private String petAge;
+	/** 画面表示経験値 */
+	private int gettedtotalEXP;
+	/** 累積撮影回数文字 */
+	private String expTxt;
+	/** レーティングバー最大値 */
+	private int ratingMax = 1;
+	/** エサステイタス表示文字 */
+	private String esaStatus;
+
+	/** その日最初の起動か否か */
+	private boolean firstOfTheDay = true;
 
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "GameSurfaceView";
@@ -105,12 +131,19 @@ public class GameSurfaceView extends SurfaceView implements
 		setFocusable(true);
 
 		/** サウンドエフェクトのインスタンス生成し準備 */
-		bakubakuSE = MediaPlayer.create(context, R.raw.poka);
+		bakubakuSE = MediaPlayer.create(context, R.raw.dog1b);
 
 		/** このViewをトップにする */
 		setZOrderOnTop(true);
 
-		CameLog.setLog(TAG, "CPGameSurfaceViewをコンストラクタから生成！");
+		if (firstOfTheDay && !MainActivity.isReturnCam()) {
+			/** 飼い主歓迎メッセージ表示 */
+			Toast.makeText(getContext(),
+					"「ワンワン!キュイーン!ワンワン!」\n（訳:飼い主さんに会えてうれしいワン!",
+					Toast.LENGTH_LONG).show();
+		}
+
+		// CameLog.setLog(TAG, "CPGameSurfaceViewをコンストラクタから生成！");
 	}
 
 	@Override
@@ -124,6 +157,7 @@ public class GameSurfaceView extends SurfaceView implements
 					camPeItems.get(i).draw(canvas);
 				}
 
+				/** 衝突判定実行 */
 				for (int i = 0; i < camPeItems.size(); i++) {
 					if (!camPeItems.get(i).equals(myPet)) {
 						// if (camPeItems == null) {
@@ -160,38 +194,67 @@ public class GameSurfaceView extends SurfaceView implements
 							 * レーティングをUpする(今回のエサ総数に占める1個割合相当のfloat値分。10
 							 * は表示している星の数） (1 / esaCnt) * 10
 							 */
-//							MainActivity.ratingUp((float) esaCnt / 10);
+							// MainActivity.ratingUp((float) esaCnt / 10);
 							esaGetCnt++;
-							/** エサをすべて獲得したらレイティングをリセット */
-							if (esaCnt == esaGetCnt) {
-								esaGetCnt = 0;
+
+							/** プリファレンスから累計エサ獲得成功回数を取得 */
+							int gettedTotalEsaGetCnt = CamPePref
+									.loadTotalEsaGetCnt(context);
+
+							if (gettedTotalEsaGetCnt == -1) {
+								gettedTotalEsaGetCnt = 0;
 							}
 
+							/** プリファレンスから累計経験値を取得 */
+							gettedtotalEXP = CamPePref.loadTotalExp(context);
+
+							/** 新たな累計エサ獲得成功回数の算出 */
+							gettedTotalEsaGetCnt++;
+
+							/** 新たな累計経験値の算出 */
+							gettedtotalEXP++;
+
+							try {
+								if (gettedtotalEXP == -1) {
+									gettedtotalEXP = 0;
+								}
+								expTxt = context.getString(R.string.exp_points) + " " + String.valueOf(gettedtotalEXP);
+							} catch (Exception e) {
+								CameLog.setLog(TAG,
+										"プリファレンスからの経験値表示に失敗@onResume");
+							}
+
+							/** 新たな累計エサ獲得成功回数と新たな累計経験値をプリファレンスに保存 */
+							CamPePref.saveTotalExpAndEsaGetCnt(context,
+									gettedTotalEsaGetCnt, gettedtotalEXP);
+
+							/** 今回のエサ獲得数がレイティング最大値になったら0にリセット…はやめて、ペット大喜び */
+							if (ratingMax == esaGetCnt) {
+								try {
+									/**
+									 * 飼い主歓迎メッセージ表示。
+									 * ウェルカムメッセージ表示とコンフリクト時の例外を避けるためtry-catch
+									 */
+									Toast.makeText(getContext(),
+											"「ウーワンワン！ウーワォン！」\n（訳:美味しかったワン!",
+											Toast.LENGTH_LONG).show();
+								} catch (Exception e) {
+									// TODO 自動生成された catch ブロック
+									e.printStackTrace();
+								}
+//									finally {
+//									esaGetCnt = 0;
+//								}
+							}
 							/** 獲得したエサを削除する */
 							camPeItems.remove(i);
+							CameLog.setLog(TAG, "現在の残数は" + camPeItems.size());
 							bakubakuSE.start();
 							// CameLog.setLog(TAG, "Petとエサの接触を検知しました!");
 						}
 					}
-
-					/** レイティングバー風の記述 */
-					Paint paint = new Paint();
-					/** レイティングバーにテーマカラー設定 */
-					paint.setColor(Color.argb(130, 237, 118, 33));
-					/** 進捗部分を塗る */
-					RectF ratingRect = new RectF(viewWidth / 40, viewHeight / 20,
-							(((viewWidth / 3)/10)/esaCnt)*esaGetCnt, (viewHeight / 40) * 3);
-
-//					RectF ratingRect = new RectF(viewWidth / 40, viewHeight / 20,
-//							((viewWidth / 3)*(esaCnt/esaGetCnt)), (viewHeight / 40) * 3);
-
-					/** 進捗部分描画実行 */
-					canvas.drawRect(ratingRect, paint);
-					/** レイティングバー外枠設定 */
-				    paint.setStyle(Style.STROKE);
-				    /** レイティングバー外枠描画実行 */
-				    canvas.drawRect(viewWidth / 40, viewHeight / 20,
-							viewWidth / 3, (viewHeight / 40) * 3, paint);
+					/** SurfaceView上に、レーティングバー・経験値・ペット年齢・を描画するメソッドを呼び出す */
+					SurfaceViewTextWrite(canvas);
 				}
 				holder.unlockCanvasAndPost(canvas);
 			}
@@ -205,8 +268,74 @@ public class GameSurfaceView extends SurfaceView implements
 					e.printStackTrace();
 				}
 			}
-
 		}
+	}
+
+	/**
+	 * SurfaceView上に、レーティングバー・経験値・ペット年齢などを描画するメソッド。
+	 * @param canvas
+	 */
+	private void SurfaceViewTextWrite(Canvas canvas) {
+		/** レイティングバー風の記述 */
+		Paint paint = new Paint();
+		/** 文字にテーマカラー設定 */
+		paint.setColor(Color.argb(255, 237, 118, 33));
+		/** Aliasを設定 */
+		paint.setAntiAlias(true);
+
+		/** テキスト設定 sp*/
+		paint.setTextSize(viewWidth / 26);
+		paint.setTypeface(Typeface.DEFAULT_BOLD);
+		/** テキスト右寄せ */
+		paint.setTextAlign(Paint.Align.RIGHT);
+
+		/** 経験値表示 */
+		canvas.drawText(expTxt, (viewWidth / 40) * 39, (viewHeight / 80) * 4,
+				paint);
+
+		/** 誕生日表示 */
+		canvas.drawText(petAge, (viewWidth / 40) * 39, (viewHeight / 80) * 7,
+				paint);
+
+		/** テキスト右寄せ */
+		paint.setTextAlign(Paint.Align.LEFT);
+
+		/** エサステイタス表示 */
+		esaStatus = context.getString(R.string.esa_status) + "    " + esaGetCnt + "/" + ratingMax;
+		canvas.drawText(esaStatus, viewWidth / 40, (viewHeight / 160) * 15,
+				paint);
+
+//		/** 経験値表示 */
+//		canvas.drawText(expTxt, (viewWidth / 40) * 39, (viewHeight / 80) * 4,
+//				paint);
+
+		/** 進捗部分を塗る */
+		if (ratingMax == -1) {
+			/** レーティングが-1の場合（写真撮影なしでGame画面に現れた場合）は透明で塗りつぶす */
+			paint.setColor(Color.argb(0, 255, 255, 255));
+			Rect ratingRect = new Rect(viewWidth / 40, viewHeight / 40,
+					((viewWidth / 3) / 1) * esaGetCnt, (viewHeight / 80) * 4);
+			/** 進捗部分描画実行 */
+			canvas.drawRect(ratingRect, paint);
+
+		} else if (esaGetCnt != 0 || ratingMax > 1) {
+			Rect ratingRect = new Rect(viewWidth / 40, viewHeight / 40,
+					((viewWidth / 3) / ratingMax) * esaGetCnt,
+					(viewHeight / 80) * 4);
+			/** 進捗部分描画実行 */
+			canvas.drawRect(ratingRect, paint);
+		}
+//		CameLog.setLog(TAG, "レーティング最大値は" + ratingMax + "。獲得済みエサ数は" + esaGetCnt);
+		/** レイティングバー外枠にテーマカラー設定 */
+		paint.setColor(Color.argb(255, 237, 118, 33));
+		/** レイティングバー外枠設定 */
+		paint.setStyle(Style.STROKE);
+		/** レイティングバー外枠描画実行 */
+		canvas.drawRect(viewWidth / 40, viewHeight / 40, viewWidth / 3,
+				(viewHeight / 80) * 4, paint);
+
+//		/**　はてなマーク表示 */
+//		canvas.drawBitmap(hatena_btn, (viewWidth / 40) * 39, (viewHeight / 80) * 5, paint);
 	}
 
 	@Override
@@ -222,18 +351,33 @@ public class GameSurfaceView extends SurfaceView implements
 
 		CameLog.setLog(TAG, "Viewの幅は" + width + "。Viewの高さは" + height);
 
-		/** 直近撮影枚数をプリファレンスから取得 */
-		esaCnt = CamPePref.loadNowShotCnt(context);
+		try {
+			/** 直近撮影回数をプリファレンスから取得 */
+			esaCnt = CamPePref.loadNowShotCnt(context);
+			/** 直近撮影回数をレーティングバー最大値に設定 */
+			ratingMax = esaCnt;
+			if (ratingMax == 0) {
+				/** 0での割り算による例外防止のため0になる場合は -1を入れる */
+				ratingMax = -1;
+			}
+		} catch (Exception e1) {
+			// TODO 自動生成された catch ブロック
+			e1.printStackTrace();
+			CameLog.setLog(TAG, "直近撮影回数をプリファレンスから取得時に例外が発生しました。");
+		}
 		// /** エサゲームレーティングのステップ幅算出のためエサ獲得数をMainActivityに伝える */
 		// MainActivity.setGameRatingStep(esaCnt);
 		CameLog.setLog(TAG, "プリファレンスから次の枚数を取り出した→" + esaCnt);
-		/** プリファレンスからも取り出せない時は、初期値3を渡す */
-		if (esaCnt == -1) {
+
+		/** その日最初の起動かつカメラから戻ってきたのでなければ、初期値5を渡す */
+		if (firstOfTheDay && !MainActivity.isReturnCam()) {
 			CameLog.setLog(TAG, "プリファレンスから枚数を取り出せないので初期値を代入する→" + esaCnt);
-			esaCnt = 3;
+			esaCnt = ratingMax = 5;
+			firstOfTheDay = false;
 		}
 
 		CameLog.setLog(TAG, "直近撮影枚数を取得。枚数は" + esaCnt);
+
 		/** ペット写真取得 */
 		petPhR = BitmapFactory.decodeResource(context.getResources(),
 				R.drawable.alpaca02);
@@ -242,7 +386,7 @@ public class GameSurfaceView extends SurfaceView implements
 
 		/** ペット作成 */
 		myPet = new Pet(petPhR, petPhL, viewWidth / 5, viewWidth / 5, 0,
-				viewWidth / 2, viewWidth, viewHeight);
+				(viewWidth / 3) * 2, viewWidth, viewHeight);
 
 		camPeItems.add(myPet);
 		CameLog.setLog(TAG, "ペット作成");
@@ -281,8 +425,9 @@ public class GameSurfaceView extends SurfaceView implements
 						viewWidth / 8,
 						(int) ((esaDefaultX * (Math.random() * 10)) * 90),
 						esaDefaultY, viewWidth, viewHeight, (int) (1 * (Math
-								.random() * 10))));
+								.random() * 9))));
 			}
+
 			CameLog.setLog(TAG, "複数写真使用で餌作成");
 		} catch (Exception e) {
 			/** 餌写真取得準備 */
@@ -290,9 +435,10 @@ public class GameSurfaceView extends SurfaceView implements
 			esaPhList = new ArrayList<Bitmap>();
 
 			CameLog.setLog(TAG, "例外発生のためデフォルト写真枚数5枚で餌写真取得");
-
+			/** 直近撮影回数をレーティングバー最大値に設定&レーティングバー最大値にも5を設定 */
+			ratingMax = 5;
 			for (int i = 0; i < 5; i++) {
-				/** 複数写真使用での餌インスタンス生成 */
+				/** 複数写真使用での餌インスタンス生成。こちらは、餌作成に成功しても直近撮影回数は0に戻さない */
 				camPeItems.add(new Esa(esaPhList.get(i), viewWidth / 8,
 						viewWidth / 8,
 						(int) ((esaDefaultX * (Math.random() * 10)) * 90),
@@ -300,12 +446,42 @@ public class GameSurfaceView extends SurfaceView implements
 								.random() * 10))));
 			}
 		}
+
+		/** ペット年齢取得 */
+		petAge = Birthday.getAge(context);
+
+		/** 経験値取得 */
+		try {
+			gettedtotalEXP = CamPePref.loadTotalExp(context);
+		} catch (Exception e) {
+			e.printStackTrace();
+			CameLog.setLog(TAG, "プリファレンスから経験値取得に失敗@onCreate");
+		}
+
+		CameLog.setLog(TAG, "プリファレンスから経験値取得に成功@onCreate");
+		try {
+			if (gettedtotalEXP == -1) {
+				gettedtotalEXP = 0;
+			}
+			expTxt = context.getString(R.string.exp_points) + " " + String.valueOf(gettedtotalEXP);
+		} catch (Exception e) {
+			CameLog.setLog(TAG, "プリファレンスからの経験値表示に失敗@onResume");
+		}
+
+//		/** はてなマーク取得 */
+//		hatena_btn = BitmapFactory.decodeResource(context.getResources(),
+//				R.drawable.hatena_btn);
+
 		thread = new Thread(this);
 		thread.start();
 	}
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
+		/** 餌作成に成功したら直近撮影回数を0に戻す */
+		esaCnt = 0;
+		CamPePref.saveNowShotCnt(getContext(), esaCnt);
+
 		thread = null;
 	}
 
@@ -320,12 +496,12 @@ public class GameSurfaceView extends SurfaceView implements
 		return true;
 	}
 
-//	public void rating() {
-//		Paint paint = new Paint();
-//		paint.setColor(Color.argb(130, 237, 118, 33));
-//
-//		RectF ratingRect = new RectF(viewWidth / 40, viewHeight / 20,
-//				viewWidth / 3, (viewHeight / 20) * 2);
-//		canvas.drawRect(rectF, paint);
-//	}
+	// public void rating() {
+	// Paint paint = new Paint();
+	// paint.setColor(Color.argb(130, 237, 118, 33));
+	//
+	// RectF ratingRect = new RectF(viewWidth / 40, viewHeight / 20,
+	// viewWidth / 3, (viewHeight / 20) * 2);
+	// canvas.drawRect(rectF, paint);
+	// }
 }

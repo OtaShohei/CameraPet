@@ -8,9 +8,12 @@
     <string name="goCamBtn">SHOT</string>
     <string name="wchEncycl">Encyclopedia</string>
     <string name="action_settings">Settings</string>
-    <string name="returnBtn">Back game</string>
-    <string name="shotBtn">Take pic</string>
-    <string name="autofocusBtn">AF</string>
-    <string name="direction">F/R</string>
-
+    <string name="returnBtn">GoHome</string>
+    <string name="shotBtn">TakePic</string>
+    <string name="pet_age">Age :</string>
+    <string name="age_times">Hours</string>
+    <string name="age_days">th Day</string>
+    <string name="age_months">th Month</string>
+    <string name="exp_points">EXP :</string>
+    <string name="esa_status">Feed</string>
 </resources>
