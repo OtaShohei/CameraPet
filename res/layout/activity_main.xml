@@ -113,7 +113,7 @@
             android:background="@null"
             android:cropToPadding="false"
             android:onClick="onClickFacebookBtn"
-            android:padding="10dp"
+            android:padding="5dp"
             android:scaleType="centerInside"
             android:src="@drawable/fb_btn" />
 
@@ -125,7 +125,7 @@
             android:background="@null"
             android:cropToPadding="false"
             android:onClick="onClickTwitterBtn"
-            android:padding="10dp"
+            android:padding="5dp"
             android:scaleType="centerInside"
             android:src="@drawable/twt_btn" />
 
@@ -140,7 +140,7 @@
             android:background="@null"
             android:cropToPadding="false"
             android:onClick="onClickSoundBtn"
-            android:padding="10dp"
+            android:padding="5dp"
             android:scaleType="centerInside"
             android:src="@drawable/sound_btn" />
 
@@ -152,7 +152,7 @@
             android:background="@null"
             android:cropToPadding="false"
             android:onClick="onClickGoCamBtn"
-            android:padding="10dp"
+            android:padding="5dp"
             android:scaleType="centerInside"
             android:src="@drawable/cam_btn" />
 
@@ -164,9 +164,22 @@
             android:background="@null"
             android:cropToPadding="false"
             android:onClick="onClickEncyclopedia"
-            android:padding="10dp"
+            android:padding="5dp"
             android:scaleType="centerInside"
             android:src="@drawable/encyclo_btn" />
+
+        <ImageButton
+            android:id="@+id/hatena_btn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@null"
+            android:cropToPadding="false"
+            android:onClick="onClickTutorial"
+            android:padding="5dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/hatena_btn" />
+
     </LinearLayout>
 
 </LinearLayout>

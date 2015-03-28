@@ -14,8 +14,10 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:theme="@style/AppTheme" >
+
+        <!-- Start画面を初回起動画面とする -->
         <activity
-            android:name="jp.egaonohon.camerapet.MainActivity"
+            android:name="jp.egaonohon.camerapet.Start"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
@@ -24,6 +26,13 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <!-- MainActivity追加 -->
+        <activity
+            android:name="jp.egaonohon.camerapet.MainActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
         </activity>
 
         <!-- Camera用Activity追加 -->
@@ -36,6 +45,61 @@
         <!-- ギャラリー写真取得用Activity追加 -->
         <activity
             android:name="jp.egaonohon.camerapet.GetPh"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
+        </activity>
+        <!-- チュートリアル用Activity追加1　TutorialActivity -->
+        <activity
+            android:name="jp.egaonohon.camerapet.TutorialFirstActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
+        </activity>
+
+        <!-- チュートリアル用Activity追加2　TutorialActivity -->
+        <activity
+            android:name="jp.egaonohon.camerapet.TutorialSecondActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
+        </activity>
+
+        <!-- チュートリアル用Activity追加3　TutorialActivity -->
+        <activity
+            android:name="jp.egaonohon.camerapet.TutorialThirdActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
+        </activity>
+
+        <!-- チュートリアル用Activity追加4　TutorialActivity -->
+        <activity
+            android:name="jp.egaonohon.camerapet.TutorialFourthActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
+        </activity>
+
+        <!-- チュートリアル用Activity追加5　TutorialActivity -->
+        <activity
+            android:name="jp.egaonohon.camerapet.TutorialFifthActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
+        </activity>
+
+        <!-- チュートリアル用Activity追加6　TutorialActivity -->
+        <activity
+            android:name="jp.egaonohon.camerapet.TutorialSixthActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
+        </activity>
+
+        <!-- チュートリアル用Activity追加7　TutorialActivity -->
+        <activity
+            android:name="jp.egaonohon.camerapet.TutorialSeventhActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >

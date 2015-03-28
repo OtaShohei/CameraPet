@@ -369,8 +369,8 @@ public class GameSurfaceView extends SurfaceView implements
 		// MainActivity.setGameRatingStep(esaCnt);
 		CameLog.setLog(TAG, "プリファレンスから次の枚数を取り出した→" + esaCnt);
 
-		/** その日最初の起動かつカメラから戻ってきたのでなければ、初期値5を渡す */
-		if (firstOfTheDay && !MainActivity.isReturnCam()) {
+		/** その日最初の起動かつカメラやチュートリアルから戻ってきたのでなければ、初期値5を渡す */
+		if (firstOfTheDay && (!MainActivity.isReturnCam() || !MainActivity.isReturnTut())) {
 			CameLog.setLog(TAG, "プリファレンスから枚数を取り出せないので初期値を代入する→" + esaCnt);
 			esaCnt = ratingMax = 5;
 			firstOfTheDay = false;

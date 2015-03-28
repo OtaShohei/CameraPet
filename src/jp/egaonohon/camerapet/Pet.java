@@ -134,8 +134,8 @@ public class Pet extends CamPeItem implements Runnable {
 	 * GameSurfaceViewから来たPetの移動量をセットする。 GameSurfaceView側での呼び出しがもちろん必要。
 	 */
 	public void setPetMoveSize(float x, float y) {
-		moveX = (int) (x / 100);
-		moveY = (int) (y / 100);
+		moveX = (int) (x / (viewWidth/8));
+		moveY = (int) (y / (viewWidth/8));
 		// CameLog.setLog(TAG, "onTouchEventからペットに移動距離を設定");
 	}
 

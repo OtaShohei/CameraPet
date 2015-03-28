@@ -16,5 +16,16 @@
     <string name="age_months">か月</string>
     <string name="exp_points">経験値 :</string>
     <string name="esa_status">エサ</string>
-
+    <string name="tutorial01">カメラペットはカメラアプリ。でも、ただのカメラじゃないのです。このアプリで写真を撮るとアプリの中に住んでいるあなたのペットも成長するのです。</string>
+    <string name="tutorial02">まずは写真を撮ります。プレビュー画面をタップするだけでオートフォーカスで撮れちゃいますよ。</string>
+    <string name="tutorial03">戻ると、先ほど撮った写真が浮かんでいます。画面をフリックしてペットを動かしてみて！　ペットが写真を食べちゃいます（スマホの写真は消えないから安心して）。</string>
+    <string name="tutorial04">ペットを動かすには下方向にフリックして、ペットを画面下で跳ね返らせます。ペットの近くをフリックするとゆっくり。遠くだと早く動くよ！</string>
+    <string name="tutorial05">ペットが食べたエサの数は左上のバーに表示。ペットが成長して新しいキャラになる目安の経験値が右上。その下はペットの年齢です。</string>
+    <string name="tutorial06">ペットの経験値のため方はいろいろ。写真を撮る（1枚10pt）。写真を食べさせる（1枚1 pt）。TwitterやFacebookでこのペットのことをつぶやく（1回20 pt）。</string>
+    <string name="tutorial07">かわいい。ときにはキモかわいい。育て方でいろんなペットに成長していきます。友だちと一緒に育てていろんなペットの姿をカメラペットで楽しんじゃおう！</string>
+    <string name="tutorial_end">ゲームへ！</string>
+    <string name="back_logo">＜</string>    
+        <string name="next_logo">＞</string>    
+    
+    
 </resources>
