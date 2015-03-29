@@ -76,7 +76,8 @@ public class GameSurfaceView extends SurfaceView implements
 	private int ratingMax = 1;
 	/** エサステイタス表示文字 */
 	private String esaStatus;
-
+	/** 画面文字や塗りのテーマカラー */
+	private int themeColor =Color.argb(255, 224, 107, 98);
 	/** その日最初の起動か否か */
 	private boolean firstOfTheDay = true;
 
@@ -254,7 +255,7 @@ public class GameSurfaceView extends SurfaceView implements
 						}
 					}
 					/** SurfaceView上に、レーティングバー・経験値・ペット年齢・を描画するメソッドを呼び出す */
-					SurfaceViewTextWrite(canvas);
+					textRectWrite(canvas);
 				}
 				holder.unlockCanvasAndPost(canvas);
 			}
@@ -275,11 +276,11 @@ public class GameSurfaceView extends SurfaceView implements
 	 * SurfaceView上に、レーティングバー・経験値・ペット年齢などを描画するメソッド。
 	 * @param canvas
 	 */
-	private void SurfaceViewTextWrite(Canvas canvas) {
+	private void textRectWrite(Canvas canvas) {
 		/** レイティングバー風の記述 */
 		Paint paint = new Paint();
 		/** 文字にテーマカラー設定 */
-		paint.setColor(Color.argb(255, 237, 118, 33));
+		paint.setColor(themeColor);
 		/** Aliasを設定 */
 		paint.setAntiAlias(true);
 
@@ -312,7 +313,7 @@ public class GameSurfaceView extends SurfaceView implements
 		/** 進捗部分を塗る */
 		if (ratingMax == -1) {
 			/** レーティングが-1の場合（写真撮影なしでGame画面に現れた場合）は透明で塗りつぶす */
-			paint.setColor(Color.argb(0, 255, 255, 255));
+			paint.setColor(themeColor);
 			Rect ratingRect = new Rect(viewWidth / 40, viewHeight / 40,
 					((viewWidth / 3) / 1) * esaGetCnt, (viewHeight / 80) * 4);
 			/** 進捗部分描画実行 */
@@ -327,7 +328,7 @@ public class GameSurfaceView extends SurfaceView implements
 		}
 //		CameLog.setLog(TAG, "レーティング最大値は" + ratingMax + "。獲得済みエサ数は" + esaGetCnt);
 		/** レイティングバー外枠にテーマカラー設定 */
-		paint.setColor(Color.argb(255, 237, 118, 33));
+		paint.setColor(themeColor);
 		/** レイティングバー外枠設定 */
 		paint.setStyle(Style.STROKE);
 		/** レイティングバー外枠描画実行 */
@@ -481,7 +482,10 @@ public class GameSurfaceView extends SurfaceView implements
 		/** 餌作成に成功したら直近撮影回数を0に戻す */
 		esaCnt = 0;
 		CamPePref.saveNowShotCnt(getContext(), esaCnt);
-
+		
+		/** 起動済みの旨プリファレンスに情報を保存 */
+		CamPePref.saveStartStatus(getContext());
+		CameLog.setLog(TAG,"起動済みの旨プリファレンスに情報を保存");
 		thread = null;
 	}
 

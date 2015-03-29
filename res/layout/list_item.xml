@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<!-- GetPhクラスが直近撮影済み写真を取得しGridに並べるときに用いるImageViewを配置するxml。撮影済み写真をゲーム画面で使用するときにはこのファイルは不要かもしれません。 -->
-
-<ImageView
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="wrap_content"
-  android:layout_height="wrap_content">
-</ImageView>

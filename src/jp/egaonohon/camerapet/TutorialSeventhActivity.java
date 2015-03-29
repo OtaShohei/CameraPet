@@ -82,22 +82,21 @@ public class TutorialSeventhActivity extends Activity {
 		startActivity(intent);
 	}
 
-	// /**
-	// * 次へボタンメソッド。
-	// * @param v
-	// */
-	// public void goNext(View v) {
-	// /**
-	// * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
-	// */
-	// Intent intent = new Intent(TutorialSeventhActivity.this,
-	// Tutorial　8thActivity.class);
-	//
-	// /**
-	// * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
-	// */
-	// startActivity(intent);
-	// }
+	 /**
+	 * 次へボタンメソッド。
+	 * @param v
+	 */
+	 public void goNext(View v) {
+	 /**
+	 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
+	 */
+	 Intent intent = new Intent(TutorialSeventhActivity.this,MainActivity.class);
+	
+	 /**
+	 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
+	 */
+	 startActivity(intent);
+	 }
 
 	/**
 	 * チュートリアルを終えるボタンメソッド。

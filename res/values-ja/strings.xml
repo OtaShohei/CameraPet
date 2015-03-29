@@ -6,7 +6,7 @@
     <string name="tweet">ツイート</string>
     <string name="sound">音量</string>
     <string name="goCamBtn">撮影</string>
-    <string name="wchEncycl">図鑑</string>
+    <string name="encycl">カメラペット図鑑</string>
     <string name="action_settings">設定</string>
     <string name="returnBtn">戻る</string>
     <string name="shotBtn">撮る</string>
@@ -24,8 +24,9 @@
     <string name="tutorial06">ペットの経験値のため方はいろいろ。写真を撮る（1枚10pt）。写真を食べさせる（1枚1 pt）。TwitterやFacebookでこのペットのことをつぶやく（1回20 pt）。</string>
     <string name="tutorial07">かわいい。ときにはキモかわいい。育て方でいろんなペットに成長していきます。友だちと一緒に育てていろんなペットの姿をカメラペットで楽しんじゃおう！</string>
     <string name="tutorial_end">ゲームへ！</string>
-    <string name="back_logo">＜</string>    
-        <string name="next_logo">＞</string>    
-    
-    
+    <string name="back_logo">＜</string>
+    <string name="next_logo">＞</string>
+    <string name="go_forward">進む</string>
+    <string name="return_back">戻る</string>
+
 </resources>

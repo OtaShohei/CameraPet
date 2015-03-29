@@ -35,6 +35,8 @@ public class MainActivity extends Activity {
 	private static boolean returnTw = false;
 	/** Tutorialから戻ってきた直後を判定するBoolean */
 	private static boolean returnTut = false;
+	/** 図鑑から戻ってきた直後を判定するBoolean */
+	private static boolean returnEncyc = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -81,9 +83,6 @@ public class MainActivity extends Activity {
 		/** BGMの一時停止 */
 		mp.pause();
 		CameLog.setLog(TAG, "onPause");
-		/** 起動済みの旨プリファレンスに情報を保存 */
-		CamPePref.saveStartStatus(this);
-		CameLog.setLog(TAG,"起動済みの旨プリファレンスに情報を保存");
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////////
@@ -190,7 +189,7 @@ public class MainActivity extends Activity {
 		/**
 		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
 		 */
-		Intent intent = new Intent(MainActivity.this, GetPh.class);
+		Intent intent = new Intent(MainActivity.this, Encyc01Activity.class);
 
 		/**
 		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
