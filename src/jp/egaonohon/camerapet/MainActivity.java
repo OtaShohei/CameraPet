@@ -55,8 +55,7 @@ public class MainActivity extends Activity {
 		mp2 = MediaPlayer.create(MainActivity.this, R.raw.poka);
 
 		/** BGMスタート */
-		mp.setLooping(true);
-		mp.start(); // SEを鳴らす
+//		mp.start(); // SEを鳴らす
 		bgmOn = true;
 
 	}
@@ -69,6 +68,7 @@ public class MainActivity extends Activity {
 		/** BGMの制御 */
 		if (bgmOn) {
 			mp.start();
+			mp.setLooping(true);
 			bgmOn = true;
 		} else {
 			mp.pause();
@@ -172,7 +172,6 @@ public class MainActivity extends Activity {
 			mp.start();
 			bgmOn = true;
 		}
-
 	}
 
 	/**

@@ -28,5 +28,12 @@
     <string name="next_logo">＞</string>
     <string name="go_forward">進む</string>
     <string name="return_back">戻る</string>
+    <string name="pet_unknown_name">？？？？？</string>
+    <string name="pet_unknown_spec">●体重:？？？？？\n●体長:？？？？？\n●好物:？？？？？</string>
+    <string name="pet_unknown_comment">？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？</string>
+    <string name="pet_01_name">拾ったワンちゃん</string>
+    <string name="pet_01_spec">●体重:メロン1個分くらい\n●体長:筆箱より少し長い\n●好物:飼い主の匂い</string>
+    <string name="pet_01_comment">公園で拾った犬。でも、ある日突然空を飛べるようになったすごいヤツ。しかも、写真を食べ始める。驚きの連続。</string>
+    <string name="pet_message_welcome">「ワンワン!キュイーン!ワンワン!」\n（訳:飼い主さんに会えてうれしいワン!</string>
 
 </resources>

@@ -140,7 +140,7 @@ public class GameSurfaceView extends SurfaceView implements
 		if (firstOfTheDay && !MainActivity.isReturnCam()) {
 			/** 飼い主歓迎メッセージ表示 */
 			Toast.makeText(getContext(),
-					"「ワンワン!キュイーン!ワンワン!」\n（訳:飼い主さんに会えてうれしいワン!",
+					"@string/pet_message_welcome",
 					Toast.LENGTH_LONG).show();
 		}
 
