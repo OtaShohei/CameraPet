@@ -99,6 +99,8 @@ public class Pet extends CamPeItem implements Runnable {
 			int defaultX, int defaultY, int viewWidth, int viewHeight) {
 		super(petPhR, itemWidth, itemHeight, defaultX, defaultY, viewWidth,
 				viewHeight);
+		CameLog.setLog(TAG,"petPhRは" + petPhR +"petPhLは" +  petPhL +"itemWidthは" +  itemWidth);
+
 		this.petPhR = petPhR;
 		this.petPhL = petPhL;
 		this.itemPh = petPhR;
@@ -118,13 +120,20 @@ public class Pet extends CamPeItem implements Runnable {
 		CameLog.setLog(TAG, "CPPetがnewされた時点でのペットのWidthは" + this.itemWidth
 				+ "。Heightは" + this.itemHeight);
 
-		/** PetPhの拡大・縮小率設定 */
-		matrix.postScale(scaleX, scaleY);
+		/** PetPhの拡大・縮小率設定
+		 * ここでfloatにキャストしないと拡大率が小数点以下切り捨てられてしまうので要注意 */
+		scaleX = (float)itemWidth / petPhR.getWidth();
+		scaleY = (float)itemHeight / petPhR.getHeight();
+
+		CameLog.setLog(TAG,"scaleXは" + scaleX +"scaleYは" +  scaleY);
+
+		matrix.setScale(scaleX, scaleY);
+		// matrix.postScale(scaleX, scaleY);
 		// /** PetPhの拡大縮小率確認 */
 		// CameLog.setLog(TAG, "PetPhの拡大縮小率はXが" + scaleX + "。Yは" + scaleY);
 
 		/** PetPhの回転角設定 */
-		matrix.postRotate(degree);
+		// matrix.postRotate(degree);
 
 		petThread = new Thread(this);
 		petThread.start();
@@ -134,8 +143,8 @@ public class Pet extends CamPeItem implements Runnable {
 	 * GameSurfaceViewから来たPetの移動量をセットする。 GameSurfaceView側での呼び出しがもちろん必要。
 	 */
 	public void setPetMoveSize(float x, float y) {
-		moveX = (int) (x / (viewWidth/8));
-		moveY = (int) (y / (viewWidth/8));
+		moveX = (int) (x / (viewWidth / 8));
+		moveY = (int) (y / (viewWidth / 8));
 		// CameLog.setLog(TAG, "onTouchEventからペットに移動距離を設定");
 	}
 
@@ -148,7 +157,9 @@ public class Pet extends CamPeItem implements Runnable {
 		cnt++;
 
 		/** 画面端のチェック：X軸。 (itemWidth/2)は、ペットの体の半分がはみ出ていたのでその調整 */
-		if (nowX < 0 || this.viewWidth - (itemWidth + (itemWidth / 2)) < nowX) {
+		if (nowX < 0 || this.viewWidth - itemWidth // + //(itemWidth / 2)
+
+		< nowX) {
 			if (itemPh.equals(petPhR)) {
 				itemPh = petPhL;
 			} else if (itemPh.equals(petPhL)) {
@@ -161,12 +172,14 @@ public class Pet extends CamPeItem implements Runnable {
 		}
 
 		/** 画面端のチェック：Y軸。(itemHeight/2)は、ペットの体の半分がはみ出ていたのでその調整 */
-		if (nowY < 0
-				|| this.viewHeight - (itemHeight + (itemHeight / 2)) < nowY) {
+		if (nowY < 0 || this.viewHeight - (itemHeight// + (itemHeight / 2)
+				) < nowY) {
 
 			/** 次の行はそもそもXとYが食い違っているので動いているようだが妙な動きになってしまう。かつ、上下判定も変なことに */
 			// moveY = -moveX;
 			moveY *= -1;
+			CameLog.setLog(TAG, "ペット移動範囲のwidthは" + viewWidth
+					+ "ペット移動範囲のheightは" + viewHeight);
 		}
 
 		/** 移動させる */
@@ -188,8 +201,8 @@ public class Pet extends CamPeItem implements Runnable {
 		 *
 		 * http://javadroid.blog.fc2.com/blog-entry-83.html
 		 * */
-		matrix.reset();
-		matrix.setTranslate(nowX, nowY);
+		// matrix.reset();
+		// matrix.setTranslate(nowX, nowY);
 
 		// /** matrixが存在しているか否かを確認 */
 		// CameLog.setLog(TAG, "matrixのハッシュ値は" + matrix.hashCode());
@@ -197,18 +210,20 @@ public class Pet extends CamPeItem implements Runnable {
 		/** 衝突判定用RectFの更新 */
 		rectF.set(nowX, nowY, nowX + itemWidth, nowY + itemHeight);
 
-		// /** 衝突判定用RectFにセットした数値の確認 */
-		// CameLog.setLog(TAG, "更新されたnowXは" + nowX + "。nowYは" + nowY
-		// + "。nowX + itemWidthは" + (nowX + itemWidth)
-		// + "。nowY + itemHeightは" + (nowY + itemHeight));
+		 /** 衝突判定用RectFにセットした数値の確認 */
+		 CameLog.setLog(TAG, "更新されたnowXは" + nowX + "。nowYは" + nowY
+		 + "。nowX + itemWidthは" + (nowX + itemWidth)
+		 + "。nowY + itemHeightは" + (nowY + itemHeight));
 	}
 
 	@Override
 	public void draw(Canvas canvas) {
-		canvas.save();
 		/** Canvasの背景色を透明で塗る。 第二引数にPorterDuff.Mode.CLEARを付けないと透明にならないので注意。 */
 		canvas.drawColor(Color.TRANSPARENT,
 				android.graphics.PorterDuff.Mode.CLEAR);
+		canvas.save();
+		/** ここで描画位置を指定 */
+		canvas.translate(nowX, nowY);
 		canvas.drawBitmap(itemPh, matrix, petPaint);
 		canvas.restore();
 	}

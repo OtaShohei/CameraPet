@@ -38,5 +38,6 @@
     <string name="pet_01_spec">●体重:メロン1個分くらい\n●体長:筆箱より少し長い\n●好物:飼い主の匂い</string>
     <string name="pet_01_comment">公園で拾った犬。ある日突然空を飛べるようになったすごいヤツ。でも、写真を食べ始めるなんてびっくりですよ。</string>
     <string name="pet_message_welcome">「ワンワン!キュイーン!ワンワン!」\n（訳:飼い主さんに会えてうれしいワン!</string>
+    <string name="how_to_shot">画面タップで撮影できます。</string>
 
 </resources>

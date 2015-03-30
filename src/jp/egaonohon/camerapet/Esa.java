@@ -102,6 +102,11 @@ public class Esa extends CamPeItem implements Runnable {
 		CameLog.setLog(TAG, "Esaがnewされた時点でのViewのWidthは" + this.viewWidth
 				+ "。ViewのHeightは" + this.viewHeight + "defaultXは" + defaultX);
 
+		/** PetPhの拡大・縮小率設定
+		 * ここでfloatにキャストしないと拡大率が小数点以下切り捨てられてしまうので要注意 */
+		scaleX = (float)itemWidth / itemPh.getWidth();
+		scaleY = (float)itemHeight / itemPh.getHeight();
+
 		/** EsaPhの拡大・縮小率設定 */
 		matrix.postScale(scaleX, scaleY);
 		// /** EsaPhの拡大縮小率確認 */
@@ -125,12 +130,16 @@ public class Esa extends CamPeItem implements Runnable {
 
 		/** 画面端のチェック：X軸 */
 		if (nowX < 0 || this.viewWidth - itemWidth < nowX) {
-			moveX = -moveX;
+			/** 次の行のようにすると、左端に行った時も左へ向かってしまう */
+			// moveX = -moveX;
+			moveX *= -1;
 		}
 
 		/** 画面端のチェック：Y軸 */
 		if (nowY < 0 || this.viewHeight - itemHeight < nowY) {
-			moveY = -moveY;
+			/** 次の行はそもそもXとYが食い違っているので動いているようだが妙な動きになってしまう。かつ、上下判定も変なことに */
+			// moveY = -moveX;
+			moveY *= -1;
 		}
 
 		/** 移動させる */
@@ -154,9 +163,11 @@ public class Esa extends CamPeItem implements Runnable {
 		 * 、回転・移動値を設定する前に.set○○　か、.reset　メソッドといっしょに設定するとうまく動きます。
 		 *
 		 * http://javadroid.blog.fc2.com/blog-entry-83.html
+		 *
+		 * 次の2行もコメントアウト。設定した拡大縮小率がmatrix.reset()ですぐになかったことになってしまうから。
 		 * */
-		matrix.reset();
-		matrix.postTranslate(nowX, nowY);
+//		matrix.reset();
+//		matrix.postTranslate(nowX, nowY);
 
 		/** 衝突判定用RectFの更新 */
 		rectF.set(nowX, nowY, nowX + itemWidth, nowY + itemHeight);
@@ -173,6 +184,8 @@ public class Esa extends CamPeItem implements Runnable {
 	@Override
 	public void draw(Canvas canvas) {
 		canvas.save();
+		/** ここで描画位置を指定 */
+		canvas.translate(nowX, nowY);
 		canvas.drawBitmap(itemPh, matrix, paint);
 		canvas.restore();
 	}

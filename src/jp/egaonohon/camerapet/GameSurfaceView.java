@@ -3,6 +3,7 @@ package jp.egaonohon.camerapet;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -137,10 +138,14 @@ public class GameSurfaceView extends SurfaceView implements
 		/** このViewをトップにする */
 		setZOrderOnTop(true);
 
+		/** Toast表示用の文字列を取得 */
+		Resources res = getResources();
+		String petWelcomMessage = res.getString(R.string.pet_message_welcome);
+
 		if (firstOfTheDay && !MainActivity.isReturnCam()) {
 			/** 飼い主歓迎メッセージ表示 */
 			Toast.makeText(getContext(),
-					"@string/pet_message_welcome",
+					petWelcomMessage,
 					Toast.LENGTH_LONG).show();
 		}
 
@@ -161,7 +166,9 @@ public class GameSurfaceView extends SurfaceView implements
 				/** 衝突判定実行 */
 				for (int i = 0; i < camPeItems.size(); i++) {
 					if (!camPeItems.get(i).equals(myPet)) {
-						CameLog.setLog(TAG, "衝突判定実行時の獲得済みエサの数は" + esaGetCnt);
+
+//						CameLog.setLog(TAG, "衝突判定実行時の獲得済みエサの数は" + esaGetCnt);
+
 						// if (camPeItems == null) {
 						// CameLog.setLog(TAG, "camPeItemsがnull");
 						//
@@ -191,7 +198,7 @@ public class GameSurfaceView extends SurfaceView implements
 							// + myPet.getRectF().toString());
 							// CameLog.setLog(TAG, "Esaのrectは"
 							// + camPeItems.get(i).getRectF().toString());
-							
+
 							/** プリファレンスから3時間以内エサ獲得成功数を取得 */
 							int gettedThreeHoursEatCnt = CamPePref
 									.load3hoursEatCnt(context);
@@ -199,9 +206,9 @@ public class GameSurfaceView extends SurfaceView implements
 							if (gettedThreeHoursEatCnt == -1) {
 								gettedThreeHoursEatCnt = 0;
 							}
-							
+
 							esaGetCnt = gettedThreeHoursEatCnt;
-							
+
 							/**
 							 * 最大値100になるまで3時間以内エサ獲得成功数をUpする。
 							 */
@@ -209,7 +216,7 @@ public class GameSurfaceView extends SurfaceView implements
 							if (esaGetCnt < ratingMax) {
 								esaGetCnt++;
 							}
-							
+
 							/** 新たな累計エサ獲得成功回数と新たな累計経験値をプリファレンスに保存 */
 							CamPePref.save3hoursEatCnt(context,esaGetCnt);
 
@@ -315,7 +322,7 @@ public class GameSurfaceView extends SurfaceView implements
 
 		/** テキスト右寄せ */
 		paint.setTextAlign(Paint.Align.LEFT);
-		CameLog.setLog(TAG, "獲得済みエサの数@textRectWriteは" + esaGetCnt);
+//		CameLog.setLog(TAG, "獲得済みエサの数@textRectWriteは" + esaGetCnt);
 		/** エサステイタス表示 */
 		esaStatus = context.getString(R.string.esa_status_dinner) + "    " + esaGetCnt + "/" + ratingMax;
 		canvas.drawText(esaStatus, viewWidth / 40, (viewHeight / 160) * 15,
@@ -384,7 +391,7 @@ public class GameSurfaceView extends SurfaceView implements
 		// /** エサゲームレーティングのステップ幅算出のためエサ獲得数をMainActivityに伝える */
 		// MainActivity.setGameRatingStep(esaCnt);
 		CameLog.setLog(TAG, "プリファレンスから次の枚数を取り出した→" + esaCnt);
-		
+
 		/** もしインストール直後などで直近撮影枚数がない場合はデフォルト値5枚をセット */
 		if (esaCnt == -1) {
 			esaCnt = 5;
@@ -406,7 +413,7 @@ public class GameSurfaceView extends SurfaceView implements
 				R.drawable.alpaca_left);
 
 		/** ペット作成 */
-		myPet = new Pet(petPhR, petPhL, viewWidth / 5, viewWidth / 5, 0,
+		myPet = new Pet(petPhR, petPhL, viewWidth / 3, viewWidth / 3, 0,
 				(viewWidth / 3) * 2, viewWidth, viewHeight);
 
 		camPeItems.add(myPet);
@@ -493,7 +500,7 @@ public class GameSurfaceView extends SurfaceView implements
 		} catch (Exception e) {
 			CameLog.setLog(TAG, "プリファレンスからの経験値表示に失敗@onResume");
 		}
-		
+
 		/** プリファレンスから3時間以内エサ獲得成功数を取得 */
 		int load3hoursEatCnt = CamPePref
 				.loadTotalEsaGetCnt(context);
@@ -501,9 +508,9 @@ public class GameSurfaceView extends SurfaceView implements
 		if (load3hoursEatCnt == -1) {
 			load3hoursEatCnt = 0;
 		}
-		
+
 		esaGetCnt = load3hoursEatCnt;
-		
+
 
 //		/** はてなマーク取得 */
 //		hatena_btn = BitmapFactory.decodeResource(context.getResources(),
@@ -518,7 +525,7 @@ public class GameSurfaceView extends SurfaceView implements
 //		/** 餌作成に成功したら直近撮影回数を0に戻す */
 //		esaCnt = 0;
 //		CamPePref.saveNowShotCnt(getContext(), esaCnt);
-		
+
 		/** 起動済みの旨プリファレンスに情報を保存 */
 		CamPePref.saveStartStatus(getContext());
 		CameLog.setLog(TAG,"起動済みの旨プリファレンスに情報を保存");
@@ -531,7 +538,7 @@ public class GameSurfaceView extends SurfaceView implements
 		float y = event.getY(); // Y座標を取得
 		// speedMove = true;
 		myPet.setPetMoveSize(x, y);
-		CameLog.setLog(TAG, "onTouchEvent");
+//		CameLog.setLog(TAG, "onTouchEvent");
 		// listener.onFcsChange(i);
 		return true;
 	}

@@ -2,8 +2,10 @@ package jp.egaonohon.camerapet;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Point;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -27,6 +29,10 @@ public class MainActivity extends Activity {
 
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "MainActivity";
+	/** タブレットにおける不具合調査用にディスプレイのインスタンス生成 */
+	private int windows_width;
+	private int window_height;
+
 	/** CameraActivityから戻ってきた直後を判定するBoolean */
 	private static boolean returnCam = false;
 	/** Facebookから戻ってきた直後を判定するBoolean */
@@ -58,6 +64,13 @@ public class MainActivity extends Activity {
 //		mp.start(); // SEを鳴らす
 		bgmOn = true;
 
+		/** 画面のWidthを取得してみる（タブレットでの不具合対策） */
+		Display display = getWindowManager().getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		this.windows_width = size.x;    // width
+		this.window_height = size.y;    // height
+		CameLog.setLog(TAG, "Activityのwidthは" + windows_width + "Activityのheightは" +window_height);
 	}
 
 
@@ -195,7 +208,7 @@ public class MainActivity extends Activity {
 		 */
 		startActivity(intent);
 	}
-	
+
 	/**
 	 * ペット図鑑呼び出しメソッド。
 	 * @param v
@@ -205,7 +218,7 @@ public class MainActivity extends Activity {
 			mp2.start(); // SEを鳴らす
 		} else {
 		}
-		
+
 		/** Tutorialから戻ってくることを示す */
 		returnTut = true;
 
@@ -234,7 +247,7 @@ public class MainActivity extends Activity {
 	public static boolean isReturnTw() {
 		return returnTw;
 	}
-	
+
 	/** チュートリアルから戻ってきたかどうかの判定を他のクラスに与えるメソッド */
 	public static boolean isReturnTut() {
 		return returnTut;

@@ -24,7 +24,7 @@
     <string name="tutorial03">In the game screen, the photographs you took has afloat. Please try to move the pet Flick the screen. Pet will eat photo (does not disappear photos stored on smartphone).</string>
     <string name="tutorial04">How to move the pet is to flick downwards. Then, pets will bounce in at the bottom. It works when you flick slowly close to the pet. It works quickly that it is far away.</string>
     <string name="tutorial05">Number of bait pet ate within 3 hours is displayed in the upper left corner. Experience point is displayed in the top right. The age of pet is displayed in the lower right.</string>
-    <string name="tutorial06">There are many way for pets of experience value add. Take a picture (10pt/1). Feeding the photos (1pt/1). On Twitter or Facebook, you tweet your CameraPet\'s pet (20 pt /1).</string>
+    <string name="tutorial06">There are many way for pets of experience point add. Take a picture (10pt/1). Feeding the photos (1pt/1). On Twitter or Facebook, you tweet your CameraPet\'s pet (20 pt /1).</string>
     <string name="tutorial07">Cute. Sometimes cute and disgusting. You can grow to various pet in your upbringing. Please grow together with your friends. Let\'s fun various pet with this app.</string>
     <string name="tutorial_end">Done</string>
     <string name="back_logo">＜</string>
@@ -38,5 +38,6 @@
     <string name="pet_01_spec">Weight:about one melon\nLength:A little longer than pencil case\nFavorite:Smell of owner</string>
     <string name="pet_01_comment">Dog that was picked up in the park. But, one day, He began to suddenly fly in the sky. Moreover, He starts eating photos.</string>
     <string name="pet_message_welcome">Bow-wow!Bow-wow!\n（He speaks that I"'"m glad to meet the owner"'"s!</string>
+        <string name="how_to_shot"> Tap the screen, you can take a picture.</string>
 
 </resources>

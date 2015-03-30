@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Calendar;
 
-import android.R.integer;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
@@ -116,7 +116,11 @@ public class CameraView extends SurfaceView {
 		});
 		// holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
-		Toast.makeText(getContext(), "画面タップで撮影できます。", Toast.LENGTH_SHORT)
+		/** 撮影ガイダンスのToast表示文字列を取得 */
+		Resources res = getResources();
+		String shotGuidance = res.getString(R.string.how_to_shot);
+		/** 撮影ガイダンスのToast表示 */
+		Toast.makeText(getContext(), shotGuidance, Toast.LENGTH_SHORT)
 				.show();
 		CameLog.setLog(TAG, "init");
 	}
@@ -210,18 +214,18 @@ public class CameraView extends SurfaceView {
 		cntNum++;
 		/** プリファレンスから前回の累計撮影回数を取得 */
 		int totalShotCnt = CamPePref.loadTotalShotCnt(getContext());
-		
+
 		/** プリファレンスから累計経験値を取得 */
 		gettedtotalEXP = CamPePref.loadTotalExp(getContext());
-		
+
 		/** 累積経験値が-1の場合は0にリセット */
 		if (gettedtotalEXP == -1) {
 			gettedtotalEXP = 0;
 		}
-		
+
 		/** 合計撮影回数の算出 */
 		totalShotCnt++;
-		
+
 		/** 新たな累計経験値の算出 */
 		gettedtotalEXP = gettedtotalEXP+10;
 
@@ -230,7 +234,7 @@ public class CameraView extends SurfaceView {
 
 		/** プリファレンスに新たな累計経験値を保存 */
 		CamPePref.saveTotalExp(getContext(), gettedtotalEXP);
-		
+
 		/** 撮影回数を表示 */
 		Toast.makeText(getContext(), "撮影回数" + cntNum + "。経験値が" + gettedtotalEXP + "になったよ！", Toast.LENGTH_SHORT)
 				.show();
