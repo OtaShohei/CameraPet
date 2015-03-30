@@ -55,6 +55,59 @@ public class CamPePref {
 		editor.commit();
 	}
 
+	/** 3時間以内に食べたエサの数を現在時間とともにプリファレンスに保存する */
+	public static void save3hoursEatCnt(Context context, int nowEatCnt) {
+
+		/** エサを食べた時間 */
+		long esaGetTime = System.currentTimeMillis();
+
+		/** プリファレンスの準備  */
+		SharedPreferences pref = context.getSharedPreferences("threeHoursEatCnt",
+				Context.MODE_PRIVATE);
+
+		/** プリファレンスに書き込むためのEditorオブジェクト取得  */
+		Editor editor = pref.edit();
+
+		/** "startStatus" というキーでnotFirstを登録 */
+		editor.putInt("threeHoursEatCnt", nowEatCnt);
+		
+		/** "startStatus" というキーでnotFirstを登録 */
+		editor.putLong("esaEatTime", esaGetTime);
+
+		/** 書き込みの確定（実際にファイルに書き込む） */
+		editor.commit();
+	}
+
+	/** プリファレンスから3時間以内に食べたエサの数を取り出す。登録されていなければ -1 を返す */
+	public static int load3hoursEatCnt(Context context) {
+		
+		/** 現在時間 */
+		long nowTime = System.currentTimeMillis();
+
+		/** エサを食べた時間 */
+		long esaLastGetTime ;
+
+		/** プリファレンスの準備 */
+		SharedPreferences pref = context.getSharedPreferences("threeHoursEatCnt",
+				Context.MODE_PRIVATE);
+
+		/** "threeHoursEatCnt" というキーで保存されている値を読み出す */
+		int gettedThreeHoursEatCnt = pref.getInt("threeHoursEatCnt", -1);
+
+		/** "threeHoursEatCnt" というキーで保存されている値を読み出す。からの時は-1を戻す */
+		esaLastGetTime = pref.getLong("esaEatTime", (long) -1.0f);
+		
+		/** 前回の食事時間から3時間を経過しているなら0を代入 */
+		if (nowTime > (esaLastGetTime + 10800000L)) {
+			gettedThreeHoursEatCnt = 0;
+		}
+		
+		CameLog.setLog(TAG, "3時間以内に食べたエサの数" + gettedThreeHoursEatCnt + "をプリファレンスから取得");
+
+		/** 3時間以内に食べたエサの数をを戻す */
+		return gettedThreeHoursEatCnt;
+	}
+	
 	/** 累計経験値をプリファレンスに保存する */
 	public static void saveTotalExp(Context context, int totalExp) {
 

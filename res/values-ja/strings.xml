@@ -13,14 +13,17 @@
     <string name="pet_age">生後 :</string>
     <string name="age_times">時間</string>
     <string name="age_days">日</string>
+    <string name="age_days_1st">日</string>
+    <string name="age_days_2nd">日</string>
+    <string name="age_days_3rd">日</string>
     <string name="age_months">か月</string>
     <string name="exp_points">経験値 :</string>
-    <string name="esa_status">エサ</string>
+    <string name="esa_status_dinner">夕食でたべた数</string>
     <string name="tutorial01">カメラペットはカメラアプリ。でも、ただのカメラじゃないのです。このアプリで写真を撮るとアプリの中に住んでいるあなたのペットも成長するのです。</string>
     <string name="tutorial02">まずは写真を撮ります。プレビュー画面をタップするだけでオートフォーカスで撮れちゃいますよ。</string>
     <string name="tutorial03">戻ると、先ほど撮った写真が浮かんでいます。画面をフリックしてペットを動かしてみて！　ペットが写真を食べちゃいます（スマホの写真は消えないから安心して）。</string>
     <string name="tutorial04">ペットを動かすには下方向にフリックして、ペットを画面下で跳ね返らせます。ペットの近くをフリックするとゆっくり。遠くだと早く動くよ！</string>
-    <string name="tutorial05">ペットが食べたエサの数は左上のバーに表示。ペットが成長して新しいキャラになる目安の経験値が右上。その下はペットの年齢です。</string>
+    <string name="tutorial05">ペットが3時間以内に食べたエサの数は左上のバーと数字で表示。ペットが成長して新しいキャラになる目安の経験値が右上。その下はペットの年齢です。</string>
     <string name="tutorial06">ペットの経験値のため方はいろいろ。写真を撮る（1枚10pt）。写真を食べさせる（1枚1 pt）。TwitterやFacebookでこのペットのことをつぶやく（1回20 pt）。</string>
     <string name="tutorial07">かわいい。ときにはキモかわいい。育て方でいろんなペットに成長していきます。友だちと一緒に育てていろんなペットの姿をカメラペットで楽しんじゃおう！</string>
     <string name="tutorial_end">ゲームへ！</string>
@@ -33,7 +36,7 @@
     <string name="pet_unknown_comment">？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？</string>
     <string name="pet_01_name">拾ったワンちゃん</string>
     <string name="pet_01_spec">●体重:メロン1個分くらい\n●体長:筆箱より少し長い\n●好物:飼い主の匂い</string>
-    <string name="pet_01_comment">公園で拾った犬。でも、ある日突然空を飛べるようになったすごいヤツ。しかも、写真を食べ始める。驚きの連続。</string>
+    <string name="pet_01_comment">公園で拾った犬。ある日突然空を飛べるようになったすごいヤツ。でも、写真を食べ始めるなんてびっくりですよ。</string>
     <string name="pet_message_welcome">「ワンワン!キュイーン!ワンワン!」\n（訳:飼い主さんに会えてうれしいワン!</string>
 
 </resources>

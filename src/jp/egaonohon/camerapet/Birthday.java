@@ -39,7 +39,16 @@ public class Birthday {
 				return petAgeString;
 			/** 1ヶ月（=744)以下なら日数で返却 */
 			}else if (petAgeHours <= 744) {
-				petAgeString = context.getString(R.string.pet_age) + " " + petAgeHours /24 + context.getString(R.string.age_days);
+				long days = petAgeHours /24;
+				if (1.0f <= days && days < 2.0f) {
+					petAgeString = context.getString(R.string.pet_age) + " " + days + context.getString(R.string.age_days_1st);
+				} else if (2.0f <= days && days < 3.0f) {
+					petAgeString = context.getString(R.string.pet_age) + " " + days + context.getString(R.string.age_days_2nd);
+				} else if (3.0f <= days && days < 4.0f) {
+					petAgeString = context.getString(R.string.pet_age) + " " + days + context.getString(R.string.age_days_3rd);
+				}else {
+					petAgeString = context.getString(R.string.pet_age) + " " + days + context.getString(R.string.age_days);
+				}
 				return petAgeString;
 			}else {
 				petAgeString = context.getString(R.string.pet_age) + " " + petAgeHours /744 + context.getString(R.string.age_months);

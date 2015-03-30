@@ -214,11 +214,16 @@ public class CameraView extends SurfaceView {
 		/** プリファレンスから累計経験値を取得 */
 		gettedtotalEXP = CamPePref.loadTotalExp(getContext());
 		
+		/** 累積経験値が-1の場合は0にリセット */
+		if (gettedtotalEXP == -1) {
+			gettedtotalEXP = 0;
+		}
+		
 		/** 合計撮影回数の算出 */
 		totalShotCnt++;
 		
 		/** 新たな累計経験値の算出 */
-		gettedtotalEXP++;
+		gettedtotalEXP = gettedtotalEXP+10;
 
 		/** プリファレンスに直近撮影回数と累計撮影回数を保存 */
 		CamPePref.saveNowAndTotalShotCnt(getContext(), cntNum, totalShotCnt);
