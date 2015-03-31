@@ -43,11 +43,11 @@ public class Esa extends CamPeItem implements Runnable {
 	/** エサの現在位置：X軸 */
 	private int nowX = 10;
 	/** エサの現在距離：Y軸 */
-	private int nowY;
+	private double nowY;
 	/** エサ移動距離：X軸 */
 	private int moveX;
 	/** エサ移動距離：Y軸 */
-	private int moveY;
+	private double moveY;
 	/** エサが移動するアニメーション効果用（歩数カウント） */
 	private int cnt;
 	/** エサが動くスピード（移動および歩くアニメーションに影響） */
@@ -84,7 +84,7 @@ public class Esa extends CamPeItem implements Runnable {
 	 *            エサが落下するY方向dp値
 	 */
 	public Esa(Bitmap itemPh, int width, int height, int defaultX,
-			int defaultY, int viewWidth, int viewHeight, int moveY) {
+			int defaultY, int viewWidth, int viewHeight, Double moveY) {
 		super(itemPh, width, height, defaultX, defaultY, viewWidth, viewHeight);
 		this.itemPh = itemPh;
 		this.itemWidth = width;
@@ -135,12 +135,12 @@ public class Esa extends CamPeItem implements Runnable {
 			moveX *= -1;
 		}
 
-		/** 画面端のチェック：Y軸 */
-		if (nowY < 0 || this.viewHeight - itemHeight < nowY) {
-			/** 次の行はそもそもXとYが食い違っているので動いているようだが妙な動きになってしまう。かつ、上下判定も変なことに */
-			// moveY = -moveX;
-			moveY *= -1;
-		}
+		/** 画面端のチェック：Y軸 は行わずに落下したら画面から出て行くように変更するので次のブロックはコメントアウトする */
+//		if (nowY < 0 || this.viewHeight - itemHeight < nowY) {
+//			/** 次の行はそもそもXとYが食い違っているので動いているようだが妙な動きになってしまう。かつ、上下判定も変なことに */
+//			// moveY = -moveX;
+//			moveY *= -1;
+//		}
 
 		/** 移動させる */
 		nowX = defaultX + moveX;
@@ -170,7 +170,7 @@ public class Esa extends CamPeItem implements Runnable {
 //		matrix.postTranslate(nowX, nowY);
 
 		/** 衝突判定用RectFの更新 */
-		rectF.set(nowX, nowY, nowX + itemWidth, nowY + itemHeight);
+		rectF.set(nowX, (float) nowY, nowX + itemWidth, (float)nowY + itemHeight);
 
 		// /** 衝突判定用RectFにセットした数値の確認 */
 		// CameLog.setLog(TAG, "更新されたnowXは" + nowX + "。nowYは" + nowY
@@ -185,7 +185,7 @@ public class Esa extends CamPeItem implements Runnable {
 	public void draw(Canvas canvas) {
 		canvas.save();
 		/** ここで描画位置を指定 */
-		canvas.translate(nowX, nowY);
+		canvas.translate(nowX, (float) nowY);
 		canvas.drawBitmap(itemPh, matrix, paint);
 		canvas.restore();
 	}

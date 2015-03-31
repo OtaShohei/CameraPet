@@ -73,10 +73,10 @@ public class CamPePref {
 		/** プリファレンスに書き込むためのEditorオブジェクト取得  */
 		Editor editor = pref.edit();
 
-		/** "startStatus" というキーでnotFirstを登録 */
+		/** "threeHoursEatCnt" というキーでnowEatCntを登録 */
 		editor.putInt("threeHoursEatCnt", nowEatCnt);
 
-		/** "startStatus" というキーでnotFirstを登録 */
+		/** "esaEatTime" というキーでesaGetTimeを登録 */
 		editor.putLong("esaEatTime", esaGetTime);
 
 		/** 書き込みの確定（実際にファイルに書き込む） */

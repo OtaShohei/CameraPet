@@ -36,12 +36,14 @@
     <string name="pet_01_name">拾ったワンちゃん</string>
     <string name="pet_01_spec">●体重:メロン1個分くらい\n●体長:筆箱より少し長い\n●好物:飼い主の匂い</string>
     <string name="pet_01_comment">公園で拾った犬。ある日突然空を飛べるようになったすごいヤツ。でも、写真を食べ始めるなんてびっくりですよ。</string>
-    <string name="pet_message_welcome">「ワンワン!キュイーン!ワンワン!」\n（訳:飼い主さんに会えてうれしいワン!</string>
+    <string name="pet_message_welcome">「ワンワン!キュイーン!」\n（訳:飼い主さんに会えてうれしいワン!</string>
     <string name="how_to_shot">画面タップで撮影できます。</string>
     <string name="download_sns_app">SNSアプリが入っていません。Google PlayでSNSアプリをダウンロードしてください。</string>
-    <string name="esa_status_morning">朝ご飯でたべた数</string>
-    <string name="esa_status_lunch">お昼ご飯でたべた数</string>
-    <string name="esa_status_snack">おやつでたべた数</string>
-    <string name="esa_status_dinner">晩ご飯でたべた数</string>
+    <string name="esa_status_morning">朝ご飯での満腹度</string>
+    <string name="esa_status_lunch">お昼ご飯での満腹度</string>
+    <string name="esa_status_snack">おやつでの満腹度</string>
+    <string name="esa_status_dinner">晩ご飯での満腹度</string>
+    <string name="number_of_food_this_time">残りエサ数</string>
+    <string name="how_to_get_esa_toast">ワンワンワ〜ン!\n（訳:エサがゼロになったよ！写真を撮るか僕の成長記録をSNS投稿するとエサがまた出てくるみたい）</string>
 
 </resources>

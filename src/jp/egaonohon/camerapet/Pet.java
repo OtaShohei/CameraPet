@@ -56,7 +56,7 @@ public class Pet extends CamPeItem implements Runnable {
 	/** Item移動距離：X軸 */
 	private int moveX = 1;
 	/** Item移動距離：Y軸 */
-	private int moveY = 3;
+	private int moveY = 2;
 	/** ペットの歩くアニメーション効果用（歩数カウント） */
 	private int cnt;
 	/** ペットが動くスピード（移動および歩くアニメーションに影響） */
@@ -142,12 +142,26 @@ public class Pet extends CamPeItem implements Runnable {
 	}
 
 	/**
-	 * GameSurfaceViewから来たPetの移動量をセットする。 GameSurfaceView側での呼び出しがもちろん必要。
+	 * GameSurfaceViewでのオンタッチイベントでやって来たPetの移動量をセットする。
+	 * GameSurfaceView側での呼び出しがもちろん必要。
 	 */
 	public void setPetMoveSize(float x, float y) {
-		moveX = (int) (x / (viewWidth / 10));
-		moveY = (int) (y / (viewWidth / 10));
+		moveX = (int) (x / (viewWidth / 7));
+		moveY = (int) (y / (viewWidth / 5));
 		// CameLog.setLog(TAG, "onTouchEventからペットに移動距離を設定");
+	}
+
+	/** エサと衝突したらPetを反転させるメソッド。GameSurfaceViewから呼び出す */
+	public void returnEsaKrush() {
+		moveX = 1;
+		moveY = 0;
+		if (itemPh.equals(petPhR)) {
+			itemPh = petPhL;
+		} else if (itemPh.equals(petPhL)) {
+			itemPh = petPhR;
+		}
+		// moveX *= -1;
+		// moveY *= -1;
 	}
 
 	/**
@@ -158,10 +172,8 @@ public class Pet extends CamPeItem implements Runnable {
 		/** 歩数を数える */
 		cnt++;
 
-		/** 画面端のチェック：X軸。 (itemWidth/2)は、ペットの体の半分がはみ出ていたのでその調整 */
-		if (nowX < 0 || this.viewWidth - itemWidth // + //(itemWidth / 2)
-
-		< nowX) {
+		/** 画面端のチェック：X軸。 */
+		if (nowX < 0 || this.viewWidth - itemWidth < nowX) {
 			if (itemPh.equals(petPhR)) {
 				itemPh = petPhL;
 			} else if (itemPh.equals(petPhL)) {
@@ -174,8 +186,7 @@ public class Pet extends CamPeItem implements Runnable {
 		}
 
 		/** 画面端のチェック：Y軸。(itemHeight/2)は、ペットの体の半分がはみ出ていたのでその調整 */
-		if (nowY < 0 || this.viewHeight - (itemHeight// + (itemHeight / 2)
-				) < nowY) {
+		if (nowY < 0 || this.viewHeight - itemHeight < nowY) {
 
 			/** 次の行はそもそもXとYが食い違っているので動いているようだが妙な動きになってしまう。かつ、上下判定も変なことに */
 			// moveY = -moveX;

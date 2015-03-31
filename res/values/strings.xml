@@ -31,17 +31,19 @@
     <string name="go_forward">Forward</string>
     <string name="return_back">Back</string>
     <string name="pet_unknown_name">"??????"</string>
-    <string name="pet_unknown_spec">●体重:?????\n●体長:?????\n●好物:?????</string>
+    <string name="pet_unknown_spec">Weight:?????\nLength:?????\nFavorite:?????</string>
     <string name="pet_unknown_comment">"???????????????????????????????????????????????????????????????????????????????????????????????????"</string>
     <string name="pet_01_name">Mongrel</string>
     <string name="pet_01_spec">Weight:about one melon\nLength:A little longer than pencil case\nFavorite:Smell of owner</string>
     <string name="pet_01_comment">Dog that was picked up in the park. But, one day, He began to suddenly fly in the sky. Moreover, He starts eating photos.</string>
-    <string name="pet_message_welcome">Bow-wow!Bow-wow!\n（He speaks that I"'"m glad to meet the owner"'"s!</string>
+    <string name="pet_message_welcome">Bow-wow!Bow-wow!\n (He speaks that I"'"m glad to meet the owner"'"s!)</string>
     <string name="how_to_shot"> Tap the screen, you can take a picture.</string>
     <string name="download_sns_app">SNS app is not installed. Please download the SNS apps on Google Play.</string>
-    <string name="esa_status_morning">Eat in morning</string>
-    <string name="esa_status_lunch">Eat in lunch</string>
-    <string name="esa_status_snack">Eat in snack</string>
-    <string name="esa_status_dinner">Eat in dinner</string>
+    <string name="esa_status_morning">Satisfaction of breakfast</string>
+    <string name="esa_status_lunch">Satisfaction of lunch</string>
+    <string name="esa_status_snack">Satisfaction of snack</string>
+    <string name="esa_status_dinner">Satisfaction of dinner</string>
+    <string name="number_of_food_this_time">Remaining bait</string>
+    <string name="how_to_get_esa_toast">Bow-wow!\n (He speaks that Number of bait is zero. If you post my growth record to SNS,or take pictures, you can get more bait!)</string>
 
 </resources>

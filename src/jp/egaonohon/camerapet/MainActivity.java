@@ -1,7 +1,9 @@
 package jp.egaonohon.camerapet;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Point;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -9,11 +11,12 @@ import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 /**
  * カメラペットのゲーム画面Activity（=MainActivity）のクラス。
- * @author 1107AND
- *
+ * 
+ * @author OtaShohei
  */
 public class MainActivity extends Activity {
 
@@ -32,6 +35,10 @@ public class MainActivity extends Activity {
 	/** タブレットにおける不具合調査用にディスプレイのインスタンス生成 */
 	private int windows_width;
 	private int window_height;
+
+	/** ゲーム時のトースト表示用のリソース変数 */
+	static Context context;
+	private static Resources res;
 
 	/** CameraActivityから戻ってきた直後を判定するBoolean */
 	private static boolean returnCam = false;
@@ -61,18 +68,21 @@ public class MainActivity extends Activity {
 		mp2 = MediaPlayer.create(MainActivity.this, R.raw.poka);
 
 		/** BGMスタート */
-//		mp.start(); // SEを鳴らす
+		// mp.start(); // SEを鳴らす
 		bgmOn = true;
+
+		/** ゲーム時のトースト表示用のリソースインスタンス取得 */
+		res = getResources();
 
 		/** 画面のWidthを取得してみる（タブレットでの不具合対策） */
 		Display display = getWindowManager().getDefaultDisplay();
 		Point size = new Point();
 		display.getSize(size);
-		this.windows_width = size.x;    // width
-		this.window_height = size.y;    // height
-		CameLog.setLog(TAG, "Activityのwidthは" + windows_width + "Activityのheightは" +window_height);
+		this.windows_width = size.x; // width
+		this.window_height = size.y; // height
+		CameLog.setLog(TAG, "Activityのwidthは" + windows_width
+				+ "Activityのheightは" + window_height);
 	}
-
 
 	@Override
 	protected void onResume() { // アクティビティが動き始める時呼ばれる
@@ -117,16 +127,6 @@ public class MainActivity extends Activity {
 
 		/** Facebookへ投稿実行 */
 		SnsBtn.goFacebook(this);
-	}
-
-	/** SNSポイントを付与するメソッド */
-	public void giveSNSPoints() {
-		/** 現在の経験値を取得 */
-		int gettedtotalEXP = CamPePref.loadTotalExp(this);
-		/** ポイントを付与する */
-		int newTotalExp = 8 + gettedtotalEXP;
-		/** 加算したポイントをプリファレンスに保存する */
-		CamPePref.saveTotalExp(this, newTotalExp);
 	}
 
 	/**
@@ -188,8 +188,8 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * ペット図鑑呼び出しメソッド。
-	 *TutorialActivity
+	 * ペット図鑑呼び出しメソッド。 TutorialActivity
+	 * 
 	 * @param v
 	 */
 	public void onClickEncyclopedia(View v) {
@@ -211,6 +211,7 @@ public class MainActivity extends Activity {
 
 	/**
 	 * チュートリアル呼び出しメソッド。
+	 * 
 	 * @param v
 	 */
 	public void onClickTutorial(View v) {
@@ -225,12 +226,31 @@ public class MainActivity extends Activity {
 		/**
 		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
 		 */
-		Intent intent = new Intent(MainActivity.this, TutorialFirstActivity.class);
+		Intent intent = new Intent(MainActivity.this,
+				TutorialFirstActivity.class);
 
 		/**
 		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
 		 */
 		startActivity(intent);
+	}
+
+	/** SNSポイントを付与するメソッド */
+	public void giveSNSPoints() {
+		/** 現在の経験値を取得 */
+		int gettedtotalEXP = CamPePref.loadTotalExp(this);
+		/** ポイントを付与する */
+		int newTotalExp = 8 + gettedtotalEXP;
+		/** 加算したポイントをプリファレンスに保存する */
+		CamPePref.saveTotalExp(this, newTotalExp);
+	}
+
+	/** エサの残数がゼロになった際にエサ獲得方法を告知するトーストを掲出するメソッド */
+	public static void makeToastOfHowToGetEsa() {
+		/** エサ残数が0になった時のToast表示文字列を取得 */
+		String how_to_get_esa_toast = res
+				.getString(R.string.pet_message_welcome);
+		Toast.makeText(context, how_to_get_esa_toast, Toast.LENGTH_LONG).show();
 	}
 
 	/** Cameraから戻ってきたかどうかの判定を他のクラスに与えるメソッド */
@@ -262,7 +282,6 @@ public class MainActivity extends Activity {
 	public static void setReturnTwitter(boolean returnTwitter) {
 		MainActivity.returnTwitter = returnTwitter;
 	}
-
 
 	/** チュートリアルから戻ってきたかどうかの判定を他のクラスから変更するメソッド */
 	public static void setReturnTut(boolean returnTut) {

@@ -2,6 +2,7 @@ package jp.egaonohon.camerapet;
 
 import java.util.ArrayList;
 
+import android.R.integer;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -22,44 +23,51 @@ import android.widget.Toast;
 
 /**
  * ゲーム画面の動作を司るSurfaceViewのクラス。
- *
+ * 
  * @author OtaShohei
- *
  */
 public class GameSurfaceView extends SurfaceView implements
 		SurfaceHolder.Callback, Runnable {
 
 	/** SurfaceViewを呼び出したContext */
 	Context context;
-	ArrayList<CamPeItem> camPeItems = new ArrayList<CamPeItem>();
+	private ArrayList<CamPeItem> camPeItems = new ArrayList<CamPeItem>();
 	public static final long FPS = 1000 / 30;
 
 	/** SurfaceViewのスレッド */
-	Thread thread;
+	private Thread thread;
 	/** SurfaceViewのホルダー */
-	SurfaceHolder holder;
+	private SurfaceHolder holder;
 	/** Viewの幅 */
-	int viewWidth;
+	private int viewWidth;
 	/** Viewの高さ */
-	int viewHeight;
-	// /** はてなマーク画像 */
-	// private Bitmap hatena_btn;
+	private int viewHeight;
 
 	/** ペットの参照 */
-	Pet myPet;
+	private Pet myPet;
 	/** ペット画像右向き */
 	private Bitmap petPhR;
 	/** ペット画像右向き */
 	private Bitmap petPhL;
 
 	/** 直近撮影枚数（=エサの数） */
-	int esaCnt;
+	private int esaCnt;
 	/** 複数餌画像 */
 	private ArrayList<Bitmap> esaPhList;
 	/** 餌初期位置：X軸。 */
 	private int esaDefaultX = 1;
 	/** 餌初期位置：Y軸。 */
 	private int esaDefaultY = 0;
+	/** 餌移動加速度基準値 */
+	private float esaKasokudo = 1.5f;
+	/** 餌移動加速度乱数最大値 */
+	private int esaKasokudoMax = 4;
+
+	/** プリファレンスから取得した3時間以内エサ獲得成功数 */
+	private int gettedThreeHoursEatCnt;
+
+	/** 1ゲームでエサを落下させた数 */
+	private int throwedEsa = 0;
 
 	/** エサゲット時サウンド用変数 */
 	private MediaPlayer bakubakuSE;
@@ -72,14 +80,20 @@ public class GameSurfaceView extends SurfaceView implements
 	private int gettedtotalEXP;
 	/** 累積撮影回数文字 */
 	private String expTxt;
+	/** エサ落下予定表示文字 */
+	private String foodCntThisTime;
 	/** 進捗バー最大値 */
-	private final int progressMax = 100;
+	private int progressMax = 100;
+	/** 今回降ってくる予定のエサの数。直近撮影回数の10倍 */
+	private int nowFalldownEsaCnt;
 	/** エサステイタス表示文字 */
 	private String esaStatus;
 	/** 画面文字や塗りのテーマカラー */
 	private int themeColor = Color.argb(255, 224, 107, 98);
 	/** その日最初の起動か否か */
 	private boolean firstOfTheDay = true;
+	/** 満腹時のペット喜びの声 */
+	String petWelcomMessage;
 
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "GameSurfaceView";
@@ -137,16 +151,15 @@ public class GameSurfaceView extends SurfaceView implements
 		/** このViewをトップにする */
 		setZOrderOnTop(true);
 
-		/** Toast表示用の文字列を取得 */
+		/** ペット喜びの声のToast表示文字列を取得 */
 		Resources res = getResources();
-		String petWelcomMessage = res.getString(R.string.pet_message_welcome);
+		petWelcomMessage = res.getString(R.string.pet_message_welcome);
 
 		if (firstOfTheDay && !MainActivity.isReturnCam()) {
 			/** 飼い主歓迎メッセージ表示 */
 			Toast.makeText(getContext(), petWelcomMessage, Toast.LENGTH_LONG)
 					.show();
 		}
-
 		// CameLog.setLog(TAG, "CPGameSurfaceViewをコンストラクタから生成！");
 	}
 
@@ -165,31 +178,6 @@ public class GameSurfaceView extends SurfaceView implements
 				for (int i = 0; i < camPeItems.size(); i++) {
 					if (!camPeItems.get(i).equals(myPet)) {
 
-						// CameLog.setLog(TAG, "衝突判定実行時の獲得済みエサの数は" + esaGetCnt);
-
-						// if (camPeItems == null) {
-						// CameLog.setLog(TAG, "camPeItemsがnull");
-						//
-						// }
-						// if (camPeItems.get(i) == null) {
-						// CameLog.setLog(TAG, "camPeItems.get(i)がnull");
-						// }
-						// if (camPeItems.get(i).getRectF() == null) {
-						// CameLog.setLog(TAG,
-						// "camPeItems.get(i).getRectF()がnull");
-						// }
-						// CameLog.setLog(TAG,
-						// "ペットleft" + myPet.getRectF().left + "ペットtop"
-						// + myPet.getRectF().top + "ペットright"
-						// + myPet.getRectF().right + "ペットbottom"
-						// + myPet.getRectF().bottom);
-						// CameLog.setLog(TAG, "エサleft"
-						// + camPeItems.get(i).getRectF().left + "エサtop"
-						// + camPeItems.get(i).getRectF().top + "エサright"
-						// + camPeItems.get(i).getRectF().right
-						// + "エサbottom"
-						// + camPeItems.get(i).getRectF().bottom);
-
 						if (RectF.intersects(myPet.getRectF(), camPeItems
 								.get(i).getRectF())) {
 							// CameLog.setLog(TAG, "myPetのrectは"
@@ -198,7 +186,7 @@ public class GameSurfaceView extends SurfaceView implements
 							// + camPeItems.get(i).getRectF().toString());
 
 							/** プリファレンスから3時間以内エサ獲得成功数を取得 */
-							int gettedThreeHoursEatCnt = CamPePref
+							gettedThreeHoursEatCnt = CamPePref
 									.load3hoursEatCnt(context);
 
 							if (gettedThreeHoursEatCnt == -1) {
@@ -208,7 +196,7 @@ public class GameSurfaceView extends SurfaceView implements
 							esaGetCnt = gettedThreeHoursEatCnt;
 
 							/**
-							 * 最大値100になるまで3時間以内エサ獲得成功数をUpする。
+							 * プログレスバー最大値になるまで3時間以内エサ獲得成功数をUpする。
 							 */
 							// MainActivity.ratingUp((float) esaCnt / 10);
 							if (esaGetCnt < progressMax) {
@@ -232,13 +220,15 @@ public class GameSurfaceView extends SurfaceView implements
 							/** 新たな累計エサ獲得成功回数の算出 */
 							gettedTotalEsaGetCnt++;
 
-							/** 新たな累計経験値の算出 */
-							gettedtotalEXP++;
-
+							/** インストール直後で累積経験値が-1の場合は0に初期化 */
 							try {
 								if (gettedtotalEXP == -1) {
 									gettedtotalEXP = 0;
 								}
+
+								/** 新たな累計経験値の算出 */
+								gettedtotalEXP++;
+
 								expTxt = context.getString(R.string.exp_points)
 										+ " " + String.valueOf(gettedtotalEXP);
 							} catch (Exception e) {
@@ -261,23 +251,42 @@ public class GameSurfaceView extends SurfaceView implements
 											"「ウーワンワン！ウーワォン！」\n（訳:美味しかったワン!",
 											Toast.LENGTH_LONG).show();
 								} catch (Exception e) {
-									// TODO 自動生成された catch ブロック
 									e.printStackTrace();
 								}
-								// finally {
-								// esaGetCnt = 0;
-								// }
 							}
+							CameLog.setLog(TAG, "エサの現在位置は"
+									+ camPeItems.get(i).getRectF().top);
+
 							/** 獲得したエサを削除する */
 							camPeItems.remove(i);
+							/** エサに衝突したらペットを反転させる */
+							myPet.returnEsaKrush();
 							CameLog.setLog(TAG, "現在の残数は" + camPeItems.size());
 							bakubakuSE.start();
 							// CameLog.setLog(TAG, "Petとエサの接触を検知しました!");
+							/** 画面外に出て行ったエサを削除する */
+						} else if (camPeItems.get(i).getRectF().top > viewHeight) {
+							camPeItems.remove(i);
 						}
 					}
+
 					/** SurfaceView上に、レーティングバー・経験値・ペット年齢・を描画するメソッドを呼び出す */
 					textRectWrite(canvas);
 				}
+
+				/** 画面に表示されているエサの残数が1または0になったら新たなエサを1つ生成する */
+				if (camPeItems.size() == 2 || camPeItems.size() == 1) {
+					esaMake(1);
+				}
+
+				/*
+				 * Can't create handler inside thread that has not called Looper.prepare()との警告とともに例外発生のため一時コメントアウト
+				 */
+//				/** 残りエサ数が0になったらトーストでエサの獲得方法告知 */
+//				if ((nowFalldownEsaCnt - throwedEsa) == 0) {
+//					MainActivity.makeToastOfHowToGetEsa();
+//				}
+
 				holder.unlockCanvasAndPost(canvas);
 			}
 
@@ -309,34 +318,21 @@ public class GameSurfaceView extends SurfaceView implements
 		try {
 			/** 直近撮影回数をプリファレンスから取得 */
 			esaCnt = CamPePref.loadNowShotCnt(context);
-			// /** 直近撮影回数をレーティングバー最大値に設定 */
-			// ratingMax = esaCnt;
-			// if (ratingMax == 0) {
-			// /** 0での割り算による例外防止のため0になる場合は -1を入れる */
-			// ratingMax = -1;
-			// }
 		} catch (Exception e1) {
-			// TODO 自動生成された catch ブロック
 			e1.printStackTrace();
 			CameLog.setLog(TAG, "直近撮影回数をプリファレンスから取得時に例外が発生しました。");
 		}
-		// /** エサゲームレーティングのステップ幅算出のためエサ獲得数をMainActivityに伝える */
-		// MainActivity.setGameRatingStep(esaCnt);
 		CameLog.setLog(TAG, "プリファレンスから次の枚数を取り出した→" + esaCnt);
 
-		/** もしインストール直後などで直近撮影枚数がない場合はデフォルト値5枚をセット */
+		/** 落下予定のエサの数を直近撮影回数を元に設定 */
+		nowFalldownEsaCnt = 10 * esaCnt;
+
+		/** もしインストール直後などで直近撮影枚数がない場合はデフォルト値5枚をセット。プログレスバーの最大値も50枚でセット */
 		if (esaCnt == -1) {
 			esaCnt = 5;
+			nowFalldownEsaCnt = 50;
 		}
 
-		// /** その日最初の起動かつカメラやチュートリアルから戻ってきたのでなければ、初期値5を渡す */
-		// if (firstOfTheDay && (!MainActivity.isReturnCam() ||
-		// !MainActivity.isReturnTut())) {
-		// CameLog.setLog(TAG, "プリファレンスから枚数を取り出せないので初期値を代入する→" + esaCnt);
-		// esaCnt = ratingMax = 5;
-		// firstOfTheDay = false;
-		// }
-		//
 		// CameLog.setLog(TAG, "直近撮影枚数を取得。枚数は" + esaCnt);
 
 		/** ペット写真取得 */
@@ -352,66 +348,11 @@ public class GameSurfaceView extends SurfaceView implements
 		camPeItems.add(myPet);
 		CameLog.setLog(TAG, "ペット作成");
 
-		try {
-			/** 餌写真取得準備 */
-			CamPePh camPePh = new CamPePh();
-			/**
-			 * 直近撮影写真が複数枚の時 複数枚写真取得
-			 */
-			esaPhList = new ArrayList<Bitmap>();
-			esaPhList = camPePh.get(context, esaCnt);
-			CameLog.setLog(TAG, "コンストラクタにて画像の読み込み完了。餌Phは" + esaPhList.size()
-					+ "枚");
+		/** エサを生成するメソッド呼び出し。初期値は1枚を設定 */
+		esaMake(1);
 
-			for (int i = 0; i < esaPhList.size(); i++) {
-				/**
-				 * 複数写真使用での餌インスタンス生成
-				 *
-				 * @param itemPh
-				 *            エサ写真
-				 * @param width
-				 *            エサ写真の幅
-				 * @param height
-				 *            エサ写真の高さ
-				 * @param defaultX
-				 *            エサの初期位置X
-				 * @param defaultY
-				 *            エサの初期位置Y
-				 * @param viewWidth
-				 *            エサが動くViewの幅
-				 * @param viewHeight
-				 *            エサが動くViewの高さ
-				 */
-				camPeItems.add(new Esa(esaPhList.get(i), viewWidth / 8,
-						viewWidth / 8,
-						(int) ((esaDefaultX * (Math.random() * 10)) * 90),
-						esaDefaultY, viewWidth, viewHeight, (int) (1 * (Math
-								.random() * 9))));
-			}
-
-			CameLog.setLog(TAG, "複数写真使用で餌作成");
-		} catch (Exception e) {
-			/** 餌写真取得準備 */
-			CamPePh camPePh = new CamPePh();
-			esaPhList = new ArrayList<Bitmap>();
-
-			CameLog.setLog(TAG, "例外発生のためデフォルト写真枚数1枚で餌写真取得");
-			for (int i = 0; i < 1; i++) {
-				try {
-					/** 写真を1枚取得しその写真をArrayListに格納 */
-					esaPhList = camPePh.get(context, i);
-					/** 複数写真使用での餌インスタンス生成。こちらは、餌作成に成功しても直近撮影回数は0に戻さない */
-					camPeItems.add(new Esa(esaPhList.get(i), viewWidth / 8,
-							viewWidth / 8,
-							(int) ((esaDefaultX * (Math.random() * 10)) * 90),
-							esaDefaultY, viewWidth, viewHeight,
-							(int) (1 * (Math.random() * 10))));
-				} catch (Exception e1) {
-					// TODO 自動生成された catch ブロック
-					CameLog.setLog(TAG, "例外対策の1枚写真でのエサ生成にも失敗。初期状態ではエサを生成しない。");
-				}
-			}
-		}
+		/** エサ落下予定表示文字取得 */
+		foodCntThisTime = context.getString(R.string.number_of_food_this_time);
 
 		/** ペット年齢取得 */
 		petAge = Birthday.getAge(context);
@@ -456,17 +397,13 @@ public class GameSurfaceView extends SurfaceView implements
 		}
 
 		/** プリファレンスから3時間以内エサ獲得成功数を取得 */
-		int load3hoursEatCnt = CamPePref.loadTotalEsaGetCnt(context);
+		gettedThreeHoursEatCnt = CamPePref.loadTotalEsaGetCnt(context);
 
-		if (load3hoursEatCnt == -1) {
-			load3hoursEatCnt = 0;
+		if (gettedThreeHoursEatCnt == -1) {
+			gettedThreeHoursEatCnt = 0;
 		}
 
-		esaGetCnt = load3hoursEatCnt;
-
-		// /** はてなマーク取得 */
-		// hatena_btn = BitmapFactory.decodeResource(context.getResources(),
-		// R.drawable.hatena_btn);
+		esaGetCnt = gettedThreeHoursEatCnt;
 
 		thread = new Thread(this);
 		thread.start();
@@ -474,10 +411,10 @@ public class GameSurfaceView extends SurfaceView implements
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		// /** 餌作成に成功したら直近撮影回数を0に戻す */
-		// esaCnt = 0;
-		// CamPePref.saveNowShotCnt(getContext(), esaCnt);
-
+		/** 落下させたエサ数を初期化する */
+		throwedEsa = 0;
+		/** 落下予定のエサ数も初期化する */
+		nowFalldownEsaCnt = 0;
 		/** 起動済みの旨プリファレンスに情報を保存 */
 		CamPePref.saveStartStatus(getContext());
 		CameLog.setLog(TAG, "起動済みの旨プリファレンスに情報を保存");
@@ -501,7 +438,7 @@ public class GameSurfaceView extends SurfaceView implements
 	 * @param canvas
 	 */
 	private void textRectWrite(Canvas canvas) {
-		/** レイティングバー風の記述 */
+		/** プログレスバーの記述 */
 		Paint paint = new Paint();
 		/** 文字にテーマカラー設定 */
 		paint.setColor(themeColor);
@@ -533,32 +470,31 @@ public class GameSurfaceView extends SurfaceView implements
 		canvas.drawText(esaStatus + "    " + esaGetCnt + "/" + progressMax,
 				viewWidth / 40, (viewHeight / 160) * 15, paint);
 
-		/** 進捗部分を塗る */
-		// if (ratingMax == -1) {
-		// /** 進捗が-1の場合（写真撮影なしでGame画面に現れた場合）は透明で塗りつぶす */
-		// paint.setColor(themeColor);
-		// Rect ratingRect = new Rect(viewWidth / 40, viewHeight / 40,
-		// (viewWidth / 2) * esaGetCnt, (viewHeight / 80) * 4);
-		// /** 進捗部分描画実行 */
-		// canvas.drawRect(ratingRect, paint);
-		//
-		// } else if (esaGetCnt != 0) {
+		/** 残りエサ数表示 */
+		canvas.drawText(foodCntThisTime + "    "
+				+ (nowFalldownEsaCnt - throwedEsa), viewWidth / 40,
+				(viewHeight / 160) * 21, paint);
+
 		/**
+		 * 進捗部分を塗る
+		 * 
 		 * 第3引数は、外枠のdrawRect開始位置（外枠のdrawRectの第1引数）分を足さないと外枠とずれてしまう。ここでは、
-		 * viewWidth / 40がそれに相当する。
-		 * また、第3引数はみなfloatに明示的にキャストしておかないと小さい差異が結果的に大きい差になってプログレスバーが最後まで塗れないので要注意。
+		 * viewWidth / 40がそれに相当する。 また、
+		 * 第3引数はみなfloatに明示的にキャストしておかないと小さい差異が結果的に大きい差になってプログレスバーが最後まで塗れないので要注意。
 		 */
 		RectF ratingRect = new RectF(
 				(float) viewWidth / 40,
 				(float) viewHeight / 40,
-				(float) ((((float)((float)(viewWidth / 2) - (float)(viewWidth / 40)) / (float)progressMax) * (float)esaGetCnt) + (float)(viewWidth / 40)),
+				(float) ((((float) ((float) (viewWidth / 2) - (float) (viewWidth / 40)) / (float) progressMax) * (float) esaGetCnt) + (float) (viewWidth / 40)),
 				(float) (viewHeight / 80) * 4);
 
-		CameLog.setLog(
-				TAG,
-				"塗りつぶした横幅は"
-						+ ((((viewWidth / 2) - (viewWidth / 40)) / progressMax) * esaGetCnt));
-		CameLog.setLog(TAG, "プログレスバー最大値は" + progressMax + "エサ獲得数は" + esaGetCnt);
+		// CameLog.setLog(
+		// TAG,
+		// "塗りつぶした横幅は"
+		// + ((((viewWidth / 2) - (viewWidth / 40)) / progressMax) *
+		// esaGetCnt));
+		// CameLog.setLog(TAG, "プログレスバー最大値は" + progressMax + "エサ獲得数は" +
+		// esaGetCnt);
 		/** 進捗部分描画実行 */
 		canvas.drawRect(ratingRect, paint);
 		// }
@@ -572,14 +508,9 @@ public class GameSurfaceView extends SurfaceView implements
 		 * 進捗バー外枠描画実行 外枠の第3引数は開始位置分を引かないとずれる。ここではviewWidth / 40
 		 * */
 		canvas.drawRect((float) viewWidth / 40, (float) viewHeight / 40,
-				(float) (viewWidth / 2),
-				(float) (viewHeight / 80) * 4, paint);
-		CameLog.setLog(TAG, "進捗バー外枠横幅は"
-				+ ((viewWidth / 2) - (viewWidth / 40)));
-
-		// /**　はてなマーク表示 */
-		// canvas.drawBitmap(hatena_btn, (viewWidth / 40) * 39, (viewHeight /
-		// 80) * 5, paint);
+				(float) (viewWidth / 2), (float) (viewHeight / 80) * 4, paint);
+		// CameLog.setLog(TAG, "進捗バー外枠横幅は" + ((viewWidth / 2) - (viewWidth /
+		// 40)));
 	}
 
 	/**
@@ -608,12 +539,78 @@ public class GameSurfaceView extends SurfaceView implements
 		}
 	}
 
-	// public void rating() {
-	// Paint paint = new Paint();
-	// paint.setColor(Color.argb(130, 237, 118, 33));
-	//
-	// RectF ratingRect = new RectF(viewWidth / 40, viewHeight / 20,
-	// viewWidth / 3, (viewHeight / 20) * 2);
-	// canvas.drawRect(rectF, paint);
-	// }
+	/** エサを生成するメソッド */
+	public void esaMake(int makeEsaCnt) {
+
+		try {
+			/** 餌写真取得準備 */
+			CamPePh camPePh = new CamPePh();
+			/**
+			 * エサ写真を格納するArrayListを用意しておく
+			 */
+			esaPhList = new ArrayList<Bitmap>();
+
+			/** 落下させたエサの数が今回落下予定のエサの数未満ならばエサを作る */
+			if (throwedEsa <= (nowFalldownEsaCnt - 1)) {
+
+				/** 引数でエサを生成 */
+				esaPhList = camPePh.get(context, makeEsaCnt);
+
+				CameLog.setLog(TAG,
+						"コンストラクタにて画像の読み込み完了。餌Phは" + esaPhList.size() + "枚");
+
+				for (int i = 0; i < esaPhList.size(); i++) {
+					/**
+					 * 複数写真使用での餌インスタンス生成
+					 *
+					 * @param itemPh
+					 *            エサ写真
+					 * @param width
+					 *            エサ写真の幅
+					 * @param height
+					 *            エサ写真の高さ
+					 * @param defaultX
+					 *            エサの初期位置X
+					 * @param defaultY
+					 *            エサの初期位置Y
+					 * @param viewWidth
+					 *            エサが動くViewの幅
+					 * @param viewHeight
+					 *            エサが動くViewの高さ
+					 */
+					
+					
+					camPeItems.add(new Esa(esaPhList.get(i), viewWidth / 13,
+							viewWidth / 13, (int) ((esaDefaultX * (Math
+									.random() * 10)) * 90), esaDefaultY,
+							viewWidth, viewHeight, (Double) (esaKasokudo * (Math
+									.random() * esaKasokudoMax))));
+					/** 落下させたエサの数をインクリメント */
+					throwedEsa++;
+				}
+				CameLog.setLog(TAG, "複数写真使用で餌作成");
+			}
+		} catch (Exception e) {
+			/** 餌写真取得準備 */
+			CamPePh camPePh = new CamPePh();
+			esaPhList = new ArrayList<Bitmap>();
+
+			CameLog.setLog(TAG, "例外発生のためデフォルト写真枚数1枚で餌写真取得");
+			for (int i = 0; i < 1; i++) {
+				try {
+					/** 写真を1枚取得しその写真をArrayListに格納 */
+					esaPhList = camPePh.get(context, i);
+					/** 複数写真使用での餌インスタンス生成。こちらは、餌作成に成功しても直近撮影回数は0に戻さない */
+					camPeItems.add(new Esa(esaPhList.get(i), viewWidth / 10,
+							viewWidth / 10, (int) ((esaDefaultX * (Math
+									.random() * 10)) * 90), esaDefaultY,
+							viewWidth, viewHeight, (Double) (1.5f * (Math
+									.random() * 5))));
+					throwedEsa++;
+				} catch (Exception e1) {
+					CameLog.setLog(TAG, "例外対策の1枚写真でのエサ生成にも失敗。初期状態ではエサを生成しない。");
+				}
+			}
+		}
+	}
 }

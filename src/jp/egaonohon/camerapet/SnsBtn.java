@@ -10,9 +10,7 @@ import android.widget.Toast;
 
 /**
  * SNS投稿クラス。 TWEETTXTとoFACEBOOKTXTは要差し替え。
- *
  * @author OtaShohei
- *
  */
 public class SnsBtn {
 	/**
