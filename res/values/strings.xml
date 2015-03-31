@@ -18,7 +18,6 @@
     <string name="age_days_3rd">rd Day</string>
     <string name="age_months">th Month</string>
     <string name="exp_points">EXP :</string>
-    <string name="esa_status_dinner">Eat in dinner</string>
     <string name="tutorial01">This app is a camera app. But, this is not just a camera. Taking photos with this app, Your pet who lives in the app grow!!</string>
     <string name="tutorial02">First of all, please take a photo. You can take a photo by simply tapping the preview screen.</string>
     <string name="tutorial03">In the game screen, the photographs you took has afloat. Please try to move the pet Flick the screen. Pet will eat photo (does not disappear photos stored on smartphone).</string>
@@ -38,6 +37,11 @@
     <string name="pet_01_spec">Weight:about one melon\nLength:A little longer than pencil case\nFavorite:Smell of owner</string>
     <string name="pet_01_comment">Dog that was picked up in the park. But, one day, He began to suddenly fly in the sky. Moreover, He starts eating photos.</string>
     <string name="pet_message_welcome">Bow-wow!Bow-wow!\n（He speaks that I"'"m glad to meet the owner"'"s!</string>
-        <string name="how_to_shot"> Tap the screen, you can take a picture.</string>
+    <string name="how_to_shot"> Tap the screen, you can take a picture.</string>
+    <string name="download_sns_app">SNS app is not installed. Please download the SNS apps on Google Play.</string>
+    <string name="esa_status_morning">Eat in morning</string>
+    <string name="esa_status_lunch">Eat in lunch</string>
+    <string name="esa_status_snack">Eat in snack</string>
+    <string name="esa_status_dinner">Eat in dinner</string>
 
 </resources>

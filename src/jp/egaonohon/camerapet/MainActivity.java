@@ -38,9 +38,9 @@ public class MainActivity extends Activity {
 	/** Facebookから戻ってきた直後を判定するBoolean */
 	private static boolean returnFb = false;
 	/** Twitterから戻ってきた直後を判定するBoolean */
-	private static boolean returnTw = false;
+	private static boolean returnTwitter = false;
 	/** Tutorialから戻ってきた直後を判定するBoolean */
-	private static boolean returnTut = false;
+	private static boolean returnTutorial = false;
 	/** 図鑑から戻ってきた直後を判定するBoolean */
 	private static boolean returnEncyc = false;
 
@@ -140,7 +140,7 @@ public class MainActivity extends Activity {
 		}
 
 		/** Twitterから戻ってくることを示す */
-		returnTw = true;
+		returnTwitter = true;
 
 		/** Twitterへ投稿実行 */
 		SnsBtn.goTwitter(this);
@@ -210,7 +210,7 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * ペット図鑑呼び出しメソッド。
+	 * チュートリアル呼び出しメソッド。
 	 * @param v
 	 */
 	public void onClickTutorial(View v) {
@@ -220,7 +220,7 @@ public class MainActivity extends Activity {
 		}
 
 		/** Tutorialから戻ってくることを示す */
-		returnTut = true;
+		returnTutorial = true;
 
 		/**
 		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
@@ -244,12 +244,28 @@ public class MainActivity extends Activity {
 	}
 
 	/** Twitterから戻ってきたかどうかの判定を他のクラスに与えるメソッド */
-	public static boolean isReturnTw() {
-		return returnTw;
+	public static boolean isReturnTwitter() {
+		return returnTwitter;
 	}
 
 	/** チュートリアルから戻ってきたかどうかの判定を他のクラスに与えるメソッド */
-	public static boolean isReturnTut() {
-		return returnTut;
+	public static boolean isReturnTutorial() {
+		return returnTutorial;
+	}
+
+	/** facebookから戻ってきたかどうかの判定を他のクラスから変更するメソッド */
+	public static void setReturnFb(boolean returnFb) {
+		MainActivity.returnFb = returnFb;
+	}
+
+	/** Twitterから戻ってきたかどうかの判定を他のクラスから変更するメソッド */
+	public static void setReturnTwitter(boolean returnTwitter) {
+		MainActivity.returnTwitter = returnTwitter;
+	}
+
+
+	/** チュートリアルから戻ってきたかどうかの判定を他のクラスから変更するメソッド */
+	public static void setReturnTut(boolean returnTut) {
+		MainActivity.returnTutorial = returnTut;
 	}
 }

@@ -99,7 +99,8 @@ public class Pet extends CamPeItem implements Runnable {
 			int defaultX, int defaultY, int viewWidth, int viewHeight) {
 		super(petPhR, itemWidth, itemHeight, defaultX, defaultY, viewWidth,
 				viewHeight);
-		CameLog.setLog(TAG,"petPhRは" + petPhR +"petPhLは" +  petPhL +"itemWidthは" +  itemWidth);
+		CameLog.setLog(TAG, "petPhRは" + petPhR + "petPhLは" + petPhL
+				+ "itemWidthは" + itemWidth);
 
 		this.petPhR = petPhR;
 		this.petPhL = petPhL;
@@ -120,12 +121,13 @@ public class Pet extends CamPeItem implements Runnable {
 		CameLog.setLog(TAG, "CPPetがnewされた時点でのペットのWidthは" + this.itemWidth
 				+ "。Heightは" + this.itemHeight);
 
-		/** PetPhの拡大・縮小率設定
-		 * ここでfloatにキャストしないと拡大率が小数点以下切り捨てられてしまうので要注意 */
-		scaleX = (float)itemWidth / petPhR.getWidth();
-		scaleY = (float)itemHeight / petPhR.getHeight();
+		/**
+		 * PetPhの拡大・縮小率設定 ここでfloatにキャストしないと拡大率が小数点以下切り捨てられてしまうので要注意
+		 */
+		scaleX = (float) itemWidth / petPhR.getWidth();
+		scaleY = (float) itemHeight / petPhR.getHeight();
 
-		CameLog.setLog(TAG,"scaleXは" + scaleX +"scaleYは" +  scaleY);
+		CameLog.setLog(TAG, "scaleXは" + scaleX + "scaleYは" + scaleY);
 
 		matrix.setScale(scaleX, scaleY);
 		// matrix.postScale(scaleX, scaleY);
@@ -143,8 +145,8 @@ public class Pet extends CamPeItem implements Runnable {
 	 * GameSurfaceViewから来たPetの移動量をセットする。 GameSurfaceView側での呼び出しがもちろん必要。
 	 */
 	public void setPetMoveSize(float x, float y) {
-		moveX = (int) (x / (viewWidth / 8));
-		moveY = (int) (y / (viewWidth / 8));
+		moveX = (int) (x / (viewWidth / 10));
+		moveY = (int) (y / (viewWidth / 10));
 		// CameLog.setLog(TAG, "onTouchEventからペットに移動距離を設定");
 	}
 
@@ -178,8 +180,8 @@ public class Pet extends CamPeItem implements Runnable {
 			/** 次の行はそもそもXとYが食い違っているので動いているようだが妙な動きになってしまう。かつ、上下判定も変なことに */
 			// moveY = -moveX;
 			moveY *= -1;
-			CameLog.setLog(TAG, "ペット移動範囲のwidthは" + viewWidth
-					+ "ペット移動範囲のheightは" + viewHeight);
+			// CameLog.setLog(TAG, "ペット移動範囲のwidthは" + viewWidth
+			// + "ペット移動範囲のheightは" + viewHeight);
 		}
 
 		/** 移動させる */
@@ -210,10 +212,10 @@ public class Pet extends CamPeItem implements Runnable {
 		/** 衝突判定用RectFの更新 */
 		rectF.set(nowX, nowY, nowX + itemWidth, nowY + itemHeight);
 
-		 /** 衝突判定用RectFにセットした数値の確認 */
-		 CameLog.setLog(TAG, "更新されたnowXは" + nowX + "。nowYは" + nowY
-		 + "。nowX + itemWidthは" + (nowX + itemWidth)
-		 + "。nowY + itemHeightは" + (nowY + itemHeight));
+		// /** 衝突判定用RectFにセットした数値の確認 */
+		// CameLog.setLog(TAG, "更新されたnowXは" + nowX + "。nowYは" + nowY
+		// + "。nowX + itemWidthは" + (nowX + itemWidth)
+		// + "。nowY + itemHeightは" + (nowY + itemHeight));
 	}
 
 	@Override

@@ -29,17 +29,17 @@ public class Start extends Activity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		setContentView(R.layout.start);
+		Judge();
 	}
 
 	/*
 	 * (非 Javadoc)
-	 * 
+	 *
 	 * @see android.app.Activity#onResume()
 	 */
 	@Override
 	protected void onResume() {
 		super.onResume();
-		Judge();
 	}
 
 	/**
@@ -47,15 +47,20 @@ public class Start extends Activity {
 	 */
 	public void Judge() {
 		String startStatus = CamPePref.loadStartStatus(this);
-		/** 初めての起動でないならばMainActivityへ飛ばす */
-		if (startStatus == "notFirst") {
+		CameLog.setLog(TAG,startStatus);
+
+		/**
+		 * 初めての起動でないならばMainActivityへ飛ばす。
+		 * 最初、Stringの比較を == でやっていたので判定がうまくいっていなかった…。
+		 *  */
+		if (startStatus.equals("notFirst") ) {
 			/**
 			 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
 			 */
 			Intent intent = new Intent(Start.this, MainActivity.class);
 
 			/** 処理を1000ミリ秒待つ */
-			sleep(1000);
+//			sleep(1000);
 			CameLog.setLog(TAG,"初回起動ではないと判断。");
 
 			/**
@@ -64,14 +69,14 @@ public class Start extends Activity {
 			startActivity(intent);
 
 			/** 初めての起動ならばチュートリアルへ飛ばす */
-		} else {
+		} else if (!startStatus.equals("notFirst")) {
 			/**
 			 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
 			 */
 			Intent intent = new Intent(Start.this, TutorialFirstActivity.class);
 
 			/** 処理を1000ミリ秒待つ */
-			sleep(1000);
+//			sleep(1000);
 			CameLog.setLog(TAG,"初回起動と判断。");
 
 			/**
@@ -90,5 +95,4 @@ public class Start extends Activity {
 			CameLog.setLog(TAG,"500ミリ秒実行停止に失敗。");
 		}
 	}
-
 }

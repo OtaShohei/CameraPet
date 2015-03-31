@@ -4,12 +4,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.widget.Toast;
 
 /**
  * SNS投稿クラス。 TWEETTXTとoFACEBOOKTXTは要差し替え。
- * 
+ *
  * @author OtaShohei
  *
  */
@@ -76,10 +77,13 @@ public class SnsBtn {
 					PackageManager.GET_META_DATA);
 			return true;
 		} catch (NameNotFoundException e) {
+			/** Toast表示用の文字列を取得 */
+			Resources res = context.getResources();
+			String petWelcomMessage = res.getString(R.string.download_sns_app);
 			/**
-			 * エラー発生時のトースト。
+			 * Twitterかfacebookアプリがインストールされていない時のトースト。
 			 */
-			Toast.makeText(context, "何らかのエラーが発生しました", Toast.LENGTH_SHORT)
+			Toast.makeText(context, petWelcomMessage, Toast.LENGTH_SHORT)
 					.show();
 			return false;
 		}

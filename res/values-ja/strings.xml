@@ -18,7 +18,6 @@
     <string name="age_days_3rd">日</string>
     <string name="age_months">か月</string>
     <string name="exp_points">経験値 :</string>
-    <string name="esa_status_dinner">夕食でたべた数</string>
     <string name="tutorial01">カメラペットはカメラアプリ。でも、ただのカメラじゃないのです。このアプリで写真を撮るとアプリの中に住んでいるあなたのペットも成長するのです。</string>
     <string name="tutorial02">まずは写真を撮ります。プレビュー画面をタップするだけでオートフォーカスで撮れちゃいますよ。</string>
     <string name="tutorial03">戻ると、先ほど撮った写真が浮かんでいます。画面をフリックしてペットを動かしてみて！　ペットが写真を食べちゃいます（スマホの写真は消えないから安心して）。</string>
@@ -39,5 +38,10 @@
     <string name="pet_01_comment">公園で拾った犬。ある日突然空を飛べるようになったすごいヤツ。でも、写真を食べ始めるなんてびっくりですよ。</string>
     <string name="pet_message_welcome">「ワンワン!キュイーン!ワンワン!」\n（訳:飼い主さんに会えてうれしいワン!</string>
     <string name="how_to_shot">画面タップで撮影できます。</string>
+    <string name="download_sns_app">SNSアプリが入っていません。Google PlayでSNSアプリをダウンロードしてください。</string>
+    <string name="esa_status_morning">朝ご飯でたべた数</string>
+    <string name="esa_status_lunch">お昼ご飯でたべた数</string>
+    <string name="esa_status_snack">おやつでたべた数</string>
+    <string name="esa_status_dinner">晩ご飯でたべた数</string>
 
 </resources>
