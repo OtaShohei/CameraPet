@@ -8,12 +8,12 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 
 /**
- * ゲーム画面で動くペットのクラス
+ * ゲーム画面で動くペットレベル1Aのクラス。
  *
  * @author OtaShohei
  *
  */
-public class Pet extends CamPeItem implements Runnable {
+public class Pet001A extends AbstractPet implements Runnable {
 
 	/** 描画設定 */
 	private Paint petPaint = new Paint();
@@ -61,6 +61,10 @@ public class Pet extends CamPeItem implements Runnable {
 	private int cnt;
 	/** ペットが動くスピード（移動および歩くアニメーションに影響） */
 	private long speed = 60;
+	/** ペット移動加速度X軸 */
+	private int petKasokudoX = viewWidth / 7;
+	/** ペット移動加速度Y軸 */
+	private int petKasokudoY = viewWidth / 6;
 
 	/** ペット用のスレッド */
 	private Thread petThread;
@@ -78,7 +82,7 @@ public class Pet extends CamPeItem implements Runnable {
 	 * @param defaultX
 	 * @param defaultY
 	 */
-	public Pet(Bitmap itemPh, int width, int height, int defaultX,
+	public Pet001A(Bitmap itemPh, int width, int height, int defaultX,
 			int defaultY, int viewWidth, int viewHeight) {
 		super(itemPh, width, height, defaultX, defaultY, viewWidth, viewHeight);
 	}
@@ -95,7 +99,7 @@ public class Pet extends CamPeItem implements Runnable {
 	 * @param viewWidth
 	 * @param viewHeight
 	 */
-	public Pet(Bitmap petPhR, Bitmap petPhL, int itemWidth, int itemHeight,
+	public Pet001A(Bitmap petPhR, Bitmap petPhL, int itemWidth, int itemHeight,
 			int defaultX, int defaultY, int viewWidth, int viewHeight) {
 		super(petPhR, itemWidth, itemHeight, defaultX, defaultY, viewWidth,
 				viewHeight);
@@ -107,10 +111,13 @@ public class Pet extends CamPeItem implements Runnable {
 		this.itemPh = petPhR;
 		this.itemWidth = itemWidth;
 		this.itemHeight = itemHeight;
-		this.defaultX = defaultX;
-		this.defaultY = defaultY;
+		/** Defaultの位置を現在地に代入する */
+		this.nowX = defaultX;
+		this.nowY = defaultY;
 		this.viewWidth = viewWidth;
 		this.viewHeight = viewHeight;
+
+
 
 		/** 衝突判定用RectFをインスタンス化 */
 		rectF = new RectF();
@@ -251,5 +258,21 @@ public class Pet extends CamPeItem implements Runnable {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public int getNowX() {
+		return nowX;
+	}
+
+	public void setNowX(int nowX) {
+		this.nowX = nowX;
+	}
+
+	public int getNowY() {
+		return nowY;
+	}
+
+	public void setNowY(int nowY) {
+		this.nowY = nowY;
 	}
 }

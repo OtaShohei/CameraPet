@@ -6,7 +6,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 
-public class Encyc02Activity extends Activity {
+public class Encyc03Activity extends Activity {
 
 	/** BGM用変数 */
 	private MediaPlayer encycBgm;
@@ -88,7 +88,7 @@ public class Encyc02Activity extends Activity {
 		/**
 		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
 		 */
-		Intent intent = new Intent(Encyc02Activity.this, Encyc01Activity.class);
+		Intent intent = new Intent(Encyc03Activity.this, Encyc02Activity.class);
 
 		/**
 		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
@@ -106,7 +106,7 @@ public class Encyc02Activity extends Activity {
 		/**
 		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
 		 */
-		Intent intent = new Intent(Encyc02Activity.this, MainActivity.class);
+		Intent intent = new Intent(Encyc03Activity.this, MainActivity.class);
 
 		/**
 		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
@@ -137,7 +137,7 @@ public class Encyc02Activity extends Activity {
 	 /**
 	 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
 	 */
-	 Intent intent = new Intent(Encyc02Activity.this, Encyc03Activity.class);
+	 Intent intent = new Intent(Encyc03Activity.this, Encyc04Activity.class);
 
 	 /**
 	 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。

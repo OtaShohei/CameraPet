@@ -2,11 +2,9 @@ package jp.egaonohon.camerapet;
 
 import java.util.ArrayList;
 
-import android.R.integer;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -23,7 +21,7 @@ import android.widget.Toast;
 
 /**
  * ゲーム画面の動作を司るSurfaceViewのクラス。
- * 
+ *
  * @author OtaShohei
  */
 public class GameSurfaceView extends SurfaceView implements
@@ -43,8 +41,10 @@ public class GameSurfaceView extends SurfaceView implements
 	/** Viewの高さ */
 	private int viewHeight;
 
-	/** ペットの参照 */
-	private Pet myPet;
+	/** Defaultペットの参照 */
+	private AbstractPet myPet;
+	/** レベルアップ後のペットの参照 */
+	private AbstractPet updatedMyPet;
 	/** ペット画像右向き */
 	private Bitmap petPhR;
 	/** ペット画像右向き */
@@ -62,6 +62,8 @@ public class GameSurfaceView extends SurfaceView implements
 	private float esaKasokudo = 1.5f;
 	/** 餌移動加速度乱数最大値 */
 	private int esaKasokudoMax = 4;
+	/** インストール直後エサ生成数初期値 */
+	private int esaDefaultMakeCnt = 30;
 
 	/** プリファレンスから取得した3時間以内エサ獲得成功数 */
 	private int gettedThreeHoursEatCnt;
@@ -71,6 +73,8 @@ public class GameSurfaceView extends SurfaceView implements
 
 	/** エサゲット時サウンド用変数 */
 	private MediaPlayer bakubakuSE;
+	/** レベルアップ時サウンド用変数 */
+	private MediaPlayer levelUpSE;
 	/** エサゲット時カウント */
 	private int esaGetCnt = 0;
 
@@ -147,6 +151,9 @@ public class GameSurfaceView extends SurfaceView implements
 
 		/** サウンドエフェクトのインスタンス生成し準備 */
 		bakubakuSE = MediaPlayer.create(context, R.raw.dog1b);
+
+		/** レベルアップ時SEのインスタンス生成し準備 */
+		levelUpSE = MediaPlayer.create(context, R.raw.level_up_se);
 
 		/** このViewをトップにする */
 		setZOrderOnTop(true);
@@ -270,8 +277,42 @@ public class GameSurfaceView extends SurfaceView implements
 						}
 					}
 
+					/** ペットのレベル判定を行なう。レベルアップ可能ならば、現在のペットを削除して新しいペットに差し替える。 */
+					else if (camPeItems.get(i).equals(myPet)) {
+
+						/** 現在のステータスでレベルアップが可能と判定されたら、ペットをレベルアップする。 */
+						if (PetLevel.judge(context, myPet)) {
+							/** 現在のペットの位置を取得する */
+							int nowX = camPeItems.get(i).getNowX();
+							int nowY = camPeItems.get(i).getNowY();
+							CameLog.setLog(TAG, "レベルアップ可能と判定");
+
+							/** レベル判定に基づき新レベルのペット作成 */
+							updatedMyPet = PetLevel.up(context, viewWidth / 3,
+									viewWidth / 3, 0, (viewWidth / 3) * 2,
+									viewWidth, viewHeight);
+							/** 新レベルのペットに現在地をセット */
+							updatedMyPet.setNowX(nowX);
+							updatedMyPet.setNowY(nowY);
+
+							/** 新しいペットを作り終えたので古いペットを削除する */
+							camPeItems.remove(i);
+						}
+					}
+
 					/** SurfaceView上に、レーティングバー・経験値・ペット年齢・を描画するメソッドを呼び出す */
 					textRectWrite(canvas);
+				}
+
+				/** レベルアップ処理を行って削除したため、ArrayListにペットが入っていないならば… */
+				if (!camPeItems.contains(myPet)) {
+					/** 新しいペットを作り終えたので古いペットを削除する */
+					myPet = updatedMyPet;
+					/** スレッドの配列に新レベルのペットを追加 */
+					camPeItems.add(myPet);
+					/** レベルアップ時のSEを鳴らす */
+					levelUpSE.start();
+					CameLog.setLog(TAG, "ペットがレベルアップ!!");
 				}
 
 				/** 画面に表示されているエサの残数が1または0になったら新たなエサを1つ生成する */
@@ -280,12 +321,13 @@ public class GameSurfaceView extends SurfaceView implements
 				}
 
 				/*
-				 * Can't create handler inside thread that has not called Looper.prepare()との警告とともに例外発生のため一時コメントアウト
+				 * Can't create handler inside thread that has not called
+				 * Looper.prepare()との警告とともに例外発生のため一時コメントアウト
 				 */
-//				/** 残りエサ数が0になったらトーストでエサの獲得方法告知 */
-//				if ((nowFalldownEsaCnt - throwedEsa) == 0) {
-//					MainActivity.makeToastOfHowToGetEsa();
-//				}
+				// /** 残りエサ数が0になったらトーストでエサの獲得方法告知 */
+				// if ((nowFalldownEsaCnt - throwedEsa) == 0) {
+				// MainActivity.makeToastOfHowToGetEsa();
+				// }
 
 				holder.unlockCanvasAndPost(canvas);
 			}
@@ -330,19 +372,19 @@ public class GameSurfaceView extends SurfaceView implements
 		/** もしインストール直後などで直近撮影枚数がない場合はデフォルト値5枚をセット。プログレスバーの最大値も50枚でセット */
 		if (esaCnt == -1) {
 			esaCnt = 5;
-			nowFalldownEsaCnt = 50;
+			nowFalldownEsaCnt = esaDefaultMakeCnt;
 		}
 
 		// CameLog.setLog(TAG, "直近撮影枚数を取得。枚数は" + esaCnt);
 
-		/** ペット写真取得 */
-		petPhR = BitmapFactory.decodeResource(context.getResources(),
-				R.drawable.alpaca02);
-		petPhL = BitmapFactory.decodeResource(context.getResources(),
-				R.drawable.alpaca_left);
+		// /** ペット写真取得 */
+		// petPhR = BitmapFactory.decodeResource(context.getResources(),
+		// R.drawable.alpaca02);
+		// petPhL = BitmapFactory.decodeResource(context.getResources(),
+		// R.drawable.alpaca_left);
 
-		/** ペット作成 */
-		myPet = new Pet(petPhR, petPhL, viewWidth / 3, viewWidth / 3, 0,
+		/** レベル判定に基づきペット作成 */
+		myPet = PetLevel.up(context, viewWidth / 3, viewWidth / 3, 0,
 				(viewWidth / 3) * 2, viewWidth, viewHeight);
 
 		camPeItems.add(myPet);
@@ -404,6 +446,11 @@ public class GameSurfaceView extends SurfaceView implements
 		}
 
 		esaGetCnt = gettedThreeHoursEatCnt;
+
+		/** プログレスバー最大値を3時間以内取得数が超えていた場合は取得数を最大値に設定し直す */
+		if (esaGetCnt > progressMax) {
+			esaGetCnt = progressMax;
+		}
 
 		thread = new Thread(this);
 		thread.start();
@@ -477,7 +524,7 @@ public class GameSurfaceView extends SurfaceView implements
 
 		/**
 		 * 進捗部分を塗る
-		 * 
+		 *
 		 * 第3引数は、外枠のdrawRect開始位置（外枠のdrawRectの第1引数）分を足さないと外枠とずれてしまう。ここでは、
 		 * viewWidth / 40がそれに相当する。 また、
 		 * 第3引数はみなfloatに明示的にキャストしておかないと小さい差異が結果的に大きい差になってプログレスバーが最後まで塗れないので要注意。
@@ -578,13 +625,17 @@ public class GameSurfaceView extends SurfaceView implements
 					 * @param viewHeight
 					 *            エサが動くViewの高さ
 					 */
-					
-					
-					camPeItems.add(new Esa(esaPhList.get(i), viewWidth / 13,
-							viewWidth / 13, (int) ((esaDefaultX * (Math
-									.random() * 10)) * 90), esaDefaultY,
-							viewWidth, viewHeight, (Double) (esaKasokudo * (Math
-									.random() * esaKasokudoMax))));
+
+					camPeItems
+							.add(new Esa(
+									esaPhList.get(i),
+									viewWidth / 13,
+									viewWidth / 13,
+									(int) ((esaDefaultX * (Math.random() * 10)) * 90),
+									esaDefaultY,
+									viewWidth,
+									viewHeight,
+									(Double) (esaKasokudo * (Math.random() * esaKasokudoMax))));
 					/** 落下させたエサの数をインクリメント */
 					throwedEsa++;
 				}

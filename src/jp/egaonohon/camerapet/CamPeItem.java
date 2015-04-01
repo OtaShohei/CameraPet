@@ -6,6 +6,11 @@ import android.graphics.Canvas;
 //import android.graphics.Paint;
 import android.graphics.RectF;
 
+/**
+ * アプリのゲーム画面に登場するアイテムすべての抽象クラス。
+ * @author OtaShohei
+ *
+ */
 public abstract class CamPeItem {
 
 //	/** 描画設定 */
@@ -61,10 +66,9 @@ public abstract class CamPeItem {
 	 * @param defaultX
 	 * @param defaultY
 	 */
-	public CamPeItem(Bitmap itemPh, int width, int height, int defaultX,
+	public CamPeItem( int width, int height, int defaultX,
 			int defaultY, int viewWidth, int viewHeight) {
 		super();
-		this.itemPh = itemPh;
 		this.itemWidth = width;
 		this.itemHeight = height;
 		this.defaultX = defaultX;

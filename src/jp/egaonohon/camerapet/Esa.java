@@ -85,13 +85,13 @@ public class Esa extends CamPeItem implements Runnable {
 	 */
 	public Esa(Bitmap itemPh, int width, int height, int defaultX,
 			int defaultY, int viewWidth, int viewHeight, Double moveY) {
-		super(itemPh, width, height, defaultX, defaultY, viewWidth, viewHeight);
+		super(width, height, defaultX, defaultY, viewWidth, viewHeight);
 		this.itemPh = itemPh;
 		this.itemWidth = width;
 		this.itemHeight = height;
-		this.defaultX = defaultX;
+		this.nowX = defaultX;
 		/** エサのY座標の初期位置をマイナスに設定して画面表示直後でのペットとの接触をさける */
-		this.defaultY = defaultY - 60;
+		this.nowY = defaultY - (viewWidth/4);
 		this.viewWidth = viewWidth;
 		this.viewHeight = viewHeight;
 		this.moveY = moveY;
@@ -143,7 +143,7 @@ public class Esa extends CamPeItem implements Runnable {
 //		}
 
 		/** 移動させる */
-		nowX = defaultX + moveX;
+		nowX = nowX + moveX;
 		nowY = nowY + moveY;
 
 		// /** esaPhの位置と拡大縮小率確認 */
