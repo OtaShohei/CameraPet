@@ -11,11 +11,11 @@ public class CamPePref {
 
 	/** 初回起動か否かを確認するステイタス情報をプリファレンスに保存する */
 	public static void saveStartStatus(Context context) {
-		/** プリファレンスの準備  */
+		/** プリファレンスの準備 */
 		SharedPreferences pref = context.getSharedPreferences("startStatus",
 				Context.MODE_PRIVATE);
 
-		/** プリファレンスに書き込むためのEditorオブジェクト取得  */
+		/** プリファレンスに書き込むためのEditorオブジェクト取得 */
 		Editor editor = pref.edit();
 
 		/** "startStatus" というキーでnotFirstを登録 */
@@ -23,22 +23,67 @@ public class CamPePref {
 
 		/** 書き込みの確定（実際にファイルに書き込む） */
 		editor.commit();
-		CameLog.setLog(TAG, "saveStartStatusにて" +"startStatus" + "キーで"+ "notFirst"+ "を登録");
+		CameLog.setLog(TAG, "saveStartStatusにて" + "startStatus" + "キーで"
+				+ "notFirst" + "を登録");
 	}
 
 	/** 初回起動か否かを確認するステイタス情報をプリファレンスから取り出す。登録されていなければ空の文字列を返す */
-    public static String loadStartStatus( Context context ){
-    	/** プリファレンスの準備  */
-        SharedPreferences pref =
-                context.getSharedPreferences( "startStatus", Context.MODE_PRIVATE );
+	public static String loadStartStatus(Context context) {
+		/** プリファレンスの準備 */
+		SharedPreferences pref = context.getSharedPreferences("startStatus",
+				Context.MODE_PRIVATE);
 
-        String startStatus = pref.getString( "startStatus", "" );
+		String startStatus = pref.getString("startStatus", "");
 
 		CameLog.setLog(TAG, "初回起動か否かのステイタス" + startStatus + "を取得");
 
-        /** "startStatus" というキーで保存されている値を読み出す */
-        return startStatus;
-    }
+		/** "startStatus" というキーで保存されている値を読み出す */
+		return startStatus;
+	}
+
+	/**
+	 * ペットがレベルアップする直前、現在のペットのステイタスnowをgettedに書き換える。次に、
+	 * レベルアップ後のペットをnowとペットステイタス情報を管理するプリファレンスに保存する
+	 */
+	public static void savePetStatus(Context context,
+			String beforePetSpeciesName, String updatedPetSpeciesName) {
+
+		/** プリファレンスの準備 */
+		SharedPreferences pref = context.getSharedPreferences("petStatus",
+				Context.MODE_PRIVATE);
+
+		/** プリファレンスに書き込むためのEditorオブジェクト取得 */
+		Editor editor = pref.edit();
+
+		if (!(updatedPetSpeciesName.equals("Pet001A"))) {
+			/** "petSpecies" というキーで現在そのペットであることを示すnowを登録 */
+			editor.putString(beforePetSpeciesName, "getted");
+		}
+
+		if (beforePetSpeciesName.equals("Pet001A")) {
+			editor.putString(beforePetSpeciesName, "getted");
+		}
+		editor.putString(updatedPetSpeciesName, "now");
+
+		/** 書き込みの確定（実際にファイルに書き込む） */
+		editor.commit();
+		CameLog.setLog(TAG, "savePetStatusにて、" + beforePetSpeciesName + "キーで"
+				+ "gettedを、" + updatedPetSpeciesName + "キーで" + "nowを" + "登録");
+	}
+
+	/** あるペットのステイタス情報をプリファレンスから取り出す。登録されていなければ空の文字列を返す */
+	public static String loadPetStatus(Context context, String petSpecies) {
+		/** プリファレンスの準備 */
+		SharedPreferences pref = context.getSharedPreferences("petStatus",
+				Context.MODE_PRIVATE);
+
+		String petStatus = pref.getString(petSpecies, "");
+
+		CameLog.setLog(TAG, "ペット" + petSpecies + "のステイタス" + petStatus + "を取得");
+
+		/** "startStatus" というキーで保存されている値を読み出す */
+		return petStatus;
+	}
 
 	/** Gameでの累計エサ獲得成功回数と累計経験値をプリファレンスに保存する */
 	public static void saveTotalExpAndEsaGetCnt(Context context,
@@ -66,11 +111,11 @@ public class CamPePref {
 		/** エサを食べた時間 */
 		long esaGetTime = System.currentTimeMillis();
 
-		/** プリファレンスの準備  */
-		SharedPreferences pref = context.getSharedPreferences("threeHoursEatCnt",
-				Context.MODE_PRIVATE);
+		/** プリファレンスの準備 */
+		SharedPreferences pref = context.getSharedPreferences(
+				"threeHoursEatCnt", Context.MODE_PRIVATE);
 
-		/** プリファレンスに書き込むためのEditorオブジェクト取得  */
+		/** プリファレンスに書き込むためのEditorオブジェクト取得 */
 		Editor editor = pref.edit();
 
 		/** "threeHoursEatCnt" というキーでnowEatCntを登録 */
@@ -90,11 +135,11 @@ public class CamPePref {
 		long nowTime = System.currentTimeMillis();
 
 		/** エサを食べた時間 */
-		long esaLastGetTime ;
+		long esaLastGetTime;
 
 		/** プリファレンスの準備 */
-		SharedPreferences pref = context.getSharedPreferences("threeHoursEatCnt",
-				Context.MODE_PRIVATE);
+		SharedPreferences pref = context.getSharedPreferences(
+				"threeHoursEatCnt", Context.MODE_PRIVATE);
 
 		/** "threeHoursEatCnt" というキーで保存されている値を読み出す */
 		int gettedThreeHoursEatCnt = pref.getInt("threeHoursEatCnt", -1);
@@ -107,7 +152,8 @@ public class CamPePref {
 			gettedThreeHoursEatCnt = 0;
 		}
 
-		CameLog.setLog(TAG, "3時間以内に食べたエサの数" + gettedThreeHoursEatCnt + "をプリファレンスから取得");
+		CameLog.setLog(TAG, "3時間以内に食べたエサの数" + gettedThreeHoursEatCnt
+				+ "をプリファレンスから取得");
 
 		/** 3時間以内に食べたエサの数をを戻す */
 		return gettedThreeHoursEatCnt;

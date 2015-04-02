@@ -30,72 +30,11 @@
         android:background="@drawable/pattern_yellow"
         android:orientation="vertical" >
 
-        <LinearLayout
+        <jp.egaonohon.camerapet.Encyc03ContentsDrawView
+            android:id="@+id/contentsField"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="68.17"
-            android:background="@drawable/encyclopedia_jimon"
-            android:orientation="vertical" >
-
-            <!-- ペット1種類分 -->
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:paddingLeft="70dp"
-                android:paddingRight="55dp"
-                android:paddingTop="60dp" >
-
-                <ImageView
-                    android:id="@+id/imageView1"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="8"
-                    android:paddingTop="5dp"
-                    android:src="@drawable/nazono_inu" />
-
-                <!-- ペット見出し専用のlinearlayout -->
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_margin="0dp"
-                    android:layout_weight="2"
-                    android:background="@drawable/kanban_plain"
-                    android:orientation="vertical"
-                    android:padding="1dp" >
-
-                    <TextView
-                        android:id="@+id/textView11"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="0dp"
-                        android:gravity="center"
-                        android:padding="2dp"
-                        android:text="@string/pet_unknown_name"
-                        android:textColor="#ffffff"
-                        android:textSize="14sp" />
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/textView12"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.5"
-                    android:gravity="left|center"
-                    android:text="@string/pet_unknown_spec"
-                    android:textSize="13sp" />
-
-                <TextView
-                    android:id="@+id/textView13"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:text="@string/pet_unknown_comment"
-                    android:textSize="14sp" />
-            </LinearLayout>
-        </LinearLayout>
+            android:layout_weight="68.17" />
 
         <!-- @string/encycl -->
 
@@ -171,6 +110,7 @@
                 android:layout_weight="1"
                 android:background="@null"
                 android:cropToPadding="false"
+                android:onClick="goforward"
                 android:padding="5dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/forward_btn" />

@@ -31,10 +31,15 @@
     <string name="go_forward">Forward</string>
     <string name="return_back">Back</string>
     <string name="pet_unknown_name">"??????"</string>
-    <string name="pet_unknown_spec">Weight:?????\nLength:?????\nFavorite:?????</string>
+    <string name="pet_unknown_weight">Weight:?????</string>
+    <string name="pet_unknown_length">Length:?????</string>
+    <string name="pet_unknown_favorite">Favorite:?????</string>
     <string name="pet_unknown_comment">"???????????????????????????????????????????????????????????????????????????????????????????????????"</string>
     <string name="pet_01_name">Mongrel</string>
-    <string name="pet_01_spec">Weight:about one melon\nLength:A little longer than pencil case\nFavorite:Smell of owner</string>
+    <string name="pet_01_spec">Weight:about melon\nLength:A little longer than pencil case\nFavorite:Smell of owner</string>
+    <string name="pet_01_weight">Weight:about melon</string>
+    <string name="pet_01_length">Length:A little longer than pencil case</string>
+    <string name="pet_01_favorite">Favorite:Smell of owner</string>
     <string name="pet_01_comment">Dog that was picked up in the park. But, one day, He began to suddenly fly in the sky. Moreover, He starts eating photos.</string>
     <string name="pet_message_welcome">Bow-wow!Bow-wow!\n (He speaks that I"'"m glad to meet the owner"'"s!)</string>
     <string name="how_to_shot"> Tap the screen, you can take a picture.</string>
@@ -45,5 +50,20 @@
     <string name="esa_status_dinner">Satisfaction of dinner</string>
     <string name="number_of_food_this_time">Remaining bait</string>
     <string name="how_to_get_esa_toast">Bow-wow!\n (He speaks that Number of bait is zero. If you post my growth record to SNS,or take pictures, you can get more bait!)</string>
+    <string name="pet_dummy_name">dummy</string>
+    <string name="pet_dummy_weight">dummydummy</string>
+    <string name="pet_dummy_length">dummydummy</string>
+    <string name="pet_dummy_favorite">dummydummy</string>
+    <string name="pet_dummy_comment">dummydummydummydummydummydummydummydummydummydummydummydummydummydummydummydummydummydummydummy</string>
+    <string name="pet_02_name">Castle dog</string>
+    <string name="pet_02_weight">Weight:about Watermelon</string>
+    <string name="pet_02_length">Length:Two Smartphone</string>
+    <string name="pet_02_favorite">Favorite:Japanese garden</string>
+    <string name="pet_02_comment">Dog wearing a stone wall of castle. It seems difficult to walk, but he doesn"'"t care. If he is touched stone, he delight</string>
+    <string name="pet_03_name">Snowdog</string>
+    <string name="pet_03_weight">Weight:about snowman</string>
+    <string name="pet_03_length">Length:about snowman</string>
+    <string name="pet_03_favorite">Favorite:Freezer</string>
+    <string name="pet_03_comment">He is not good at summer. As soon as return from outside, he must enter in the freezer. Because he disappears and melts.</string>
 
 </resources>

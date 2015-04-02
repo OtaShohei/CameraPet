@@ -8,12 +8,12 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 
 /**
- * ゲーム画面で動くペットレベル2Aのクラス。
+ * ゲーム画面で動くペットレベル3Aのクラス。
  *
  * @author OtaShohei
  *
  */
-public class Pet002A extends AbstractPet implements Runnable {
+public class Pet003A extends AbstractPet implements Runnable {
 
 	/** 描画設定 */
 	private Paint petPaint = new Paint();
@@ -24,7 +24,7 @@ public class Pet002A extends AbstractPet implements Runnable {
 	final Matrix matrix = new Matrix();
 
 	/** ペットの種別名 */
-	private static final String PET_SPECIES_NAME = "Pet002A";
+	private static final String PET_SPECIES_NAME = "Pet003A";
 
 	/** Viewの幅 */
 	private int viewWidth;
@@ -85,7 +85,7 @@ public class Pet002A extends AbstractPet implements Runnable {
 	 * @param defaultX
 	 * @param defaultY
 	 */
-	public Pet002A(Bitmap itemPh, int width, int height, int defaultX,
+	public Pet003A(Bitmap itemPh, int width, int height, int defaultX,
 			int defaultY, int viewWidth, int viewHeight) {
 		super(itemPh, width, height, defaultX, defaultY, viewWidth, viewHeight);
 	}
@@ -102,7 +102,7 @@ public class Pet002A extends AbstractPet implements Runnable {
 	 * @param viewWidth
 	 * @param viewHeight
 	 */
-	public Pet002A(Bitmap petPhR, Bitmap petPhL, int itemWidth, int itemHeight,
+	public Pet003A(Bitmap petPhR, Bitmap petPhL, int itemWidth, int itemHeight,
 			int defaultX, int defaultY, int viewWidth, int viewHeight) {
 		super(petPhR, itemWidth, itemHeight, defaultX, defaultY, viewWidth,
 				viewHeight);

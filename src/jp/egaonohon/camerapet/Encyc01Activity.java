@@ -18,7 +18,7 @@ public class Encyc01Activity extends Activity {
 
 	/*
 	 * (非 Javadoc)
-	 * 
+	 *
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
 	@Override
@@ -32,7 +32,7 @@ public class Encyc01Activity extends Activity {
 
 		/** BGMスタート */
 
-//		mp.start(); // SEを鳴らす
+		// mp.start(); // SEを鳴らす
 		bgmOn = true;
 
 		/** 起動したクラスをLogで確認 */
@@ -41,14 +41,14 @@ public class Encyc01Activity extends Activity {
 
 	/*
 	 * (非 Javadoc)
-	 * 
+	 *
 	 * @see android.app.Activity#onResume()
 	 */
 	@Override
 	protected void onResume() {
 		// TODO 自動生成されたメソッド・スタブ
 		super.onResume();
-		
+
 		/** BGMの制御 */
 		if (bgmOn) {
 			encycBgm.start();
@@ -62,7 +62,7 @@ public class Encyc01Activity extends Activity {
 
 	/*
 	 * (非 Javadoc)
-	 * 
+	 *
 	 * @see android.app.Activity#onPause()
 	 */
 	@Override
@@ -72,6 +72,14 @@ public class Encyc01Activity extends Activity {
 
 		/** BGMを停止 */
 		encycBgm.stop();
+
+		/**
+		 * Activityを明示的に終了させる。
+		 * ただし注意点あり。
+		 * http://d.hatena.ne.jp/adsaria/20110428/1303966837
+		 * http://www.android-navi.com/archives/android_1/finish_activity/
+		 * */
+		finish();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////////
@@ -80,7 +88,7 @@ public class Encyc01Activity extends Activity {
 
 	/**
 	 * 戻るボタンメソッド。
-	 * 
+	 *
 	 * @param v
 	 */
 	public void goBack(View v) {
@@ -98,7 +106,7 @@ public class Encyc01Activity extends Activity {
 
 	/**
 	 * チュートリアルを終えるボタンメソッド。
-	 * 
+	 *
 	 * @param v
 	 */
 	public void goHome(View v) {
@@ -113,7 +121,7 @@ public class Encyc01Activity extends Activity {
 		 */
 		startActivity(intent);
 	}
-	
+
 	/**
 	 * BGMオン・オフメソッド。
 	 *
@@ -129,20 +137,20 @@ public class Encyc01Activity extends Activity {
 		}
 	}
 
-	 /**
+	/**
 	 * 次へボタンメソッド。
+	 *
 	 * @param v
 	 */
-	 public void goforward(View v) {
-	 /**
-	 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
-	 */
-	 Intent intent = new Intent(Encyc01Activity.this, Encyc02Activity.class);
-	
-	 /**
-	 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
-	 */
-	 startActivity(intent);
-	 }
+	public void goforward(View v) {
+		/**
+		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
+		 */
+		Intent intent = new Intent(Encyc01Activity.this, Encyc02Activity.class);
 
+		/**
+		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
+		 */
+		startActivity(intent);
+	}
 }

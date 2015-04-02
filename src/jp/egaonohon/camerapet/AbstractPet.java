@@ -22,6 +22,9 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 	 */
 	final Matrix matrix = new Matrix();
 
+	/** ペットの種別名 */
+	private final String PET_SPECIES_NAME = "AbstractPet";
+
 	/** Viewの幅 */
 	private int viewWidth;
 	/** Viewの高さ */
@@ -211,5 +214,9 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 
 	public void setNowY(int nowY) {
 		this.nowY = nowY;
+	}
+
+	public String getPetSpeciesName() {
+		return PET_SPECIES_NAME;
 	}
 }

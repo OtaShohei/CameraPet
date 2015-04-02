@@ -23,6 +23,9 @@ public class Pet001A extends AbstractPet implements Runnable {
 	 */
 	final Matrix matrix = new Matrix();
 
+	/** ペットの種別名 */
+	private static final String PET_SPECIES_NAME = "Pet001A";
+
 	/** Viewの幅 */
 	private int viewWidth;
 	/** Viewの高さ */
@@ -274,5 +277,9 @@ public class Pet001A extends AbstractPet implements Runnable {
 
 	public void setNowY(int nowY) {
 		this.nowY = nowY;
+	}
+
+	public String getPetSpeciesName() {
+		return PET_SPECIES_NAME;
 	}
 }

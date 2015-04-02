@@ -14,7 +14,7 @@ public class Encyc03Activity extends Activity {
 	private boolean bgmOn = true;
 
 	/** Logのタグを定数で確保 */
-	private static final String TAG = "Encyc01";
+	private static final String TAG = "Encyc03";
 
 	/*
 	 * (非 Javadoc)
@@ -25,7 +25,9 @@ public class Encyc03Activity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO 自動生成されたメソッド・スタブ
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.encyclopedia_second);
+		setContentView(R.layout.encyclopedia_third);
+
+
 
 		/** BGMインスタンス生成し準備 */
 		encycBgm = MediaPlayer.create(this, R.raw.honwaka);
@@ -72,6 +74,14 @@ public class Encyc03Activity extends Activity {
 
 		/** BGMを停止 */
 		encycBgm.stop();
+
+		/**
+		 * Activityを明示的に終了させる。
+		 * ただし注意点あり。
+		 * http://d.hatena.ne.jp/adsaria/20110428/1303966837
+		 * http://www.android-navi.com/archives/android_1/finish_activity/
+		 * */
+		finish();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////////

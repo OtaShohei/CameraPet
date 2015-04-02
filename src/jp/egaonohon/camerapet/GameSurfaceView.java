@@ -49,6 +49,10 @@ public class GameSurfaceView extends SurfaceView implements
 	private Bitmap petPhR;
 	/** ペット画像右向き */
 	private Bitmap petPhL;
+	/** レベルアップ前のペット種別名 */
+	String beforePetSpeciesName;
+	/** レベルアップ後のペット種別名 */
+	String updatedPetSpeciesName;
 
 	/** 直近撮影枚数（=エサの数） */
 	private int esaCnt;
@@ -287,6 +291,10 @@ public class GameSurfaceView extends SurfaceView implements
 							int nowY = camPeItems.get(i).getNowY();
 							CameLog.setLog(TAG, "レベルアップ可能と判定");
 
+							/** ペットステイタスの書き換えに備えてレベルアップ前のペット種別名を取得し確保しておく */
+							beforePetSpeciesName = myPet.getPetSpeciesName();
+							CameLog.setLog(TAG, "レベルアップ前のペット種別名" + beforePetSpeciesName + "を取得");
+
 							/** レベル判定に基づき新レベルのペット作成 */
 							updatedMyPet = PetLevel.up(context, viewWidth / 3,
 									viewWidth / 3, 0, (viewWidth / 3) * 2,
@@ -312,6 +320,11 @@ public class GameSurfaceView extends SurfaceView implements
 					camPeItems.add(myPet);
 					/** レベルアップ時のSEを鳴らす */
 					levelUpSE.start();
+					/** レベルアップ後のペット種別名を取得し確保しておく */
+					updatedPetSpeciesName = myPet.getPetSpeciesName();
+					CameLog.setLog(TAG, "レベルアップ後のペット種別名" + updatedPetSpeciesName + "を取得");
+					/** レベルアップ前後のペット種別名ごとにペットステイタスを司るプレファレンスを変更しておく */
+					CamPePref.savePetStatus(context, beforePetSpeciesName, updatedPetSpeciesName);
 					CameLog.setLog(TAG, "ペットがレベルアップ!!");
 				}
 
@@ -354,6 +367,9 @@ public class GameSurfaceView extends SurfaceView implements
 		this.viewWidth = width;
 		this.viewHeight = height;
 		this.holder = holder;
+
+		/** もし、初回起動ならば初期レベルのペットステイタスをプレファレンスに保存しておく */
+		CamPePref.savePetStatus(context, "Pet001A", "Pet001A");
 
 		CameLog.setLog(TAG, "Viewの幅は" + width + "。Viewの高さは" + height);
 

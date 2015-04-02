@@ -114,6 +114,70 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
         </activity>
+
+        <!-- 図鑑Activity追加3 -->
+        <activity
+            android:name="jp.egaonohon.camerapet.Encyc03Activity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
+        </activity>
+
+        <!-- 図鑑Activity追加4 -->
+        <activity
+            android:name="jp.egaonohon.camerapet.Encyc04Activity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
+        </activity>
+
+        <!-- 図鑑Activity追加5 -->
+        <activity
+            android:name="jp.egaonohon.camerapet.Encyc05Activity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
+        </activity>
+
+        <!-- 図鑑Activity追加6 -->
+        <activity
+            android:name="jp.egaonohon.camerapet.Encyc06Activity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
+        </activity>
+
+        <!-- 図鑑Activity追加7 -->
+        <activity
+            android:name="jp.egaonohon.camerapet.Encyc07Activity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
+        </activity>
+
+        <!-- 図鑑Activity追加8 -->
+        <activity
+            android:name="jp.egaonohon.camerapet.Encyc08Activity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
+        </activity>
+
+        <!-- 図鑑Activity追加9 -->
+        <activity
+            android:name="jp.egaonohon.camerapet.Encyc09Activity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
+        </activity>
+
+        <!-- 図鑑Activity追加10 -->
+        <activity
+            android:name="jp.egaonohon.camerapet.Encyc10Activity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
+        </activity>
     </application>
 
     <!-- パーミッション追加 -->

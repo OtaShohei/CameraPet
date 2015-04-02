@@ -19,7 +19,12 @@ public class PetLevel {
 	/** ペット画像右向き */
 	private Bitmap petPhL;
 	/** ペット002Aに必要な経験値 */
-	private static int pet002ARequiredEXP = 620;
+	private static int pet002ARequiredEXP = 2;
+	/** ペット002Aに必要な経験値 */
+	private static int pet03ARequiredEXP = 4;
+
+	/** Logのタグを定数で確保 */
+	private static final String TAG = "PetLevel";
 
 	/**
 	 * GameSurfaceViewで呼び出されることで経験値などからペットのレベル判定を行い、
@@ -39,6 +44,8 @@ public class PetLevel {
 		/** 経験値がPet002Aに必要な経験値に満たない場合はPet001Aを生成して返却する。 */
 		if (totalEXP < pet002ARequiredEXP) {
 
+			CameLog.setLog(TAG, "経験値がPet002Aに必要な経験値に満たないと判定し、Pet001Aを生成して返却");
+
 			/** ペット写真取得 */
 			petPhR = BitmapFactory.decodeResource(context.getResources(),
 					R.drawable.pet001a_r);
@@ -47,12 +54,27 @@ public class PetLevel {
 			decisionedPet = new Pet001A(petPhR, petPhL, itemWidth, itemHeight,
 					defaultX, defaultY, viewWidth, viewHeight);
 			/** 経験値がPet002Aに必要な経験値を満たす場合はPet002Aを生成して返却する。 */
-		} else if (totalEXP >= pet002ARequiredEXP) {
+		} else if (totalEXP >= pet002ARequiredEXP
+				&& totalEXP < pet03ARequiredEXP) {
+
+			CameLog.setLog(TAG, "経験値がPet002Aに必要な経験値を満たすと判定し、Pet002Aを生成して返却");
+
 			petPhR = BitmapFactory.decodeResource(context.getResources(),
 					R.drawable.pet002a_r);
 			petPhL = BitmapFactory.decodeResource(context.getResources(),
 					R.drawable.pet002a_l);
 			decisionedPet = new Pet002A(petPhR, petPhL, itemWidth, itemHeight,
+					defaultX, defaultY, viewWidth, viewHeight);
+			/** 経験値がPet003Aに必要な経験値を満たす場合はPet003Aを生成して返却する。 */
+		} else if (totalEXP >= pet03ARequiredEXP) {
+
+			CameLog.setLog(TAG, "経験値がPet003Aに必要な経験値を満たすと判定し、Pet003Aを生成して返却");
+
+			petPhR = BitmapFactory.decodeResource(context.getResources(),
+					R.drawable.pet003a_r);
+			petPhL = BitmapFactory.decodeResource(context.getResources(),
+					R.drawable.pet003a_l);
+			decisionedPet = new Pet003A(petPhR, petPhL, itemWidth, itemHeight,
 					defaultX, defaultY, viewWidth, viewHeight);
 		}
 		return decisionedPet;
@@ -64,8 +86,13 @@ public class PetLevel {
 		/** 累計経験値を取得 */
 		int totalEXP = CamPePref.loadTotalExp(context);
 
-		/** 累計経験値を取得 */
-		if (totalEXP > pet002ARequiredEXP && !(nowPet instanceof Pet002A)) {
+		/** 経験値がPet002Aに必要な経験値を満たし、かつ、現在Pet002Aではない場合、Pet002Aにレベルアップが可能と判定 */
+		if (totalEXP >= pet002ARequiredEXP && totalEXP < pet03ARequiredEXP
+				&& !(nowPet instanceof Pet002A)) {
+			return true;
+			/** 経験値がPet003Aに必要な経験値を満たし、かつ、現在Pet003Aではない場合、Pet003Aにレベルアップが可能と判定 */
+		} else if (totalEXP >= pet03ARequiredEXP
+				&& !(nowPet instanceof Pet003A)) {
 			return true;
 		}
 		return false;

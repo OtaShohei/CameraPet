@@ -6,7 +6,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 
-public class Encyc02Activity extends Activity {
+public class Encyc10Activity extends Activity {
 
 	/** BGM用変数 */
 	private MediaPlayer encycBgm;
@@ -14,7 +14,7 @@ public class Encyc02Activity extends Activity {
 	private boolean bgmOn = true;
 
 	/** Logのタグを定数で確保 */
-	private static final String TAG = "Encyc02";
+	private static final String TAG = "Encyc10";
 
 	/*
 	 * (非 Javadoc)
@@ -23,9 +23,8 @@ public class Encyc02Activity extends Activity {
 	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO 自動生成されたメソッド・スタブ
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.encyclopedia_second);
+		setContentView(R.layout.encyclopedia_tenth);
 
 		/** BGMインスタンス生成し準備 */
 		encycBgm = MediaPlayer.create(this, R.raw.honwaka);
@@ -46,7 +45,6 @@ public class Encyc02Activity extends Activity {
 	 */
 	@Override
 	protected void onResume() {
-		// TODO 自動生成されたメソッド・スタブ
 		super.onResume();
 
 		/** BGMの制御 */
@@ -67,7 +65,6 @@ public class Encyc02Activity extends Activity {
 	 */
 	@Override
 	protected void onPause() {
-		// TODO 自動生成されたメソッド・スタブ
 		super.onPause();
 
 		/** BGMを停止 */
@@ -80,7 +77,6 @@ public class Encyc02Activity extends Activity {
 		 * http://www.android-navi.com/archives/android_1/finish_activity/
 		 * */
 		finish();
-
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////////
@@ -97,7 +93,7 @@ public class Encyc02Activity extends Activity {
 		/**
 		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
 		 */
-		Intent intent = new Intent(Encyc02Activity.this, Encyc01Activity.class);
+		Intent intent = new Intent(Encyc10Activity.this, Encyc09Activity.class);
 
 		/**
 		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
@@ -115,7 +111,7 @@ public class Encyc02Activity extends Activity {
 		/**
 		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
 		 */
-		Intent intent = new Intent(Encyc02Activity.this, MainActivity.class);
+		Intent intent = new Intent(Encyc10Activity.this, MainActivity.class);
 
 		/**
 		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
@@ -138,20 +134,20 @@ public class Encyc02Activity extends Activity {
 		}
 	}
 
-	 /**
-	 * 次へボタンメソッド。
-	 * @param v
-	 */
-	 public void goforward(View v) {
-	 /**
-	 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
-	 */
-	 Intent intent = new Intent(Encyc02Activity.this, Encyc03Activity.class);
-
-	 /**
-	 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
-	 */
-	 startActivity(intent);
-	 }
+//	 /**
+//	 * 次へボタンメソッド。
+//	 * @param v
+//	 */
+//	 public void goforward(View v) {
+//	 /**
+//	 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
+//	 */
+//	 Intent intent = new Intent(Encyc10Activity.this, Encyc11Activity.class);
+//
+//	 /**
+//	 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
+//	 */
+//	 startActivity(intent);
+//	 }
 
 }
