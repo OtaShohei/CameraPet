@@ -30,7 +30,7 @@
         android:background="@drawable/pattern_yellow"
         android:orientation="vertical" >
 
-        <jp.egaonohon.camerapet.Encyc03ContentsDrawView
+        <jp.egaonohon.camerapet.Encyc10ContentsDrawView
             android:id="@+id/contentsField"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -110,10 +110,11 @@
                 android:layout_weight="1"
                 android:background="@null"
                 android:cropToPadding="false"
-                android:onClick="goforward"
                 android:padding="5dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/forward_btn" />
+
+            <!-- android:onClick="goforward" -->
 
             <TextView
                 android:id="@+id/textView31"

@@ -54,6 +54,7 @@ public class TutorialFirstActivity extends Activity {
 		
 //		/** BGMを停止 */
 //		tutorialBgm.stop();
+		finish();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////////

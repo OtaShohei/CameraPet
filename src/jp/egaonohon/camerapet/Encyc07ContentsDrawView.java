@@ -10,7 +10,12 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.View;
 
-public class Encyc02ContentsDrawView extends View {
+/**
+ * ペットPet007A開発時には、petNameTxtなどのdummy部分を本番文字に差し替えてください。
+ * @author OtaShohei
+ *
+ */
+public class Encyc07ContentsDrawView extends View {
 
 	/** ペットの詳細を記述するエリアの幅 */
 	int contentsFieldWidth;
@@ -18,9 +23,8 @@ public class Encyc02ContentsDrawView extends View {
 	int contentsFieldHeight;
 	/** アイテム配置の基準尺度 */
 	int layoutScale;
-	
 	/** プリファレンス管理用のペット種別名 */
-	private String petSpeciesNameNameTxt = "Pet002A";
+	private String petSpeciesNameNameTxt = "Pet007A";
 	/** ペット近影 */
 	private Bitmap petPh;
 	/** ペット名文字 */
@@ -35,17 +39,17 @@ public class Encyc02ContentsDrawView extends View {
 	private String petCommentTxt;
 
 	/** Logのタグを定数で確保 */
-	private static final String TAG = "Encyc02ContentsDrawView";
+	private static final String TAG = "Encyc07ContentsDrawView";
 
-	public Encyc02ContentsDrawView(Context context) {
+	public Encyc07ContentsDrawView(Context context) {
 		super(context);
 	}
 
-	public Encyc02ContentsDrawView(Context context, AttributeSet attrs) {
+	public Encyc07ContentsDrawView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
 
-	public Encyc02ContentsDrawView(Context context, AttributeSet attrs,
+	public Encyc07ContentsDrawView(Context context, AttributeSet attrs,
 			int defStyle) {
 		super(context, attrs, defStyle);
 	}
@@ -58,10 +62,8 @@ public class Encyc02ContentsDrawView extends View {
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
 		super.onSizeChanged(w, h, oldw, oldh);
-
 		contentsFieldWidth = w;
 		contentsFieldHeight = h;
-
 	}
 
 	/*
@@ -86,19 +88,19 @@ public class Encyc02ContentsDrawView extends View {
 			CameLog.setLog(TAG, "以前ゲットしたペットか現在のペットであると判定");
 
 			/** このペットが未取得の場合のペット名文字列を準備 */
-			petNameTxt = res.getString(R.string.pet_02_name);
+			petNameTxt = res.getString(R.string.pet_dummy_name);
 			/** このペットが未取得の場合のペット体重文字列を準備 */
-			petWeightTxt = res.getString(R.string.pet_02_weight);
+			petWeightTxt = res.getString(R.string.pet_dummy_weight);
 			/** このペットが未取得の場合のペット体長文字列を準備 */
-			petLengthTxt = res.getString(R.string.pet_02_length);
+			petLengthTxt = res.getString(R.string.pet_dummy_length);
 			/** このペットが未取得の場合のペット好物文字列を準備 */
-			petFavoriteTxt = res.getString(R.string.pet_02_favorite);
+			petFavoriteTxt = res.getString(R.string.pet_dummy_favorite);
 			/** このペットが未取得の場合のペット解説文字列を準備 */
-			petCommentTxt = res.getString(R.string.pet_02_comment);
+			petCommentTxt = res.getString(R.string.pet_dummy_comment);
 
 			/** ペット写真を取得 */
 			petPh = BitmapFactory.decodeResource(getContext().getResources(),
-					R.drawable.pet002a_r);
+					R.drawable.pet003a_r);
 
 			/** 現在も以前もゲットしていないペットであるならば */
 		} else {
@@ -130,5 +132,6 @@ public class Encyc02ContentsDrawView extends View {
 		encycCommonTextRect.Draw(getContext(), canvas, contentsFieldWidth,
 				contentsFieldHeight, petPh, layoutScale, paint, petNameTxt,
 				petWeightTxt, petLengthTxt, petFavoriteTxt, petCommentTxt);
+
 	}
 }

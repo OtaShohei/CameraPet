@@ -48,10 +48,8 @@ public class TutorialFourthActivity extends Activity {
 	 */
 	@Override
 	protected void onPause() {
-		// TODO 自動生成されたメソッド・スタブ
 		super.onPause();
-//		/** BGMを停止 */
-//		tutorialBgm.stop();
+		finish();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////////

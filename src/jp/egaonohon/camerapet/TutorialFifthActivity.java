@@ -52,6 +52,7 @@ public class TutorialFifthActivity extends Activity {
 		super.onPause();
 //		/** BGMを停止 */
 //		tutorialBgm.stop();
+		finish();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////////

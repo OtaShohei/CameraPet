@@ -44,6 +44,7 @@ public class CameraActivity extends Activity {
 		super.onPause();
 		/** スクリーンが自動でオフになるのを防いでいたフラグをきちんとオフにする。画面から抜けるときにはOFFにしないと大変なことに。 */
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		finish();
 	}
 
 	/**

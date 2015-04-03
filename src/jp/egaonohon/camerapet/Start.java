@@ -42,6 +42,15 @@ public class Start extends Activity {
 		super.onResume();
 	}
 
+	/* (非 Javadoc)
+	 * @see android.app.Activity#onPause()
+	 */
+	@Override
+	protected void onPause() {
+		super.onPause();
+		finish();
+	}
+
 	/**
 	 * 初回起動か否かを判断するメソッド。
 	 */

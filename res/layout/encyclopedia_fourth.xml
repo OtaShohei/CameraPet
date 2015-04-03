@@ -30,7 +30,7 @@
         android:background="@drawable/pattern_yellow"
         android:orientation="vertical" >
 
-        <jp.egaonohon.camerapet.Encyc03ContentsDrawView
+        <jp.egaonohon.camerapet.Encyc04ContentsDrawView
             android:id="@+id/contentsField"
             android:layout_width="match_parent"
             android:layout_height="0dp"
