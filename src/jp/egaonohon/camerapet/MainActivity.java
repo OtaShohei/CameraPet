@@ -127,8 +127,8 @@ public class MainActivity extends Activity {
 		/** Facebookから戻ってくることを示す */
 		returnFb = true;
 
-		/** Facebookへ投稿実行 */
-		SnsBtn.goFacebook(this);
+		/** 現在のペットの種類名を取得して、Facebookへ投稿実行 */
+		SnsBtn.goFacebook(this,GameSurfaceView.getSpeciesName());
 	}
 
 	/**
@@ -140,12 +140,12 @@ public class MainActivity extends Activity {
 		if (bgmOn) {
 			mp2.start(); // SEを鳴らす
 		}
-
+		
 		/** Twitterから戻ってくることを示す */
 		returnTwitter = true;
-
-		/** Twitterへ投稿実行 */
-		SnsBtn.goTwitter(this);
+		
+		/** 現在のペットの種類名を取得して、Twitterへ投稿実行 */
+		SnsBtn.goTwitter(this,GameSurfaceView.getSpeciesName());
 	}
 
 	/**

@@ -3,6 +3,7 @@ package jp.egaonohon.camerapet;
 import java.util.ArrayList;
 
 import android.R.integer;
+import android.R.string;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -85,6 +86,8 @@ public class GameSurfaceView extends SurfaceView implements
 
 	/** ペット年齢 */
 	private String petAge;
+	/** 画面表示ペット種別名 */
+	private static String speciesName;
 	/** 画面表示経験値 */
 	private int gettedtotalEXP;
 	/** 累積撮影回数文字 */
@@ -103,6 +106,9 @@ public class GameSurfaceView extends SurfaceView implements
 	private boolean firstOfTheDay = true;
 	/** セリフでのえさ告知回数 */
 	int EsakokutiCnt = 0;
+	/** セリフでの満腹告知回数 */
+	int ManpukuCnt = 0;
+	
 	/** 満腹時のペット喜びの声 */
 	String petWelcomMessage;
 
@@ -330,6 +336,9 @@ public class GameSurfaceView extends SurfaceView implements
 
 		/** ペット年齢取得 */
 		petAge = Birthday.getAge(context);
+		
+		/** ペット種別名取得 */
+		speciesName = myPet.getPetName();
 
 		/** 経験値取得 */
 		try {
@@ -452,7 +461,7 @@ public class GameSurfaceView extends SurfaceView implements
 		/** ペット名表示表示 */
 		Resources res = this.getResources();
 		canvas.drawText(res.getString(R.string.pet_species_name_title) + " "
-				+ myPet.getPetName(), (viewWidth / 40) * 39,
+				+ speciesName, (viewWidth / 40) * 39,
 				(viewHeight - (viewWidth / 40)), paint);
 
 		/** テキスト右寄せ */
@@ -590,10 +599,13 @@ public class GameSurfaceView extends SurfaceView implements
 			CamPePref.saveTotalExpAndEsaGetCnt(context, gettedTotalEsaGetCnt,
 					gettedtotalEXP);
 
-			/** 今回のエサ獲得数がプログレスバー最大値になったら、ペット大喜び */
+			/** 今回のエサ獲得数がプログレスバー最大値になったら… */
 			if (progressMax == esaGetCnt) {
-				/** ペットからお腹いっぱいメッセージを表示 */
-				myPet.talk(this, pet_message_satiety);
+					ManpukuCnt++;
+					/** お腹いっぱいメッセージを1回だけ表示 */
+					if (ManpukuCnt <= 1) {
+						myPet.talk(this, pet_message_satiety);
+					}
 			}
 			CameLog.setLog(TAG, "エサの現在位置は" + camPeItems.get(i).getRectF().top);
 
@@ -687,5 +699,13 @@ public class GameSurfaceView extends SurfaceView implements
 				}
 			}
 		}
+	}
+
+	/**
+	 * 現在のペットの名前を取得するメソッド。
+	 * @return speciesName
+	 */
+	public static String getSpeciesName() {
+		return speciesName;
 	}
 }

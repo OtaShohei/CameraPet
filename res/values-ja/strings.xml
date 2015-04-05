@@ -73,5 +73,9 @@
     <string name="number_shooting">撮影回数は</string>
     <string name="exp_increased_01">。経験値は</string>
     <string name="exp_increased_02">  Upしたよ！</string>
+    <string name="pet_sns_report_age">スマホアプリ「CameraPet」で私が飼っているペットは今こんな感じ！</string>
+    <string name="pet_sns_report_exp">。経験値は</string>
+    <string name="pet_sns_report_species_name">。種類は</string>
+    <string name="pet_sns_report_finish">。</string>
 
 </resources>
