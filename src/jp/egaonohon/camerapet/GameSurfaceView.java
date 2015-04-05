@@ -108,7 +108,7 @@ public class GameSurfaceView extends SurfaceView implements
 	int EsakokutiCnt = 0;
 	/** セリフでの満腹告知回数 */
 	int ManpukuCnt = 0;
-	
+
 	/** 満腹時のペット喜びの声 */
 	String petWelcomMessage;
 
@@ -336,7 +336,7 @@ public class GameSurfaceView extends SurfaceView implements
 
 		/** ペット年齢取得 */
 		petAge = Birthday.getAge(context);
-		
+
 		/** ペット種別名取得 */
 		speciesName = myPet.getPetName();
 
@@ -601,11 +601,11 @@ public class GameSurfaceView extends SurfaceView implements
 
 			/** 今回のエサ獲得数がプログレスバー最大値になったら… */
 			if (progressMax == esaGetCnt) {
-					ManpukuCnt++;
-					/** お腹いっぱいメッセージを1回だけ表示 */
-					if (ManpukuCnt <= 1) {
-						myPet.talk(this, pet_message_satiety);
-					}
+				ManpukuCnt++;
+				/** お腹いっぱいメッセージを1回だけ表示 */
+				if (ManpukuCnt <= 1) {
+					myPet.talk(this, pet_message_satiety);
+				}
 			}
 			CameLog.setLog(TAG, "エサの現在位置は" + camPeItems.get(i).getRectF().top);
 
@@ -636,8 +636,12 @@ public class GameSurfaceView extends SurfaceView implements
 			/** 落下させたエサの数が今回落下予定のエサの数未満ならばエサを作る */
 			if (throwedEsa <= (nowFalldownEsaCnt - 1)) {
 
+				if (esaCnt <= 0) {
+					esaCnt = 1;
+				}
+
 				/** 引数でエサを生成 */
-				esaPhList = camPePh.get(context, makeEsaCnt);
+				esaPhList = camPePh.get(context, makeEsaCnt, esaCnt);
 
 				CameLog.setLog(TAG,
 						"コンストラクタにて画像の読み込み完了。餌Phは" + esaPhList.size() + "枚");
@@ -683,10 +687,14 @@ public class GameSurfaceView extends SurfaceView implements
 			esaPhList = new ArrayList<Bitmap>();
 
 			CameLog.setLog(TAG, "例外発生のためデフォルト写真枚数1枚で餌写真取得");
+			if (esaCnt <= 0) {
+				esaCnt = 1;
+			}
 			for (int i = 0; i < 1; i++) {
 				try {
 					/** 写真を1枚取得しその写真をArrayListに格納 */
-					esaPhList = camPePh.get(context, i);
+
+					esaPhList = camPePh.get(context, i, esaCnt);
 					/** 複数写真使用での餌インスタンス生成。こちらは、餌作成に成功しても直近撮影回数は0に戻さない */
 					camPeItems.add(new Esa(esaPhList.get(i), viewWidth / 10,
 							viewWidth / 10, (int) ((esaDefaultX * (Math
@@ -703,6 +711,7 @@ public class GameSurfaceView extends SurfaceView implements
 
 	/**
 	 * 現在のペットの名前を取得するメソッド。
+	 * 
 	 * @return speciesName
 	 */
 	public static String getSpeciesName() {

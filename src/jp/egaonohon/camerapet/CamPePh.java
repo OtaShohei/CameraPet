@@ -1,6 +1,7 @@
 package jp.egaonohon.camerapet;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import android.R.integer;
 import android.content.ContentResolver;
@@ -20,16 +21,18 @@ public class CamPePh {
 	/**
 	 * メンバ変数。
 	 */
-	/** 直近撮影枚数 */
+	/** 取得する枚数（通常1枚） */
 	int takenPhNum;
 	/** 欲しい1枚写真の昇順番号 */
 	int targetPhNum;
+	/** 取得する範囲の最大値（=直近撮影回数） */
+	int maxPhNum;
 	private Context context;
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "CamPePH";
 
 	/**
-	 * 直近撮影写真を1枚のみ取得するメソッド。 
+	 * 直近撮影写真を1枚のみ取得するメソッド。
 	 *
 	 * @param context
 	 * @return
@@ -42,21 +45,20 @@ public class CamPePh {
 		CameLog.setLog(TAG, "直近撮影済み写真を取得。" + list.size() + "枚です！");
 		return oneCPP;
 	}
-	
-	
+
 	/**
-	 * 指定した1枚の写真をBitmapで取得するメソッド。 
+	 * 指定した1枚の写真をBitmapで取得するメソッド。
 	 *
 	 * @param context
 	 * @return
 	 */
-	public  Bitmap choicedOneGet(Context context, int targetPhNum) {
+	public Bitmap choicedOneGet(Context context, int targetPhNum) {
 		this.context = context;
 		this.targetPhNum = targetPhNum;
 
 		CameLog.setLog(TAG, "choicedOneGet()で" + targetPhNum + "番目の写真を探します！");
 		ArrayList<Bitmap> list = load(targetPhNum);
-		Bitmap choicedPh =list.get(0);
+		Bitmap choicedPh = list.get(0);
 		CameLog.setLog(TAG, "choicedOneGet()で指定写真1枚を取得しました。！");
 		return choicedPh;
 	}
@@ -85,20 +87,29 @@ public class CamPePh {
 	}
 
 	/**
-	 * 直近撮影写真を複数まとめてArrayList<Bitmap>で取得するメソッド。 
-	 * メモリ負担が大きいので使用は慎重に。
-	 *
+	 * 直近撮影写真を複数まとめてArrayList<Bitmap>で取得するメソッド。 メモリ負担が大きいので使用は慎重に。
+	 * 
 	 * @param context
+	 * @param takenPhNum
+	 *            取得する写真枚数（通常1枚）
+	 * @param maxPhNum
+	 *            取得する範囲の最大値（=直近撮影回数）
 	 * @return
 	 */
-	public  ArrayList<Bitmap> get(Context context, int takenPhNum) {
+	public ArrayList<Bitmap> get(Context context, int takenPhNum, int maxPhNum) {
 		this.context = context;
 		this.takenPhNum = takenPhNum;
+		this.maxPhNum = maxPhNum;
 
-		CameLog.setLog(TAG, "直近撮影済み枚数を取得。" + takenPhNum + "枚です！");
-		ArrayList<Bitmap> list = load(takenPhNum);
+		/** Randomクラスを用いて最大枚数以内の乱数を生成 */
+		Random rnd = new Random();
+		int ran = rnd.nextInt(maxPhNum) + 1;
+		CameLog.setLog(TAG, "直近撮影済み枚数のうち" + ran + "番目をエサとして生成します！");
 
-		CameLog.setLog(TAG, "直近撮影済み写真を取得。" + list.size() + "枚です！");
+		// CameLog.setLog(TAG, "直近撮影済み枚数を取得。" + takenPhNum + "枚です！");
+		ArrayList<Bitmap> list = load(ran);
+
+		// CameLog.setLog(TAG, "直近撮影済み写真を取得。" + list.size() + "枚です！");
 		return list;
 	}
 
@@ -115,7 +126,7 @@ public class CamPePh {
 			/**
 			 * 直近撮影写真のみをBitmapにしてlistにadd。それ以外はaddしません。
 			 */
-			if (i >= (c.getCount() - takenPhNum)) {
+			if (i == (c.getCount() - takenPhNum)) {
 				Bitmap bmp = MediaStore.Images.Thumbnails.getThumbnail(cr, id,
 						MediaStore.Images.Thumbnails.MICRO_KIND, null);
 				list.add(bmp);
@@ -123,5 +134,5 @@ public class CamPePh {
 			c.moveToNext();
 		}
 		return list;
-	}}
-
+	}
+}
