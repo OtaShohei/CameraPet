@@ -1,14 +1,11 @@
 package jp.egaonohon.camerapet;
 
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.view.View;
 
 public class simpleFukidasi implements Runnable {
 
 	protected boolean isVisible;
-	private String msg = "hello";
 	protected Thread th;
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "simpleFukidasi";

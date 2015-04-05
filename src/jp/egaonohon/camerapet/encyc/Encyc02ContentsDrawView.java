@@ -25,7 +25,7 @@ public class Encyc02ContentsDrawView extends View {
 	int layoutScale;
 	
 	/** プリファレンス管理用のペット種別名 */
-	private String petSpeciesNameNameTxt = "Pet002A";
+	private String petModelNumberTxt = "Pet002A";
 	/** ペット近影 */
 	private Bitmap petPh;
 	/** ペット名文字 */
@@ -83,9 +83,9 @@ public class Encyc02ContentsDrawView extends View {
 		Resources res = getResources();
 
 		/** 以前ゲットしたペットか現在のペットであるならばならば */
-		if (CamPePref.loadPetStatus(getContext(), petSpeciesNameNameTxt)
+		if (CamPePref.loadPetModelNumber(getContext(), petModelNumberTxt)
 				.equals("getted")
-				|| CamPePref.loadPetStatus(getContext(), petSpeciesNameNameTxt)
+				|| CamPePref.loadPetModelNumber(getContext(), petModelNumberTxt)
 						.equals("now")) {
 
 			CameLog.setLog(TAG, "以前ゲットしたペットか現在のペットであると判定");

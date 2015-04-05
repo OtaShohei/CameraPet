@@ -1,6 +1,7 @@
 package jp.egaonohon.camerapet;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -18,6 +19,9 @@ import android.view.View;
  */
 public class Pet002A extends AbstractPet implements Runnable {
 
+	/** ペットが存在しているView */
+	private View petView;
+
 	/** 描画設定 */
 	private Paint petPaint = new Paint();
 	/**
@@ -26,8 +30,10 @@ public class Pet002A extends AbstractPet implements Runnable {
 	 */
 	final Matrix matrix = new Matrix();
 
-	/** ペットの種別名 */
-	private static final String PET_SPECIES_NAME = "Pet002A";
+	/** ペットの型番 */
+	private static final String MODEL_NUMBER = "Pet002A";
+	/** ペットの種名 */
+	private String petName;
 
 	/** Viewの幅 */
 	private int viewWidth;
@@ -109,7 +115,8 @@ public class Pet002A extends AbstractPet implements Runnable {
 
 	/**
 	 * ペットのコンストラクタ。左右画像が必要です。
-	 *
+	 * 
+	 * @param view
 	 * @param petPhR
 	 * @param petPhL
 	 * @param itemWidth
@@ -119,13 +126,15 @@ public class Pet002A extends AbstractPet implements Runnable {
 	 * @param viewWidth
 	 * @param viewHeight
 	 */
-	public Pet002A(Bitmap petPhR, Bitmap petPhL, int itemWidth, int itemHeight,
-			int defaultX, int defaultY, int viewWidth, int viewHeight) {
+	public Pet002A(View view, Bitmap petPhR, Bitmap petPhL, int itemWidth,
+			int itemHeight, int defaultX, int defaultY, int viewWidth,
+			int viewHeight) {
 		super(petPhR, itemWidth, itemHeight, defaultX, defaultY, viewWidth,
 				viewHeight);
 		CameLog.setLog(TAG, "petPhRは" + petPhR + "petPhLは" + petPhL
 				+ "itemWidthは" + itemWidth);
 
+		this.petView = view;
 		this.petPhR = petPhR;
 		this.petPhL = petPhL;
 		this.itemPh = petPhR;
@@ -136,6 +145,10 @@ public class Pet002A extends AbstractPet implements Runnable {
 		this.nowY = defaultY;
 		this.viewWidth = viewWidth;
 		this.viewHeight = viewHeight;
+
+		/** petの名前を取得 */
+		Resources res = petView.getResources();
+		petName =res.getString(R.string.pet_02_name);
 
 		/** 衝突判定用RectFをインスタンス化 */
 		rectF = new RectF();
@@ -280,7 +293,9 @@ public class Pet002A extends AbstractPet implements Runnable {
 				if (lineBreakPoint != 0) {
 					String line = fukidasiTxt.substring(currentIndex,
 							currentIndex + lineBreakPoint);
-					canvas.drawText(line, (layoutScale * 7), ((itemHeight + (layoutScale * 16)) +linePointY), petPaint);
+					canvas.drawText(line, (layoutScale * 7),
+							((itemHeight + (layoutScale * 16)) + linePointY),
+							petPaint);
 					linePointY = linePointY + (viewWidth / 22);
 					currentIndex += lineBreakPoint;
 				}
@@ -319,8 +334,8 @@ public class Pet002A extends AbstractPet implements Runnable {
 		this.nowY = nowY;
 	}
 
-	public String getPetSpeciesName() {
-		return PET_SPECIES_NAME;
+	public String getPetModelNumber() {
+		return MODEL_NUMBER;
 	}
 
 	public void talk(View view, int eventCode
@@ -373,5 +388,12 @@ public class Pet002A extends AbstractPet implements Runnable {
 
 		/** 本文開始位置のY値 */
 		linePointY = viewWidth / 28;
+	}
+
+	/**
+	 * @return petName
+	 */
+	public String getPetName() {
+		return petName;
 	}
 }

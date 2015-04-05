@@ -69,5 +69,6 @@
     <string name="pet_message_levelup">Bow-wow!\n (He speaks that I transform into this figure!!）</string>
     <string name="pet_message_thanksSNS">Bow-wow!\n (He speaks that Thank you for letting me everyone to know of me.）</string>
     <string name="pet_message_generic">Bow-wow!\n (He speaks that Hey I thought. I wanna fly fast like airplane.）</string>
+        <string name="pet_species_name_title">Species name :</string>
 
 </resources>

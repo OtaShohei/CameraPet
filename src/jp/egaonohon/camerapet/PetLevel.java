@@ -3,6 +3,7 @@ package jp.egaonohon.camerapet;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.view.View;
 
 /**
  * 　アプリ起動時にどのペットをインスタンス化すべきかを判定してペットのインスタンス化を実行するメソッド。
@@ -44,7 +45,7 @@ public class PetLevel {
 	 *            Viewの高さ
 	 * @return ペットのインスタンス
 	 */
-	public static AbstractPet up(Context context, int itemWidth,
+	public static AbstractPet up(Context context, View view, int itemWidth,
 			int itemHeight, int defaultX, int defaultY, int viewWidth,
 			int viewHeight) {
 
@@ -65,7 +66,7 @@ public class PetLevel {
 					R.drawable.pet001a_r);
 			petPhL = BitmapFactory.decodeResource(context.getResources(),
 					R.drawable.pet001a_l);
-			decisionedPet = new Pet001A(petPhR, petPhL, itemWidth, itemHeight,
+			decisionedPet = new Pet001A(view, petPhR, petPhL, itemWidth, itemHeight,
 					defaultX, defaultY, viewWidth, viewHeight);
 			/** 経験値がPet002Aに必要な経験値を満たす場合はPet002Aを生成して返却する。 */
 		} else if (totalEXP >= pet002ARequiredEXP
@@ -77,7 +78,7 @@ public class PetLevel {
 					R.drawable.pet002a_r);
 			petPhL = BitmapFactory.decodeResource(context.getResources(),
 					R.drawable.pet002a_l);
-			decisionedPet = new Pet002A(petPhR, petPhL, itemWidth, itemHeight,
+			decisionedPet = new Pet002A(view, petPhR, petPhL, itemWidth, itemHeight,
 					defaultX, defaultY, viewWidth, viewHeight);
 			/** 経験値がPet003Aに必要な経験値を満たす場合はPet003Aを生成して返却する。 */
 		} else if (totalEXP >= pet03ARequiredEXP) {
@@ -88,7 +89,7 @@ public class PetLevel {
 					R.drawable.pet003a_r);
 			petPhL = BitmapFactory.decodeResource(context.getResources(),
 					R.drawable.pet003a_l);
-			decisionedPet = new Pet003A(petPhR, petPhL, itemWidth, itemHeight,
+			decisionedPet = new Pet003A(view, petPhR, petPhL, itemWidth, itemHeight,
 					defaultX, defaultY, viewWidth, viewHeight);
 		}
 		return decisionedPet;

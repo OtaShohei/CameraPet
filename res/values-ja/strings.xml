@@ -69,5 +69,6 @@
     <string name="pet_message_levelup">キャイ〜ン!\n（訳:レベルアップして変身できたよ!）</string>
     <string name="pet_message_thanksSNS">キュゥゥ!クゥゥン!\n（訳:僕の成長ぶりをみんなに知らせてくれて嬉しいワン!）</string>
     <string name="pet_message_generic">ワンワン!ワン!\n（訳:ちょっと思った。飛行機みたいに速く飛びたいなって。）</string>
+    <string name="pet_species_name_title">種類 :</string>
 
 </resources>

@@ -45,8 +45,8 @@ public class CamPePref {
 	 * ペットがレベルアップする直前、現在のペットのステイタスnowをgettedに書き換える。次に、
 	 * レベルアップ後のペットをnowとペットステイタス情報を管理するプリファレンスに保存する
 	 */
-	public static void savePetStatus(Context context,
-			String beforePetSpeciesName, String updatedPetSpeciesName) {
+	public static void savePetModelNumber(Context context,
+			String beforePetModelNumber, String updatedPetModelNumber) {
 
 		/** プリファレンスの準備 */
 		SharedPreferences pref = context.getSharedPreferences("petStatus",
@@ -55,24 +55,24 @@ public class CamPePref {
 		/** プリファレンスに書き込むためのEditorオブジェクト取得 */
 		Editor editor = pref.edit();
 
-		if (!(updatedPetSpeciesName.equals("Pet001A"))) {
+		if (!(updatedPetModelNumber.equals("Pet001A"))) {
 			/** "petSpecies" というキーで現在そのペットであることを示すnowを登録 */
-			editor.putString(beforePetSpeciesName, "getted");
+			editor.putString(beforePetModelNumber, "getted");
 		}
 
-		if (beforePetSpeciesName.equals("Pet001A")) {
-			editor.putString(beforePetSpeciesName, "getted");
+		if (beforePetModelNumber.equals("Pet001A")) {
+			editor.putString(beforePetModelNumber, "getted");
 		}
-		editor.putString(updatedPetSpeciesName, "now");
+		editor.putString(updatedPetModelNumber, "now");
 
 		/** 書き込みの確定（実際にファイルに書き込む） */
 		editor.commit();
-		CameLog.setLog(TAG, "savePetStatusにて、" + beforePetSpeciesName + "キーで"
-				+ "gettedを、" + updatedPetSpeciesName + "キーで" + "nowを" + "登録");
+		CameLog.setLog(TAG, "savePetStatusにて、" + beforePetModelNumber + "キーで"
+				+ "gettedを、" + updatedPetModelNumber + "キーで" + "nowを" + "登録");
 	}
 
 	/** あるペットのステイタス情報をプリファレンスから取り出す。登録されていなければ空の文字列を返す */
-	public static String loadPetStatus(Context context, String petSpecies) {
+	public static String loadPetModelNumber(Context context, String petSpecies) {
 		/** プリファレンスの準備 */
 		SharedPreferences pref = context.getSharedPreferences("petStatus",
 				Context.MODE_PRIVATE);

@@ -19,7 +19,9 @@ import android.view.View;
 public abstract class AbstractPet extends CamPeItem implements Runnable {
 
 	/** ペットの種別名 */
-	private final String PET_SPECIES_NAME = "AbstractPet";
+	protected final String model_number = "AbstractPet";
+	/** ペットの種名 */
+	protected String petName;
 
 	/** Item現在位置：X軸 */
 	private int nowX = 0;
@@ -53,7 +55,7 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 	 * @param viewWidth
 	 * @param viewHeight
 	 */
-	public AbstractPet(Bitmap petPhR, Bitmap petPhL, int itemWidth,
+	public AbstractPet(View view, Bitmap petPhR, Bitmap petPhL, int itemWidth,
 			int itemHeight, int defaultX, int defaultY, int viewWidth,
 			int viewHeight) {
 		super(itemWidth, itemHeight, defaultX, defaultY, viewWidth, viewHeight);
@@ -103,7 +105,14 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 		this.nowY = nowY;
 	}
 
-	public String getPetSpeciesName() {
-		return PET_SPECIES_NAME;
+	public String getPetModelNumber() {
+		return model_number;
+	}
+
+	/**
+	 * @return petName
+	 */
+	public String getPetName() {
+		return petName;
 	}
 }
