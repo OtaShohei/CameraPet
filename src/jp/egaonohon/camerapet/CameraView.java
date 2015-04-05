@@ -40,7 +40,7 @@ public class CameraView extends SurfaceView {
 	private boolean afStart = false;
 	/** ボタン押下回数用 */
 	private int cntNum = 0;
-	/** 写真撮影でインクリメントする経験値*/
+	/** 写真撮影でインクリメントする経験値 */
 	private int gettedtotalEXP;
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "CameraView";
@@ -121,8 +121,7 @@ public class CameraView extends SurfaceView {
 		Resources res = getResources();
 		String shotGuidance = res.getString(R.string.how_to_shot);
 		/** 撮影ガイダンスのToast表示 */
-		Toast.makeText(getContext(), shotGuidance, Toast.LENGTH_SHORT)
-				.show();
+		Toast.makeText(getContext(), shotGuidance, Toast.LENGTH_SHORT).show();
 		CameLog.setLog(TAG, "init");
 	}
 
@@ -228,7 +227,7 @@ public class CameraView extends SurfaceView {
 		totalShotCnt++;
 
 		/** 新たな累計経験値の算出 */
-		gettedtotalEXP = gettedtotalEXP+10;
+		gettedtotalEXP = gettedtotalEXP + 10;
 
 		/** プリファレンスに直近撮影回数と累計撮影回数を保存 */
 		CamPePref.saveNowAndTotalShotCnt(getContext(), cntNum, totalShotCnt);
@@ -237,8 +236,14 @@ public class CameraView extends SurfaceView {
 		CamPePref.saveTotalExp(getContext(), gettedtotalEXP);
 
 		/** 撮影回数を表示 */
-		Toast.makeText(getContext(), "撮影回数" + cntNum + "。経験値が" + gettedtotalEXP + "になったよ！", Toast.LENGTH_SHORT)
-				.show();
+		Resources res = this.getResources();
+		Toast.makeText(
+				getContext(),
+				res.getString(R.string.number_shooting) + " " + cntNum + " "
+				+ res.getString(R.string.exp_increased_01) + " "
+						+ (cntNum * 10)
+						+ res.getString(R.string.exp_increased_02),
+				Toast.LENGTH_SHORT).show();
 		CameLog.setLog(TAG, "btnCount");
 	}
 }
