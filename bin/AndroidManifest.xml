@@ -45,7 +45,7 @@
 
         <!-- チュートリアル用Activity追加1　TutorialActivity -->
         <activity
-            android:name="jp.egaonohon.camerapet.TutorialFirstActivity"
+            android:name="jp.egaonohon.camerapet.tutorial.TutorialFirstActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
@@ -53,7 +53,7 @@
 
         <!-- チュートリアル用Activity追加2　TutorialActivity -->
         <activity
-            android:name="jp.egaonohon.camerapet.TutorialSecondActivity"
+            android:name="jp.egaonohon.camerapet.tutorial.TutorialSecondActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
@@ -61,7 +61,7 @@
 
         <!-- チュートリアル用Activity追加3　TutorialActivity -->
         <activity
-            android:name="jp.egaonohon.camerapet.TutorialThirdActivity"
+        android:name="jp.egaonohon.camerapet.tutorial.TutorialThirdActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
@@ -69,7 +69,7 @@
 
         <!-- チュートリアル用Activity追加4　TutorialActivity -->
         <activity
-            android:name="jp.egaonohon.camerapet.TutorialFourthActivity"
+        android:name="jp.egaonohon.camerapet.tutorial.TutorialFourthActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
@@ -77,7 +77,7 @@
 
         <!-- チュートリアル用Activity追加5　TutorialActivity -->
         <activity
-            android:name="jp.egaonohon.camerapet.TutorialFifthActivity"
+            android:name="jp.egaonohon.camerapet.tutorial.TutorialFifthActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
@@ -85,7 +85,7 @@
 
         <!-- チュートリアル用Activity追加6　TutorialActivity -->
         <activity
-            android:name="jp.egaonohon.camerapet.TutorialSixthActivity"
+            android:name="jp.egaonohon.camerapet.tutorial.TutorialSixthActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
@@ -93,7 +93,7 @@
 
         <!-- チュートリアル用Activity追加7　TutorialActivity -->
         <activity
-            android:name="jp.egaonohon.camerapet.TutorialSeventhActivity"
+            android:name="jp.egaonohon.camerapet.tutorial.TutorialSeventhActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
@@ -101,7 +101,7 @@
 
         <!-- 図鑑Activity追加1 -->
         <activity
-            android:name="jp.egaonohon.camerapet.Encyc01Activity"
+            android:name="jp.egaonohon.camerapet.encyc.Encyc01Activity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
@@ -109,7 +109,7 @@
 
         <!-- 図鑑Activity追加2 -->
         <activity
-            android:name="jp.egaonohon.camerapet.Encyc02Activity"
+            android:name="jp.egaonohon.camerapet.encyc.Encyc02Activity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
@@ -117,7 +117,7 @@
 
         <!-- 図鑑Activity追加3 -->
         <activity
-            android:name="jp.egaonohon.camerapet.Encyc03Activity"
+            android:name="jp.egaonohon.camerapet.encyc.Encyc03Activity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
@@ -125,7 +125,7 @@
 
         <!-- 図鑑Activity追加4 -->
         <activity
-            android:name="jp.egaonohon.camerapet.Encyc04Activity"
+            android:name="jp.egaonohon.camerapet.encyc.Encyc04Activity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
@@ -133,7 +133,7 @@
 
         <!-- 図鑑Activity追加5 -->
         <activity
-            android:name="jp.egaonohon.camerapet.Encyc05Activity"
+            android:name="jp.egaonohon.camerapet.encyc.Encyc05Activity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
@@ -141,7 +141,7 @@
 
         <!-- 図鑑Activity追加6 -->
         <activity
-            android:name="jp.egaonohon.camerapet.Encyc06Activity"
+            android:name="jp.egaonohon.camerapet.encyc.Encyc06Activity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
@@ -149,7 +149,7 @@
 
         <!-- 図鑑Activity追加7 -->
         <activity
-            android:name="jp.egaonohon.camerapet.Encyc07Activity"
+            android:name="jp.egaonohon.camerapet.encyc.Encyc07Activity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
@@ -157,7 +157,7 @@
 
         <!-- 図鑑Activity追加8 -->
         <activity
-            android:name="jp.egaonohon.camerapet.Encyc08Activity"
+            android:name="jp.egaonohon.camerapet.encyc.Encyc08Activity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
@@ -165,7 +165,7 @@
 
         <!-- 図鑑Activity追加9 -->
         <activity
-            android:name="jp.egaonohon.camerapet.Encyc09Activity"
+            android:name="jp.egaonohon.camerapet.encyc.Encyc09Activity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
@@ -173,7 +173,7 @@
 
         <!-- 図鑑Activity追加10 -->
         <activity
-            android:name="jp.egaonohon.camerapet.Encyc10Activity"
+            android:name="jp.egaonohon.camerapet.encyc.Encyc10Activity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >

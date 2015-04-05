@@ -49,7 +49,7 @@
     <string name="esa_status_snack">おやつでの満腹度</string>
     <string name="esa_status_dinner">晩ご飯での満腹度</string>
     <string name="number_of_food_this_time">残りエサ数</string>
-    <string name="how_to_get_esa_toast">ワンワンワ〜ン!\n（訳:エサがゼロになったよ！写真を撮るか僕の成長記録をSNS投稿するとエサがまた出てくるみたい）</string>
+    <string name="pet_message_esa_zero">ワンワンワ〜ン!\n（訳:エサがゼロになったよ！写真を撮るか僕の成長記録をSNS投稿するとエサがまた出てくるみたい）</string>
     <string name="pet_dummy_name">"ダミーダミー"</string>
     <string name="pet_dummy_weight">ダミーダミー</string>
     <string name="pet_dummy_length">ダミーダミー</string>
@@ -65,5 +65,9 @@
     <string name="pet_03_length">●体長:雪だるまくらい</string>
     <string name="pet_03_favorite">●好物:冷凍庫</string>
     <string name="pet_03_comment">冬以外は苦手な犬。外から帰ったらすぐに冷凍庫に入らないと溶けて消えてしまう。触ると冷たくて気持ちいい。</string>
+    <string name="pet_message_satiety">ワォ〜ン!\n（訳:お腹いっぱい！ありがと!）</string>
+    <string name="pet_message_levelup">キャイ〜ン!\n（訳:レベルアップして変身できたよ!）</string>
+    <string name="pet_message_thanksSNS">キュゥゥ!クゥゥン!\n（訳:僕の成長ぶりをみんなに知らせてくれて嬉しいワン!）</string>
+    <string name="pet_message_generic">ワンワン!ワン!\n（訳:ちょっと思った。飛行機みたいに速く飛びたいなって。）</string>
 
 </resources>

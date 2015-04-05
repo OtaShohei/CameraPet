@@ -1,5 +1,7 @@
 package jp.egaonohon.camerapet;
 
+import jp.egaonohon.camerapet.encyc.Encyc01Activity;
+import jp.egaonohon.camerapet.tutorial.TutorialFirstActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;

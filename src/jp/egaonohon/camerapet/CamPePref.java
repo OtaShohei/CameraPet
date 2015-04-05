@@ -183,7 +183,7 @@ public class CamPePref {
 		/** "EsaGetCnt" というキーで保存されている値を読み出す */
 		int gettedTotalEsaGetCnt = pref.getInt("EsaGetCnt", -1);
 
-		CameLog.setLog(TAG, "累計撮影回数" + gettedTotalEsaGetCnt + "をプリファレンスから取得");
+//		CameLog.setLog(TAG, "累計撮影回数" + gettedTotalEsaGetCnt + "をプリファレンスから取得");
 
 		/** 取得した累計エサ獲得成功回数を戻す */
 		return gettedTotalEsaGetCnt;
@@ -198,7 +198,7 @@ public class CamPePref {
 		/** "eXP" というキーで保存されている値を読み出す */
 		int gettedtotalEXP = pref.getInt("eXP", -1);
 
-		CameLog.setLog(TAG, "累計撮影回数" + gettedtotalEXP + "をプリファレンスから取得");
+//		CameLog.setLog(TAG, "累計撮影回数" + gettedtotalEXP + "をプリファレンスから取得");
 
 		/** 取得し累計経験値を戻す */
 		return gettedtotalEXP;

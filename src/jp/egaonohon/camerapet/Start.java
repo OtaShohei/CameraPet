@@ -1,5 +1,6 @@
 package jp.egaonohon.camerapet;
 
+import jp.egaonohon.camerapet.tutorial.TutorialFirstActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

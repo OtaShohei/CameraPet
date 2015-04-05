@@ -2,8 +2,8 @@ package jp.egaonohon.camerapet;
 
 import java.util.ArrayList;
 
+import android.R.integer;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -100,8 +100,26 @@ public class GameSurfaceView extends SurfaceView implements
 	private int themeColor = Color.argb(255, 224, 107, 98);
 	/** その日最初の起動か否か */
 	private boolean firstOfTheDay = true;
+	/** セリフでのえさ告知回数 */
+	int EsakokutiCnt = 0;
 	/** 満腹時のペット喜びの声 */
 	String petWelcomMessage;
+
+	/** 現在の吹き出し */
+	private Fukidasi nowFukidasi;
+
+	/** 吹き出し発行時のイベント:その日最初のアプリ起動時 */
+	private int pet_message_welcome = 1;
+	/** 吹き出し発行時のイベント:お腹いっぱいになった時 */
+	private int pet_message_satiety = 2;
+	/** 吹き出し発行時のイベント:降ってくるエサの残数が0になった時 */
+	private int pet_message_esa_zero = 3;
+	/** 吹き出し発行時のイベント:レベルアップした時 */
+	private int pet_message_levelup = 4;
+	/** 吹き出し発行時のイベント:SNS投稿で成長日記を投稿してくれた時 */
+	private int pet_message_thanksSNS = 5;
+	/** 吹き出し発行時のイベント:いずれにも当てはまらない時 */
+	private int pet_message_generic = 6;
 
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "GameSurfaceView";
@@ -162,15 +180,15 @@ public class GameSurfaceView extends SurfaceView implements
 		/** このViewをトップにする */
 		setZOrderOnTop(true);
 
-		/** ペット喜びの声のToast表示文字列を取得 */
-		Resources res = getResources();
-		petWelcomMessage = res.getString(R.string.pet_message_welcome);
-
-		if (firstOfTheDay && !MainActivity.isReturnCam()) {
-			/** 飼い主歓迎メッセージ表示 */
-			Toast.makeText(getContext(), petWelcomMessage, Toast.LENGTH_LONG)
-					.show();
-		}
+		// /** ペット喜びの声のToast表示文字列を取得 */
+		// Resources res = getResources();
+		// petWelcomMessage = res.getString(R.string.pet_message_welcome);
+		//
+		// if (firstOfTheDay && !MainActivity.isReturnCam()) {
+		// /** 飼い主歓迎メッセージ表示 */
+		// Toast.makeText(getContext(), petWelcomMessage, Toast.LENGTH_LONG)
+		// .show();
+		// }
 		// CameLog.setLog(TAG, "CPGameSurfaceViewをコンストラクタから生成！");
 	}
 
@@ -187,98 +205,10 @@ public class GameSurfaceView extends SurfaceView implements
 
 				/** 衝突判定実行 */
 				for (int i = 0; i < camPeItems.size(); i++) {
-					if (!camPeItems.get(i).equals(myPet)) {
-
-						if (RectF.intersects(myPet.getRectF(), camPeItems
-								.get(i).getRectF())) {
-							// CameLog.setLog(TAG, "myPetのrectは"
-							// + myPet.getRectF().toString());
-							// CameLog.setLog(TAG, "Esaのrectは"
-							// + camPeItems.get(i).getRectF().toString());
-
-							/** プリファレンスから3時間以内エサ獲得成功数を取得 */
-							gettedThreeHoursEatCnt = CamPePref
-									.load3hoursEatCnt(context);
-
-							if (gettedThreeHoursEatCnt == -1) {
-								gettedThreeHoursEatCnt = 0;
-							}
-
-							esaGetCnt = gettedThreeHoursEatCnt;
-
-							/**
-							 * プログレスバー最大値になるまで3時間以内エサ獲得成功数をUpする。
-							 */
-							// MainActivity.ratingUp((float) esaCnt / 10);
-							if (esaGetCnt < progressMax) {
-								esaGetCnt++;
-							}
-
-							/** 新たな累計エサ獲得成功回数と新たな累計経験値をプリファレンスに保存 */
-							CamPePref.save3hoursEatCnt(context, esaGetCnt);
-
-							/** プリファレンスから累計エサ獲得成功回数を取得 */
-							int gettedTotalEsaGetCnt = CamPePref
-									.loadTotalEsaGetCnt(context);
-
-							if (gettedTotalEsaGetCnt == -1) {
-								gettedTotalEsaGetCnt = 0;
-							}
-
-							/** プリファレンスから累計経験値を取得 */
-							gettedtotalEXP = CamPePref.loadTotalExp(context);
-
-							/** 新たな累計エサ獲得成功回数の算出 */
-							gettedTotalEsaGetCnt++;
-
-							/** インストール直後で累積経験値が-1の場合は0に初期化 */
-							try {
-								if (gettedtotalEXP == -1) {
-									gettedtotalEXP = 0;
-								}
-
-								/** 新たな累計経験値の算出 */
-								gettedtotalEXP++;
-
-								expTxt = context.getString(R.string.exp_points)
-										+ " " + String.valueOf(gettedtotalEXP);
-							} catch (Exception e) {
-								CameLog.setLog(TAG,
-										"プリファレンスからの経験値表示に失敗@onResume");
-							}
-
-							/** 新たな累計エサ獲得成功回数と新たな累計経験値をプリファレンスに保存 */
-							CamPePref.saveTotalExpAndEsaGetCnt(context,
-									gettedTotalEsaGetCnt, gettedtotalEXP);
-
-							/** 今回のエサ獲得数がプログレスバー最大値になったら、ペット大喜び */
-							if (progressMax == esaGetCnt) {
-								try {
-									/**
-									 * 飼い主歓迎メッセージ表示。
-									 * ウェルカムメッセージ表示とコンフリクト時の例外を避けるためtry-catch
-									 */
-									Toast.makeText(getContext(),
-											"「ウーワンワン！ウーワォン！」\n（訳:美味しかったワン!",
-											Toast.LENGTH_LONG).show();
-								} catch (Exception e) {
-									e.printStackTrace();
-								}
-							}
-							CameLog.setLog(TAG, "エサの現在位置は"
-									+ camPeItems.get(i).getRectF().top);
-
-							/** 獲得したエサを削除する */
-							camPeItems.remove(i);
-							/** エサに衝突したらペットを反転させる */
-							myPet.returnEsaKrush();
-							CameLog.setLog(TAG, "現在の残数は" + camPeItems.size());
-							bakubakuSE.start();
-							// CameLog.setLog(TAG, "Petとエサの接触を検知しました!");
-							/** 画面外に出て行ったエサを削除する */
-						} else if (camPeItems.get(i).getRectF().top > viewHeight) {
-							camPeItems.remove(i);
-						}
+					if (!camPeItems.get(i).equals(myPet)
+					// && !(camPeItems.get(i) instanceof Fukidasi)
+					) {
+						judgeCollision(i);
 					}
 
 					/** ペットのレベル判定を行なう。レベルアップ可能ならば、現在のペットを削除して新しいペットに差し替える。 */
@@ -293,7 +223,8 @@ public class GameSurfaceView extends SurfaceView implements
 
 							/** ペットステイタスの書き換えに備えてレベルアップ前のペット種別名を取得し確保しておく */
 							beforePetSpeciesName = myPet.getPetSpeciesName();
-							CameLog.setLog(TAG, "レベルアップ前のペット種別名" + beforePetSpeciesName + "を取得");
+							CameLog.setLog(TAG, "レベルアップ前のペット種別名"
+									+ beforePetSpeciesName + "を取得");
 
 							/** レベル判定に基づき新レベルのペット作成 */
 							updatedMyPet = PetLevel.up(context, viewWidth / 3,
@@ -307,6 +238,22 @@ public class GameSurfaceView extends SurfaceView implements
 							camPeItems.remove(i);
 						}
 					}
+
+					/** 吹き出しの削除を試みる。実際に削除するか否かは吹き出しクラスのBoolean戻り値で判定 */
+					// else if (camPeItems.get(i).equals(nowFukidasi)) {
+					//
+					// /** 吹き出し出現から5秒経過しているならば */
+					// if (nowFukidasi.isDeleteOk()) {
+					// CameLog.setLog(TAG, "吹き出し出現から5秒経過しているか否か"
+					// + nowFukidasi.isDeleteOk());
+					// /** 吹き出しの表示時間を過ぎたので吹き出しを削除する */
+					// camPeItems.remove(i);
+					// /** 画面の天地+100pxよりも外側に吹き出しが入ってしまったら削除する */
+					// } else if ((camPeItems.get(i).getNowY() - 100) >
+					// viewHeight) {
+					// camPeItems.remove(i);
+					// }
+					// }
 
 					/** SurfaceView上に、レーティングバー・経験値・ペット年齢・を描画するメソッドを呼び出す */
 					textRectWrite(canvas);
@@ -322,9 +269,13 @@ public class GameSurfaceView extends SurfaceView implements
 					levelUpSE.start();
 					/** レベルアップ後のペット種別名を取得し確保しておく */
 					updatedPetSpeciesName = myPet.getPetSpeciesName();
-					CameLog.setLog(TAG, "レベルアップ後のペット種別名" + updatedPetSpeciesName + "を取得");
+					CameLog.setLog(TAG, "レベルアップ後のペット種別名"
+							+ updatedPetSpeciesName + "を取得");
 					/** レベルアップ前後のペット種別名ごとにペットステイタスを司るプレファレンスを変更しておく */
-					CamPePref.savePetStatus(context, beforePetSpeciesName, updatedPetSpeciesName);
+					CamPePref.savePetStatus(context, beforePetSpeciesName,
+							updatedPetSpeciesName);
+
+					myPet.talk(this, pet_message_levelup);
 					CameLog.setLog(TAG, "ペットがレベルアップ!!");
 				}
 
@@ -333,14 +284,15 @@ public class GameSurfaceView extends SurfaceView implements
 					esaMake(1);
 				}
 
-				/*
-				 * Can't create handler inside thread that has not called
-				 * Looper.prepare()との警告とともに例外発生のため一時コメントアウト
-				 */
-				// /** 残りエサ数が0になったらトーストでエサの獲得方法告知 */
-				// if ((nowFalldownEsaCnt - throwedEsa) == 0) {
-				// MainActivity.makeToastOfHowToGetEsa();
-				// }
+				/** 残りエサ数が0になったらエサの獲得方法告知 */
+				if ((nowFalldownEsaCnt - throwedEsa) == 0) {
+					EsakokutiCnt++;
+
+					/** 1回だけ表示 */
+					if (EsakokutiCnt <= 1) {
+						myPet.talk(this, pet_message_esa_zero);
+					}
+				}
 
 				holder.unlockCanvasAndPost(canvas);
 			}
@@ -403,8 +355,15 @@ public class GameSurfaceView extends SurfaceView implements
 		myPet = PetLevel.up(context, viewWidth / 3, viewWidth / 3, 0,
 				(viewWidth / 3) * 2, viewWidth, viewHeight);
 
+		/** 飼い主歓迎メッセージを表示 */
+		myPet.talk(this, pet_message_welcome);
+		// nowFukidasi = myPet.talk(context, this, pet_message_welcome, 0 +
+		// myPet.getWidth(), ((viewWidth / 3) * 2) + myPet.getHeight());
+
 		camPeItems.add(myPet);
-		CameLog.setLog(TAG, "ペット作成");
+		// boolean fukidasiSuccess = camPeItems.add(nowFukidasi);
+		// CameLog.setLog(TAG, "ペット作成。吹き出しのArrayListへの追加の成功可否は" +
+		// fukidasiSuccess);
 
 		/** エサを生成するメソッド呼び出し。初期値は1枚を設定 */
 		esaMake(1);
@@ -429,6 +388,10 @@ public class GameSurfaceView extends SurfaceView implements
 			CamPePref.saveTotalExp(context, gettedtotalEXP);
 			// CameLog.setLog(TAG, "facebookから戻ってきたので経験値を次の数値にアップ→" +
 			// gettedtotalEXP);
+			/** ペットからのありがとうメッセージを表示 */
+			myPet.talk(this, pet_message_thanksSNS);
+			/** エサ告知カウントを0にリセット */
+			EsakokutiCnt =0;
 			/** 経験値をアップし終えたので、Booleanを初期状態に戻す */
 			MainActivity.setReturnFb(false);
 		}
@@ -439,6 +402,10 @@ public class GameSurfaceView extends SurfaceView implements
 			CamPePref.saveTotalExp(context, gettedtotalEXP);
 			// CameLog.setLog(TAG, "Twitterから戻ってきたので経験値を次の数値にアップ→" +
 			// gettedtotalEXP);
+			/** ペットからのありがとうメッセージを表示 */
+			myPet.talk(this, pet_message_thanksSNS);
+			/** エサ告知カウントを0にリセット */
+			EsakokutiCnt =0;
 			/** 経験値をアップし終えたので、Booleanを初期状態に戻す */
 			MainActivity.setReturnTwitter(false);
 		}
@@ -489,7 +456,14 @@ public class GameSurfaceView extends SurfaceView implements
 		float x = event.getX(); // X座標を取得
 		float y = event.getY(); // Y座標を取得
 		// speedMove = true;
+		/** petに移動量をセット */
 		myPet.setPetMoveSize(x, y);
+
+		/** 吹き出しが存在する場合はfukidasiにも移動量をセット */
+		// if (nowFukidasi != null) {
+		// nowFukidasi.setMoveSize(x, y);
+		// }
+
 		// CameLog.setLog(TAG, "onTouchEvent");
 		// listener.onFcsChange(i);
 		return true;
@@ -599,6 +573,86 @@ public class GameSurfaceView extends SurfaceView implements
 		if (MealTime.equals("Dinner")) {
 			/** 夜時間帯なら晩御飯表示文字を準備 */
 			esaStatus = context.getString(R.string.esa_status_dinner);
+		}
+	}
+
+	/** 衝突判定を実行するメソッド */
+	public void judgeCollision(int i) {
+		// CameLog.setLog(TAG, "myPetのrectは"
+		// + myPet.getRectF().toString());
+		// CameLog.setLog(TAG, "Esaのrectは"
+		// + camPeItems.get(i).getRectF().toString());
+		if (RectF.intersects(myPet.getRectF(), camPeItems.get(i).getRectF())) {
+
+			/** プリファレンスから3時間以内エサ獲得成功数を取得 */
+			gettedThreeHoursEatCnt = CamPePref.load3hoursEatCnt(context);
+
+			if (gettedThreeHoursEatCnt == -1) {
+				gettedThreeHoursEatCnt = 0;
+			}
+
+			esaGetCnt = gettedThreeHoursEatCnt;
+
+			/**
+			 * プログレスバー最大値になるまで3時間以内エサ獲得成功数をUpする。
+			 */
+			// MainActivity.ratingUp((float) esaCnt / 10);
+			if (esaGetCnt < progressMax) {
+				esaGetCnt++;
+			}
+
+			/** 新たな累計エサ獲得成功回数と新たな累計経験値をプリファレンスに保存 */
+			CamPePref.save3hoursEatCnt(context, esaGetCnt);
+
+			/** プリファレンスから累計エサ獲得成功回数を取得 */
+			int gettedTotalEsaGetCnt = CamPePref.loadTotalEsaGetCnt(context);
+
+			if (gettedTotalEsaGetCnt == -1) {
+				gettedTotalEsaGetCnt = 0;
+			}
+
+			/** プリファレンスから累計経験値を取得 */
+			gettedtotalEXP = CamPePref.loadTotalExp(context);
+
+			/** 新たな累計エサ獲得成功回数の算出 */
+			gettedTotalEsaGetCnt++;
+
+			/** インストール直後で累積経験値が-1の場合は0に初期化 */
+			try {
+				if (gettedtotalEXP == -1) {
+					gettedtotalEXP = 0;
+				}
+
+				/** 新たな累計経験値の算出 */
+				gettedtotalEXP++;
+
+				expTxt = context.getString(R.string.exp_points) + " "
+						+ String.valueOf(gettedtotalEXP);
+			} catch (Exception e) {
+				CameLog.setLog(TAG, "プリファレンスからの経験値表示に失敗@onResume");
+			}
+
+			/** 新たな累計エサ獲得成功回数と新たな累計経験値をプリファレンスに保存 */
+			CamPePref.saveTotalExpAndEsaGetCnt(context, gettedTotalEsaGetCnt,
+					gettedtotalEXP);
+
+			/** 今回のエサ獲得数がプログレスバー最大値になったら、ペット大喜び */
+			if (progressMax == esaGetCnt) {
+				/** ペットからお腹いっぱいメッセージを表示 */
+				myPet.talk(this, pet_message_satiety);
+			}
+			CameLog.setLog(TAG, "エサの現在位置は" + camPeItems.get(i).getRectF().top);
+
+			/** 獲得したエサを削除する */
+			camPeItems.remove(i);
+			/** エサに衝突したらペットを反転させる */
+			myPet.returnEsaKrush();
+			CameLog.setLog(TAG, "現在の残数は" + camPeItems.size());
+			bakubakuSE.start();
+			// CameLog.setLog(TAG, "Petとエサの接触を検知しました!");
+			/** 画面外に出て行ったエサを削除する */
+		} else if (camPeItems.get(i).getRectF().top > viewHeight) {
+			camPeItems.remove(i);
 		}
 	}
 

@@ -6,8 +6,9 @@ import android.graphics.BitmapFactory;
 
 /**
  * 　アプリ起動時にどのペットをインスタンス化すべきかを判定してペットのインスタンス化を実行するメソッド。
-  * @author OtaShohei
-  */
+ * 
+ * @author OtaShohei
+ */
 public class PetLevel {
 
 	/** 判定後に生成されたペットのインスタンスを格納する箱 */
@@ -17,9 +18,9 @@ public class PetLevel {
 	/** ペット画像右向き */
 	private Bitmap petPhL;
 	/** ペット002Aに必要な経験値 */
-	private static int pet002ARequiredEXP = 10;
+	private static int pet002ARequiredEXP = 5;
 	/** ペット002Aに必要な経験値 */
-	private static int pet03ARequiredEXP = 20;
+	private static int pet03ARequiredEXP = 10;
 
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "PetLevel";
@@ -27,7 +28,22 @@ public class PetLevel {
 	/**
 	 * GameSurfaceViewで呼び出されることで経験値などからペットのレベル判定を行い、
 	 * そうして適切なペットをインスタンス化し戻り値としてペットを戻すメソッド。
-	 * */
+	 * 
+	 * @param context
+	 * @param itemWidth
+	 *            ペットの幅
+	 * @param itemHeight
+	 *            ペットの高さ
+	 * @param defaultX
+	 *            初期位置x
+	 * @param defaultY
+	 *            初期位置y
+	 * @param viewWidth
+	 *            Viewの幅
+	 * @param viewHeight
+	 *            Viewの高さ
+	 * @return ペットのインスタンス
+	 */
 	public static AbstractPet up(Context context, int itemWidth,
 			int itemHeight, int defaultX, int defaultY, int viewWidth,
 			int viewHeight) {

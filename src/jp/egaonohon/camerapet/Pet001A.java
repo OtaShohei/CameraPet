@@ -1,11 +1,16 @@
 package jp.egaonohon.camerapet;
 
+import android.R.id;
+import android.R.integer;
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.view.View;
 
 /**
  * ゲーム画面で動くペットレベル1Aのクラス。
@@ -69,12 +74,26 @@ public class Pet001A extends AbstractPet implements Runnable {
 	/** ペット移動加速度Y軸 */
 	private int petKasokudoY = viewWidth / 6;
 
+	/** 現在の吹き出し */
+	private simpleFukidasi nowFukidasi;
+	/** 吹き出し座布団画像の参照 */
+	private Bitmap fukidasiPh;
+	/** 吹き出しセリフ文字の参照 */
+	private String fukidasiTxt;
+	/** 吹き出し改行基準スケール */
+	private int layoutScale = viewWidth / 128;
+	/** テキストの改行に必要なローカル変数 */
+	private int lineBreakPoint;
+	private int currentIndex = 0;
+	/** 本文開始位置のY値 */
+	private int linePointY;
+
 	/** ペット用のスレッド */
 	private Thread petThread;
 	// /** 衝突判定用のRectF */
 	// private static RectF rectF;
 	/** Logのタグを定数で確保 */
-	private static final String TAG = "Pet";
+	private static final String TAG = "Pet001A";
 
 	/**
 	 * スーパークラスからのコンストラクタ。
@@ -119,16 +138,18 @@ public class Pet001A extends AbstractPet implements Runnable {
 		this.nowY = defaultY;
 		this.viewWidth = viewWidth;
 		this.viewHeight = viewHeight;
-
-
+		// nowFukidasi = new simpleFukidasi();
 
 		/** 衝突判定用RectFをインスタンス化 */
 		rectF = new RectF();
 
-		CameLog.setLog(TAG, "CPPetがnewされた時点でのViewのWidthは" + this.viewWidth
+		CameLog.setLog(TAG, "Petがnewされた時点でのnowXは" + this.nowX + "。nowYは"
+				+ this.nowY);
+
+		CameLog.setLog(TAG, "Petがnewされた時点でのViewのWidthは" + this.viewWidth
 				+ "。ViewのHeightは" + this.viewHeight);
 
-		CameLog.setLog(TAG, "CPPetがnewされた時点でのペットのWidthは" + this.itemWidth
+		CameLog.setLog(TAG, "Petがnewされた時点でのペットのWidthは" + this.itemWidth
 				+ "。Heightは" + this.itemHeight);
 
 		/**
@@ -209,8 +230,8 @@ public class Pet001A extends AbstractPet implements Runnable {
 		nowX = nowX + moveX;
 		nowY = nowY + moveY;
 
-		// CameLog.setLog(TAG, "move時点でのViewのWidthは" + this.viewWidth
-		// + "。ViewのHeightは" + this.viewHeight);
+		// CameLog.setLog(TAG, "ペットのnowXは" + nowX
+		// + "。ペットのnowYは" + nowY);
 
 		/**
 		 * 描画座標の更新。表示する座標を設定する。移動ベクトル_vecが指す方向に移動させる petCurrentX += petMoveX
@@ -247,13 +268,44 @@ public class Pet001A extends AbstractPet implements Runnable {
 		canvas.save();
 		/** ここで描画位置を指定 */
 		canvas.translate(nowX, nowY);
+
+		if (nowFukidasi.isVisible) {
+
+			canvas.drawBitmap(fukidasiPh, 0, itemHeight + (layoutScale * 4),
+					petPaint);
+			// canvas.drawText(fukidasiTxt, 0, itemHeight + (layoutScale * 20),
+			// petPaint);
+
+			int maxWidth = itemHeight;// 150pxで改行する。
+			int lineBreakPoint = Integer.MAX_VALUE;// 仮に、最大値を入れておく
+			int currentIndex = 0;// 現在、原文の何文字目まで改行が入るか確認したかを保持する
+			int linePointY = (viewWidth / 22);// 文字を描画するY位置。改行の度にインクリメントする。
+
+			while (lineBreakPoint != 0) {
+				String mesureString = fukidasiTxt.substring(currentIndex);
+				lineBreakPoint = petPaint.breakText(mesureString, true,
+						maxWidth, null);
+				if (lineBreakPoint != 0) {
+					String line = fukidasiTxt.substring(currentIndex,
+							currentIndex + lineBreakPoint);
+					canvas.drawText(line, (layoutScale * 7), ((itemHeight + (layoutScale * 16)) +linePointY), petPaint);
+					linePointY = linePointY + (viewWidth / 22);
+					currentIndex += lineBreakPoint;
+				}
+			}
+		}
+
 		canvas.drawBitmap(itemPh, matrix, petPaint);
+
 		canvas.restore();
 	}
 
 	@Override
 	public void run() {
 		while (petThread != null) {
+			// if (nowFukidasi.th == null) {
+			// nowFukidasi =null;
+			// }
 			move();
 			try {
 				Thread.sleep(1000 / speed);
@@ -262,6 +314,62 @@ public class Pet001A extends AbstractPet implements Runnable {
 			}
 		}
 	}
+
+	/** ペットの喋らせるメソッド。 */
+	public void talk(View view, int eventCode
+	// Context context, View view, int eventCode,
+	// int fukidasiDefaultX, int fukidasiDefaultY
+	) {
+
+		nowFukidasi = new simpleFukidasi();
+
+		if (!nowFukidasi.isVisible) {
+			CameLog.setLog(TAG, "nowFukidasi.isVisibleは"
+					+ nowFukidasi.isVisible);
+			nowFukidasi.isVisible = true;
+			CameLog.setLog(TAG, "nowFukidasi.isVisibleを"
+					+ nowFukidasi.isVisible + "にセット");
+		}
+		if (nowFukidasi.th == null) {
+			nowFukidasi.th.start();
+			CameLog.setLog(TAG, "nowFukidasi.thをStart");
+		}
+
+		fukidasiTxt = nowFukidasi.getMsg(view, eventCode);
+		/** fukidasiTxtの確認 */
+		CameLog.setLog(TAG, "fukidasiTxtは" + fukidasiTxt);
+
+		/** 吹き出し座布団画像取得 */
+		fukidasiPh = BitmapFactory.decodeResource(view.getContext()
+				.getResources(), R.drawable.fukidasi);
+
+		/** 吹き出し用のペイントを準備 */
+		petPaint = new Paint();
+
+		/** 文字色にダークグレーを設定 */
+		petPaint.setColor(Color.argb(255, 51, 51, 51));
+
+		/** テキスト左寄せに変更 */
+		petPaint.setTextAlign(Paint.Align.LEFT);
+
+		/** 吹き出し改行基準スケールをここで定義 */
+		layoutScale = viewWidth / 128;
+
+		/** ペット解説用テキストサイズと書体を変更 */
+		petPaint.setTextSize(viewWidth / 26);
+
+		/** テキストの改行に必要なローカル変数 */
+		lineBreakPoint = Integer.MAX_VALUE;
+		currentIndex = 0;
+
+		/** 本文開始位置のY値 */
+		linePointY = viewWidth / 60;
+
+	}
+
+	// public void talkStop() {
+	// nowFukidasi = null;
+	// }
 
 	public int getNowX() {
 		return nowX;
