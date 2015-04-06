@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.media.MediaPlayer;
 import android.view.View;
 
 /**
@@ -47,6 +48,11 @@ public class Pet001A extends AbstractPet implements Runnable {
 	/** ペット左向き画像 */
 	private Bitmap petPhL;
 
+	/** くすぐったい時用サウンド */
+	private MediaPlayer pleasedSE;
+	/** 表示写真を左右入れ替えていいか否か */
+	private boolean changeItemPh;
+
 	/** X方向の拡大縮小率算出 */
 	float scaleX = 1.0f;
 	/** Y方向の拡大縮小率算出 */
@@ -82,6 +88,12 @@ public class Pet001A extends AbstractPet implements Runnable {
 	private simpleFukidasi nowFukidasi;
 	/** 吹き出し座布団画像の参照 */
 	private Bitmap fukidasiPh;
+	// /** X方向の吹き出しPh拡大縮小率算出 */
+	// float fukidasiPhScaleX = 1.0f;
+	// /** Y方向の吹き出しPh拡大縮小率算出 */
+	// float fukidasiPhScaleY = 1.0f;
+	// /** Petの画像拡大縮小用 */
+	// final Matrix fukidasiPhMatrix = new Matrix();
 	/** 吹き出しセリフ文字の参照 */
 	private String fukidasiTxt;
 	/** 吹き出し改行基準スケール */
@@ -167,6 +179,9 @@ public class Pet001A extends AbstractPet implements Runnable {
 		 */
 		scaleX = (float) itemWidth / petPhR.getWidth();
 		scaleY = (float) itemHeight / petPhR.getHeight();
+
+		/** くすぐったい時用SEのインスタンス生成し準備 */
+		pleasedSE = MediaPlayer.create(view.getContext(), R.raw.dog_kyain);
 
 		CameLog.setLog(TAG, "scaleXは" + scaleX + "scaleYは" + scaleY);
 
@@ -281,10 +296,10 @@ public class Pet001A extends AbstractPet implements Runnable {
 
 		if (nowFukidasi.isVisible) {
 
+			// canvas.drawBitmap(fukidasiPh, fukidasiPhMatrix, petPaint);
+			//
 			canvas.drawBitmap(fukidasiPh, 0, itemHeight + (layoutScale * 4),
 					petPaint);
-			// canvas.drawText(fukidasiTxt, 0, itemHeight + (layoutScale * 20),
-			// petPaint);
 
 			int maxWidth = itemHeight;// 150pxで改行する。
 			int lineBreakPoint = Integer.MAX_VALUE;// 仮に、最大値を入れておく
@@ -315,11 +330,23 @@ public class Pet001A extends AbstractPet implements Runnable {
 	@Override
 	public void run() {
 		while (petThread != null) {
-			// if (nowFukidasi.th == null) {
-			// nowFukidasi =null;
-			// }
 			move();
 			try {
+				// /** userに触られた際には写真を入れ替えて震えて喜ぶ */
+				// if (changeItemPh) {
+				// if (itemPh.equals(petPhR)) {
+				// Thread.sleep(30);
+				// itemPh = petPhL;
+				// Thread.sleep(30);
+				// itemPh = petPhR;
+				// } else if (itemPh.equals(petPhL)) {
+				// Thread.sleep(30);
+				// itemPh = petPhR;
+				// Thread.sleep(30);
+				// itemPh = petPhL;
+				// }
+				// changeItemPh = false;
+				// }
 				Thread.sleep(1000 / speed);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -355,6 +382,11 @@ public class Pet001A extends AbstractPet implements Runnable {
 		fukidasiPh = BitmapFactory.decodeResource(view.getContext()
 				.getResources(), R.drawable.fukidasi);
 
+		/** 吹き出し座布団画像を端末の画面に合わせてリサイズ */
+		Bitmap fukidasiPh02 = Bitmap.createScaledBitmap(fukidasiPh, ((view.getWidth()/128) * 59),
+				((view.getWidth()/128) * 59), false);
+		fukidasiPh = fukidasiPh02;
+
 		/** 吹き出し用のペイントを準備 */
 		petPaint = new Paint();
 
@@ -377,6 +409,14 @@ public class Pet001A extends AbstractPet implements Runnable {
 		/** 本文開始位置のY値 */
 		linePointY = viewWidth / 60;
 
+	}
+
+	/** 触られてペットが喜ぶメソッド */
+	public void pleased() {
+		/** 鳴き声を上げる */
+		pleasedSE.start();
+		// /** 写真を入れ替えて震えてもいい */
+		// changeItemPh = true;
 	}
 
 	// public void talkStop() {
@@ -408,5 +448,27 @@ public class Pet001A extends AbstractPet implements Runnable {
 	 */
 	public String getPetName() {
 		return petName;
+	}
+
+	/**
+	 * @param itemPh
+	 *            セットする itemPh
+	 */
+	public void setItemPh(Bitmap itemPh) {
+		this.itemPh = itemPh;
+	}
+
+	/**
+	 * @return petPhR
+	 */
+	public Bitmap getPetPhR() {
+		return petPhR;
+	}
+
+	/**
+	 * @return petPhL
+	 */
+	public Bitmap getPetPhL() {
+		return petPhL;
 	}
 }

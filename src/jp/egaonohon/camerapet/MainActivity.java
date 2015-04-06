@@ -3,6 +3,8 @@ package jp.egaonohon.camerapet;
 import jp.egaonohon.camerapet.encyc.Encyc01Activity;
 import jp.egaonohon.camerapet.tutorial.TutorialFirstActivity;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -13,11 +15,11 @@ import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Toast;
+import android.widget.TimePicker;
 
 /**
  * カメラペットのゲーム画面Activity（=MainActivity）のクラス。
- * 
+ *
  * @author OtaShohei
  */
 public class MainActivity extends Activity {
@@ -90,6 +92,8 @@ public class MainActivity extends Activity {
 	protected void onResume() { // アクティビティが動き始める時呼ばれる
 		super.onResume();
 
+		// setfirstPetAlarmBroadcastReceiver();
+
 		/** BGMの制御 */
 		if (bgmOn) {
 			mp.start();
@@ -110,6 +114,33 @@ public class MainActivity extends Activity {
 		CameLog.setLog(TAG, "onPause");
 	}
 
+	@Override
+	protected void onStop() {
+		// TODO 自動生成されたメソッド・スタブ
+		super.onStop();
+		// /** インストール後初の起動かどうかを確認 */
+		// String startStatus = CamPePref.loadStartStatus(this);
+		// /** インストール後初の起動でないならば */
+		// if (startStatus.equals("notFirst")) {
+		// /** 前回のAlarmManager & NotificationManagerをキャンセルする動かすメソッドを動かす */
+		// CameLog.setLog(TAG, "インストール後初の起動でないので「おなかがすいた！」通知をキャンセルする。");
+		// canceltPetAlarmBroadcastReceiver();
+		// }
+		/** AlarmManager & NotificationManagerを動かすメソッドを呼び出す */
+		setPetAlarmBroadcastReceiver();
+		CameLog.setLog(TAG, "onStop");
+	}
+
+	/**
+	 * Activityの最後に呼び出される。
+	 */
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+
+		CameLog.setLog(TAG, "onDestroy");
+	}
+
 	// //////////////////////////////////////////////////////////////////////////////////
 	// 以下、非オーバーライド系メソッド。
 	// //////////////////////////////////////////////////////////////////////////////////
@@ -128,7 +159,7 @@ public class MainActivity extends Activity {
 		returnFb = true;
 
 		/** 現在のペットの種類名を取得して、Facebookへ投稿実行 */
-		SnsBtn.goFacebook(this,GameSurfaceView.getSpeciesName());
+		SnsBtn.goFacebook(this, GameSurfaceView.getSpeciesName());
 	}
 
 	/**
@@ -140,12 +171,12 @@ public class MainActivity extends Activity {
 		if (bgmOn) {
 			mp2.start(); // SEを鳴らす
 		}
-		
+
 		/** Twitterから戻ってくることを示す */
 		returnTwitter = true;
-		
+
 		/** 現在のペットの種類名を取得して、Twitterへ投稿実行 */
-		SnsBtn.goTwitter(this,GameSurfaceView.getSpeciesName());
+		SnsBtn.goTwitter(this, GameSurfaceView.getSpeciesName());
 	}
 
 	/**
@@ -191,7 +222,7 @@ public class MainActivity extends Activity {
 
 	/**
 	 * ペット図鑑呼び出しメソッド。 TutorialActivity
-	 * 
+	 *
 	 * @param v
 	 */
 	public void onClickEncyclopedia(View v) {
@@ -213,7 +244,7 @@ public class MainActivity extends Activity {
 
 	/**
 	 * チュートリアル呼び出しメソッド。
-	 * 
+	 *
 	 * @param v
 	 */
 	public void onClickTutorial(View v) {
@@ -247,13 +278,127 @@ public class MainActivity extends Activity {
 		CamPePref.saveTotalExp(this, newTotalExp);
 	}
 
-	/** エサの残数がゼロになった際にエサ獲得方法を告知するトーストを掲出するメソッド */
-	public static void makeToastOfHowToGetEsa() {
-		/** エサ残数が0になった時のToast表示文字列を取得 */
-		String how_to_get_esa_toast = res
-				.getString(R.string.pet_message_welcome);
-		Toast.makeText(context, how_to_get_esa_toast, Toast.LENGTH_LONG).show();
+	/**
+	 * アプリをしばらく起動していないと、「おなかがすいた！」とペットがユーザーに4日後に通知を出すメソッド。
+	 * PetAlarmBroadcastReceiverクラスと連携する。
+	 */
+	public void setPetAlarmBroadcastReceiver() {
+
+		TimePicker tPicker;
+		int notificationId = 0;
+		PendingIntent alarmIntent;
+
+		/** 現在時間を取得 */
+		long now = System.currentTimeMillis();
+		/** 10秒後にalert */
+		long fourDayAfter = now + (30 * 1000);
+		// /** 4日後を割り出す */
+		// long fourDayAfter = now + 345600000;
+
+		/** 4日後の20時台を割り出すコードは一時保留 */
+		// /** 4日後を持つDateインスタンス生成 */
+		// Date fourDayAfterDate = new Date(fourDayAfter);
+		// /** Dateクラスから日時のString型文字列生成 */
+		// SimpleDateFormat format = new SimpleDateFormat("MM_dd__HH__mm");
+		// String s = format.format(fourDayAfterDate);
+		// String kiridasi = s.substring(6,8);
+		// /** 候補時間をint型に変換 */
+		// int kouhoTime = new Integer(kiridasi).intValue();
+		// String henkanTimeStr = s.replaceAll("__HH__","sasuke");
+
+		Intent bootIntent = new Intent(MainActivity.this,
+				AlarmBroadcastReceiver.class);
+		bootIntent.putExtra("notificationId", notificationId);
+		alarmIntent = PendingIntent.getBroadcast(MainActivity.this, 0,
+				bootIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+		AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+		alarm.set(AlarmManager.RTC_WAKEUP, fourDayAfter, alarmIntent);
+		CameLog.setLog(TAG, "1分後" + fourDayAfter + "に通知セット完了");
+
+		// /** notificationIdを次回に備えてプレファレンスに保存しておく　 */
+		// CamPePref.saveNotificationId(context, notificationId);
+
 	}
+
+	// /**
+	// * アプリをしばらく起動していないと、「おなかがすいた！」とペットがユーザーに4日後に通知を出すメソッド。
+	// * PetAlarmBroadcastReceiverクラスと連携する。
+	// */
+	// public void setPetAlarmBroadcastReceiver() {
+	//
+	// TimePicker tPicker;
+	// PendingIntent alarmIntent;
+	//
+	// /** 前回のnotificationIdをプレファレンスから取り出す */
+	// int notificationId = CamPePref.loadNotificationId(context);
+	// CameLog.setLog(TAG, "前回のnotificationId" + notificationId);
+	//
+	// /** 前回のnotificationIdにするためにインクリメント。 */
+	// notificationId++;
+	//
+	// /** 現在時間を取得 */
+	// long now = System.currentTimeMillis();
+	// /** 1分後にalert */
+	// long fourDayAfter = now + 60000;
+	// // /** 4日後を割り出す */
+	// // long fourDayAfter = now + 345600000;
+	//
+	// /** 4日後の20時台を割り出すコードは一時保留 */
+	// // /** 4日後を持つDateインスタンス生成 */
+	// // Date fourDayAfterDate = new Date(fourDayAfter);
+	// // /** Dateクラスから日時のString型文字列生成 */
+	// // SimpleDateFormat format = new SimpleDateFormat("MM_dd__HH__mm");
+	// // String s = format.format(fourDayAfterDate);
+	// // String kiridasi = s.substring(6,8);
+	// // /** 候補時間をint型に変換 */
+	// // int kouhoTime = new Integer(kiridasi).intValue();
+	// // String henkanTimeStr = s.replaceAll("__HH__","sasuke");
+	//
+	// Intent bootIntent = new Intent(MainActivity.this,
+	// PetAlarmBroadcastReceiver.class);
+	// bootIntent.putExtra("notificationId", notificationId);
+	// alarmIntent = PendingIntent.getBroadcast(MainActivity.this, 0,
+	// bootIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+	//
+	// AlarmManager alarm = (AlarmManager)
+	// getSystemService(Context.ALARM_SERVICE);
+	//
+	// alarm.set(AlarmManager.RTC_WAKEUP, fourDayAfter, alarmIntent);
+	// CameLog.setLog(TAG, "4日後" + fourDayAfter + "に通知セット完了");
+	//
+	// /** notificationIdを次回に備えてプレファレンスに保存しておく　 */
+	// CamPePref.saveNotificationId(context, notificationId);
+	//
+	// }
+
+	// /**
+	// * 「おなかがすいた！」通知をキャンセルするメソッド。 PetAlarmBroadcastReceiverクラスと連携する。
+	// */
+	// public void canceltPetAlarmBroadcastReceiver() {
+	// PendingIntent alarmIntent;
+	// int notificationId = 0;
+	//
+	// /** 前回のnotificationIdをプレファレンスから取り出す */
+	// notificationId = CamPePref.loadNotificationId(context);
+	//
+	// /** notificationIdが0でない、すなわちインストール直後でないならば前回のAlarmをキャンセルする。 */
+	// if (notificationId != 0) {
+	// Intent bootIntent = new Intent(MainActivity.this,
+	// PetAlarmBroadcastReceiver.class);
+	// bootIntent.putExtra("notificationId", notificationId);
+	// AlarmManager alarm = (AlarmManager)
+	// getSystemService(Context.ALARM_SERVICE);
+	// alarmIntent = PendingIntent.getBroadcast(MainActivity.this, 0,
+	// bootIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+	// alarm.cancel(alarmIntent);
+	// CameLog.setLog(TAG, "notificationId" + notificationId + "をキャンセル完了");
+	// }
+	//
+	// CameLog.setLog(TAG, "notificationId" + notificationId + "をキャンセル完了");
+	//
+	// }
 
 	/** Cameraから戻ってきたかどうかの判定を他のクラスに与えるメソッド */
 	public static boolean isReturnCam() {

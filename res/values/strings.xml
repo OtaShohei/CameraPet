@@ -77,5 +77,8 @@
     <string name="pet_sns_report_exp">. EXP is </string>
     <string name="pet_sns_report_species_name">. Species name is </string>
     <string name="pet_sns_report_finish">.</string>
+    <string name="alarm_sign"> is seems hungry.</string>
+    <string name="alarm_body_txt01">I also do not eat the food many days. I stomach has vacant.(From</string>
+    <string name="alarm_body_txt02"> you are kept.)</string>
 
 </resources>

@@ -34,6 +34,11 @@ public class GameSurfaceView extends SurfaceView implements
 	private ArrayList<CamPeItem> camPeItems = new ArrayList<CamPeItem>();
 	public static final long FPS = 1000 / 30;
 
+	/** userが指を触れたX座標 */
+	private float usertouchedX;
+	/** userが指を触れたX座標 */
+	private float usertouchedY;
+
 	/** SurfaceViewのスレッド */
 	private Thread thread;
 	/** SurfaceViewのホルダー */
@@ -204,6 +209,17 @@ public class GameSurfaceView extends SurfaceView implements
 
 					/** ペットのレベル判定を行なう。レベルアップ可能ならば、現在のペットを削除して新しいペットに差し替える。 */
 					else if (camPeItems.get(i).equals(myPet)) {
+
+						/** ユーザーの指がペットに触れているか判定 */
+						if (myPet.rectF.contains(usertouchedX, usertouchedY)) {
+							CameLog.setLog(
+									TAG,
+									"ユーザーの指がペットに触れているか判定"
+											+ myPet.rectF.contains(
+													usertouchedX, usertouchedY));
+							/** ペットが震える */
+							myPet.pleased();
+						}
 
 						/** 現在のステータスでレベルアップが可能と判定されたら、ペットをレベルアップする。 */
 						if (PetLevel.judge(context, myPet)) {
@@ -407,6 +423,8 @@ public class GameSurfaceView extends SurfaceView implements
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
+		/** 起動していたペット種別名をプリファレンスに保存 */
+		CamPePref.savePetSpeciesName(context,speciesName);
 		/** 落下させたエサ数を初期化する */
 		throwedEsa = 0;
 		/** 落下予定のエサ数も初期化する */
@@ -415,16 +433,6 @@ public class GameSurfaceView extends SurfaceView implements
 		CamPePref.saveStartStatus(getContext());
 		CameLog.setLog(TAG, "起動済みの旨プリファレンスに情報を保存");
 		thread = null;
-	}
-
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		float x = event.getX(); // X座標を取得
-		float y = event.getY(); // Y座標を取得
-		// speedMove = true;
-		/** petに移動量をセット */
-		myPet.setPetMoveSize(x, y);
-		return true;
 	}
 
 	/**
@@ -538,6 +546,17 @@ public class GameSurfaceView extends SurfaceView implements
 			/** 夜時間帯なら晩御飯表示文字を準備 */
 			esaStatus = context.getString(R.string.esa_status_dinner);
 		}
+	}
+
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+
+		usertouchedX = event.getX(); // X座標を取得
+		usertouchedY = event.getY(); // Y座標を取得
+		// speedMove = true;
+		/** petに移動量をセット */
+		myPet.setPetMoveSize(usertouchedX, usertouchedY);
+		return true;
 	}
 
 	/** 衝突判定を実行するメソッド */

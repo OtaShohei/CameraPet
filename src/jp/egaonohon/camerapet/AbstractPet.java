@@ -85,9 +85,10 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 	public abstract void run();
 
 	/** ペットの喋らせるメソッド。 */
-	public abstract void talk(View view,int eventCode
-//			Context context, View view, int eventCode,int fukidasiDefaultX, int fukidasiDefaultY
-			);
+	public abstract void talk(View view,int eventCode);
+	
+	/** ペットを震えさせるメソッド */
+	public abstract void pleased();
 
 	public int getNowX() {
 		return nowX;

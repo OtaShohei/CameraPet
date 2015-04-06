@@ -41,6 +41,81 @@ public class CamPePref {
 		return startStatus;
 	}
 
+	/** ペット種別名をプリファレンスに保存する */
+	public static void savePetSpeciesName(Context context, String PetSpeciesName) {
+		/** プリファレンスの準備 */
+		SharedPreferences pref = context.getSharedPreferences("PetSpeciesName",
+				Context.MODE_PRIVATE);
+
+		/** プリファレンスに書き込むためのEditorオブジェクト取得 */
+		Editor editor = pref.edit();
+
+		/** "PetSpeciesName" というキーでnotFirstを登録 */
+		editor.putString("PetSpeciesName", PetSpeciesName);
+
+		/** 書き込みの確定（実際にファイルに書き込む） */
+		editor.commit();
+		CameLog.setLog(TAG, "PetSpeciesNameにて" + "PetSpeciesName" + "キーで"
+				+ PetSpeciesName + "を登録");
+	}
+
+	/** ペット種別名をプリファレンスから取り出す。登録されていなければ空の文字列を返す */
+	public static String loadPetSpeciesName(Context context) {
+		/** プリファレンスの準備 */
+		SharedPreferences pref = context.getSharedPreferences("PetSpeciesName",
+				Context.MODE_PRIVATE);
+
+		String PetSpeciesName = pref.getString("PetSpeciesName", "");
+
+		CameLog.setLog(TAG, "ペット種別名" + PetSpeciesName + "を取得");
+
+		/** "PetSpeciesName" というキーで保存されている値を読み出す */
+		return PetSpeciesName;
+	}
+
+	/** AlarmManager・NotificationManager利用時のNotificationIDをプリファレンスに保存する */
+	public static void saveNotificationId(Context context, int NotificationIdNum) {
+		/** プリファレンスの準備 */
+		SharedPreferences pref = context.getSharedPreferences("NotificationID",
+				Context.MODE_PRIVATE);
+
+		/** プリファレンスに書き込むためのEditorオブジェクト取得 */
+		Editor editor = pref.edit();
+
+		/** "NotificationID" というキーでNotificationIdNumを登録 */
+		editor.putInt("NotificationID", NotificationIdNum);
+
+		/** 書き込みの確定（実際にファイルに書き込む） */
+		editor.commit();
+		CameLog.setLog(TAG, "NotificationIDへ" + "NotificationID" + "キーで"
+				+ NotificationIdNum + "を登録");
+	}
+
+	/**
+	 * AlarmManager・NotificationManager利用時のNotificationIDをプリファレンスから取り出す。
+	 * 登録されていなければ0を返す
+	 */
+	public static int loadNotificationId(Context context) {
+		/** プリファレンスの準備 */
+		SharedPreferences pref = null;
+		 try {
+		pref = context.getSharedPreferences("NotificationID",
+				Context.MODE_PRIVATE);
+		 } catch (Exception e) {
+		/** Context.MODE_PRIVATEの中身を確認 */
+		CameLog.setLog(TAG, "Context.MODE_PRIVATEは" + Context.MODE_PRIVATE);
+		 }
+//		 finally {
+
+		int NotificationIdNum = pref.getInt("NotificationID", 0);
+
+		CameLog.setLog(TAG, "NotificationID" + NotificationIdNum + "を取得");
+
+		/** "PetSpeciesName" というキーで保存されている値を読み出す */
+		return NotificationIdNum;
+		// }
+	}
+
 	/**
 	 * ペットがレベルアップする直前、現在のペットのステイタスnowをgettedに書き換える。次に、
 	 * レベルアップ後のペットをnowとペットステイタス情報を管理するプリファレンスに保存する
@@ -183,7 +258,8 @@ public class CamPePref {
 		/** "EsaGetCnt" というキーで保存されている値を読み出す */
 		int gettedTotalEsaGetCnt = pref.getInt("EsaGetCnt", -1);
 
-//		CameLog.setLog(TAG, "累計撮影回数" + gettedTotalEsaGetCnt + "をプリファレンスから取得");
+		// CameLog.setLog(TAG, "累計撮影回数" + gettedTotalEsaGetCnt +
+		// "をプリファレンスから取得");
 
 		/** 取得した累計エサ獲得成功回数を戻す */
 		return gettedTotalEsaGetCnt;
@@ -198,7 +274,7 @@ public class CamPePref {
 		/** "eXP" というキーで保存されている値を読み出す */
 		int gettedtotalEXP = pref.getInt("eXP", -1);
 
-//		CameLog.setLog(TAG, "累計撮影回数" + gettedtotalEXP + "をプリファレンスから取得");
+		// CameLog.setLog(TAG, "累計撮影回数" + gettedtotalEXP + "をプリファレンスから取得");
 
 		/** 取得し累計経験値を戻す */
 		return gettedtotalEXP;
