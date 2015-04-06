@@ -42,7 +42,7 @@
     <string name="pet_01_favorite">Favorite:Smell of owner</string>
     <string name="pet_01_comment">Dog that was picked up in the park. But, one day, He began to suddenly fly in the sky. Moreover, He starts eating photos.</string>
     <string name="pet_message_welcome">Bow-wow!Bow-wow!\n (He speaks that I"'"m glad to meet the owner"'"s!)</string>
-    <string name="how_to_shot"> Tap the screen, you can take a picture.</string>
+    <string name="how_to_shot">Tap the screen, you can take a picture.</string>
     <string name="download_sns_app">SNS app is not installed. Please download the SNS apps on Google Play.</string>
     <string name="esa_status_morning">Satisfaction of breakfast</string>
     <string name="esa_status_lunch">Satisfaction of lunch</string>
@@ -65,7 +65,7 @@
     <string name="pet_03_length">Length:about snowman</string>
     <string name="pet_03_favorite">Favorite:Freezer</string>
     <string name="pet_03_comment">He is not good at summer. As soon as return from outside, he must enter in the freezer. Because he disappears and melts.</string>
-    <string name="pet_message_satiety">Bow-wow!\n (He speaks that I"'"m full.　Thank you!）</string>
+    <string name="pet_message_satiety">Bow-wow!\n (He speaks that I"'"m full. Thank you!）</string>
     <string name="pet_message_levelup">Bow-wow!\n (He speaks that I transform into this figure!!）</string>
     <string name="pet_message_thanksSNS">Bow-wow!\n (He speaks that Thank you for letting me everyone to know of me.）</string>
     <string name="pet_message_generic">Bow-wow!\n (He speaks that Hey I thought. I wanna fly fast like airplane.）</string>
@@ -73,12 +73,12 @@
     <string name="number_shooting">Number of times your shooting is</string>
     <string name="exp_increased_01">times.Your EXP has increased</string>
     <string name="exp_increased_02">.</string>
-    <string name="pet_sns_report_age">Pet which I have kept in the Android app "CameraPet" are as follows! </string>
+    <string name="pet_sns_report_age">"Pet which I have kept in the Android app "CameraPet" are as follows! "</string>
     <string name="pet_sns_report_exp">. EXP is </string>
-    <string name="pet_sns_report_species_name">. Species name is </string>
+    <string name="pet_sns_report_species_name">". Species name is "</string>
     <string name="pet_sns_report_finish">.</string>
-    <string name="alarm_sign"> is seems hungry.</string>
+    <string name="alarm_sign">" is seems hungry."</string>
     <string name="alarm_body_txt01">I also do not eat the food many days. I stomach has vacant.(From</string>
-    <string name="alarm_body_txt02"> you are kept.)</string>
+    <string name="alarm_body_txt02">" you are kept.)"</string>
 
 </resources>

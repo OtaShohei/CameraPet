@@ -7,6 +7,7 @@ public class simpleFukidasi implements Runnable {
 
 	protected boolean isVisible;
 	protected Thread th;
+	protected static final int fukidasiHyojiTime = 10000;
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "simpleFukidasi";
 
@@ -26,8 +27,8 @@ public class simpleFukidasi implements Runnable {
 	public void run() {
 		while (th != null) {
 			try {
-				CameLog.setLog(TAG, "吹き出しスレッドを7秒停止");
-				Thread.sleep(9000);
+				CameLog.setLog(TAG, "吹き出しスレッドを10秒停止。10秒吹き出しを掲出。");
+				Thread.sleep(fukidasiHyojiTime);
 				isVisible = false;
 				stop();
 			} catch (InterruptedException e) {
