@@ -3,8 +3,6 @@ package jp.egaonohon.camerapet.encyc;
 import jp.egaonohon.camerapet.CamPePref;
 import jp.egaonohon.camerapet.CameLog;
 import jp.egaonohon.camerapet.R;
-import jp.egaonohon.camerapet.R.drawable;
-import jp.egaonohon.camerapet.R.string;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
@@ -38,6 +36,8 @@ public class Encyc01ContentsDrawView extends View {
 	private String petFavoriteTxt;
 	/** ペット解説文字 */
 	private String petCommentTxt;
+	/** 現在のペット表示文字 */
+	private String nowPetTxt;
 
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "Encyc01ContentsDrawView";
@@ -57,7 +57,7 @@ public class Encyc01ContentsDrawView extends View {
 
 	/*
 	 * (非 Javadoc)
-	 * 
+	 *
 	 * @see android.view.View#onSizeChanged(int, int, int, int)
 	 */
 	@Override
@@ -71,7 +71,7 @@ public class Encyc01ContentsDrawView extends View {
 
 	/*
 	 * (非 Javadoc)
-	 * 
+	 *
 	 * @see android.view.View#onDraw(android.graphics.Canvas)
 	 */
 	@SuppressLint("DrawAllocation")
@@ -105,6 +105,12 @@ public class Encyc01ContentsDrawView extends View {
 			petPh = BitmapFactory.decodeResource(getContext().getResources(),
 					R.drawable.pet001a_r);
 
+			/** 更に、現在のペットであるならばnow表示。 */
+			if (CamPePref.loadPetModelNumber(getContext(), petModelNumberTxt)
+						.equals("now")) {
+				nowPetTxt = res.getString(R.string.now_pet);
+			}
+
 			/** 現在も以前もゲットしていないペットであるならば */
 		} else {
 
@@ -135,5 +141,11 @@ public class Encyc01ContentsDrawView extends View {
 		encycCommonTextRect.Draw(getContext(), canvas, contentsFieldWidth,
 				contentsFieldHeight, petPh, layoutScale, paint, petNameTxt,
 				petWeightTxt, petLengthTxt, petFavoriteTxt, petCommentTxt);
+		
+		if (CamPePref.loadPetModelNumber(getContext(), petModelNumberTxt)
+						.equals("now")) {
+			encycCommonTextRect.DrawNowMark(getContext(), canvas, contentsFieldWidth,
+					contentsFieldHeight, nowPetTxt);
+		}
 	}
 }

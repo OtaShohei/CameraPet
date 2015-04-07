@@ -11,26 +11,26 @@ import android.graphics.RectF;
 public abstract class CamPeItem {
 
 	/** Viewの幅 */
-	private int viewWidth;
+	protected int viewWidth;
 	/** Viewの高さ */
-	private int viewHeight;
+	protected int viewHeight;
 
 	/** Itemの幅 */
-	private int itemWidth;
+	protected int itemWidth;
 	/** Itemの高さ */
-	private int itemHeight;
+	protected int itemHeight;
 
 	/** Item初期位置：X軸 */
-	private int defaultX;
+	protected int defaultX;
 	/** Item初期位置：Y軸 */
-	private int defaultY;
+	protected int defaultY;
 	/** Item現在位置：X軸 */
-	private int nowX;
+	protected int nowX;
 	/** Item現在位置：Y軸 */
-	private int nowY;
+	protected int nowY;
 
 	/** 衝突判定用のRectF。ここをstaticにするとペットかエサどちらか先にRectに数値をセットした方が確保してしまうので要注意。 */
-	public RectF rectF;
+	protected RectF rectF;
 
 	/**
 	 * ゲーム登場Item抽象クラスのコンストラクタ。

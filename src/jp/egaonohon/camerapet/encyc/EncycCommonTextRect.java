@@ -1,7 +1,6 @@
 package jp.egaonohon.camerapet.encyc;
 
 import jp.egaonohon.camerapet.R;
-import jp.egaonohon.camerapet.R.drawable;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,6 +12,7 @@ import android.graphics.Typeface;
 
 /**
  * ペット図鑑各ページでの描画の共通部分を担当するクラス。
+ *
  * @author OtaShohei
  *
  */
@@ -125,6 +125,20 @@ public class EncycCommonTextRect {
 				currentIndex += lineBreakPoint;
 			}
 		}
+	}
+
+	/**
+	 * 現在のペットであるときに限りNow印を表示するメソッド
+	 *
+	 * @param nowPetTxt
+	 * @param contentsFieldHeight
+	 * @param contentsFieldWidth
+	 * @param canvas
+	 * @param context
+	 */
+	public void DrawNowMark(Context context, Canvas canvas,
+			int contentsFieldWidth, int contentsFieldHeight, String nowPetTxt) {
+
 	}
 
 }

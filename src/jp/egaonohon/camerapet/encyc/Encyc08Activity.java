@@ -3,8 +3,6 @@ package jp.egaonohon.camerapet.encyc;
 import jp.egaonohon.camerapet.CameLog;
 import jp.egaonohon.camerapet.MainActivity;
 import jp.egaonohon.camerapet.R;
-import jp.egaonohon.camerapet.R.layout;
-import jp.egaonohon.camerapet.R.raw;
 import android.app.Activity;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -34,10 +32,15 @@ public class Encyc08Activity extends Activity {
 		/** BGMインスタンス生成し準備 */
 		encycBgm = MediaPlayer.create(this, R.raw.honwaka);
 
-		/** BGMスタート */
-
-//		mp.start(); // SEを鳴らす
-		bgmOn = true;
+		/** getStringExtraで状況を判断して、BGMスタートさせる */
+		Intent intent = getIntent();
+		String keyword = intent.getStringExtra("bgmOn");
+		if (keyword.equals("true")) {
+			bgmOn = true;
+			encycBgm.start();
+		} else {
+			bgmOn = false;
+		}
 
 		/** 起動したクラスをLogで確認 */
 		CameLog.setLog(TAG, "onCreate");
@@ -51,16 +54,6 @@ public class Encyc08Activity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-
-		/** BGMの制御 */
-		if (bgmOn) {
-			encycBgm.start();
-			encycBgm.setLooping(true);
-			bgmOn = true;
-		} else {
-			encycBgm.pause();
-			bgmOn = false;
-		}
 	}
 
 	/*
@@ -99,6 +92,13 @@ public class Encyc08Activity extends Activity {
 		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
 		 */
 		Intent intent = new Intent(Encyc08Activity.this, Encyc07Activity.class);
+
+		/** BGMオンオフ状態を保持してインテントを出せるようにputextra */
+		if (bgmOn) {
+			intent.putExtra("bgmOn", "true");
+		} else {
+			intent.putExtra("bgmOn", "false");
+		}
 
 		/**
 		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
@@ -148,6 +148,13 @@ public class Encyc08Activity extends Activity {
 	 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
 	 */
 	 Intent intent = new Intent(Encyc08Activity.this, Encyc09Activity.class);
+
+		/** BGMオンオフ状態を保持してインテントを出せるようにputextra */
+		if (bgmOn) {
+			intent.putExtra("bgmOn", "true");
+		} else {
+			intent.putExtra("bgmOn", "false");
+		}
 
 	 /**
 	 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。

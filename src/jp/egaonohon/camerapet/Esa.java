@@ -36,10 +36,10 @@ public class Esa extends CamPeItem implements Runnable {
 	private int itemWidth = 10;
 	/** エサの高さ */
 	private int itemHeight = 10;
-	/** エサの初期位置：X軸 */
-	private int defaultX;
-	/** エサの初期位置：Y軸 */
-	private int defaultY;
+//	/** エサの初期位置：X軸 */
+//	private int defaultX;
+//	/** エサの初期位置：Y軸 */
+//	private int defaultY;
 	/** エサの現在位置：X軸 */
 	private int nowX = 10;
 	/** エサの現在距離：Y軸 */

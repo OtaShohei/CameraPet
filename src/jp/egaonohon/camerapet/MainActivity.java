@@ -15,7 +15,6 @@ import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.TimePicker;
 
 /**
  * カメラペットのゲーム画面Activity（=MainActivity）のクラス。
@@ -235,6 +234,13 @@ public class MainActivity extends Activity {
 		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
 		 */
 		Intent intent = new Intent(MainActivity.this, Encyc01Activity.class);
+
+		/** BGMオンオフ状態を保持してインテントを出せるようにputextra */
+		if (bgmOn) {
+			intent.putExtra("bgmOn", "true");
+		} else {
+			intent.putExtra("bgmOn", "false");
+		}
 
 		/**
 		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。

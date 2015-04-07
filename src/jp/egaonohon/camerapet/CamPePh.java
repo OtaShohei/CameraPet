@@ -3,7 +3,6 @@ package jp.egaonohon.camerapet;
 import java.util.ArrayList;
 import java.util.Random;
 
-import android.R.integer;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;

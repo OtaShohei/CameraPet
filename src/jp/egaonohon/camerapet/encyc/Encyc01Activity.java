@@ -3,8 +3,6 @@ package jp.egaonohon.camerapet.encyc;
 import jp.egaonohon.camerapet.CameLog;
 import jp.egaonohon.camerapet.MainActivity;
 import jp.egaonohon.camerapet.R;
-import jp.egaonohon.camerapet.R.layout;
-import jp.egaonohon.camerapet.R.raw;
 import android.app.Activity;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -35,10 +33,17 @@ public class Encyc01Activity extends Activity {
 		/** BGMインスタンス生成し準備 */
 		encycBgm = MediaPlayer.create(this, R.raw.honwaka);
 
-		/** BGMスタート */
-
-		// mp.start(); // SEを鳴らす
-		bgmOn = true;
+		/** getStringExtraで状況を判断して、BGMスタートさせる */
+		Intent intent = getIntent();
+		String keyword = intent.getStringExtra("bgmOn");
+		if (keyword.equals("true")) {
+			bgmOn = true;
+			encycBgm.start();
+			CameLog.setLog(TAG, "bgmOnが" + bgmOn + "なのでBGM開始");
+		} else {
+			bgmOn = false;
+			CameLog.setLog(TAG, "bgmOnが" + bgmOn + "なのでBGMは鳴らさない");
+		}
 
 		/** 起動したクラスをLogで確認 */
 		CameLog.setLog(TAG, "onCreate");
@@ -51,18 +56,7 @@ public class Encyc01Activity extends Activity {
 	 */
 	@Override
 	protected void onResume() {
-		// TODO 自動生成されたメソッド・スタブ
 		super.onResume();
-
-		/** BGMの制御 */
-		if (bgmOn) {
-			encycBgm.start();
-			encycBgm.setLooping(true);
-			bgmOn = true;
-		} else {
-			encycBgm.pause();
-			bgmOn = false;
-		}
 	}
 
 	/*
@@ -79,8 +73,7 @@ public class Encyc01Activity extends Activity {
 		encycBgm.stop();
 
 		/**
-		 * Activityを明示的に終了させる。
-		 * ただし注意点あり。
+		 * Activityを明示的に終了させる。 ただし注意点あり。
 		 * http://d.hatena.ne.jp/adsaria/20110428/1303966837
 		 * http://www.android-navi.com/archives/android_1/finish_activity/
 		 * */
@@ -152,6 +145,13 @@ public class Encyc01Activity extends Activity {
 		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
 		 */
 		Intent intent = new Intent(Encyc01Activity.this, Encyc02Activity.class);
+
+		/** BGMオンオフ状態を保持してインテントを出せるようにputextra */
+		if (bgmOn) {
+			intent.putExtra("bgmOn", "true");
+		} else {
+			intent.putExtra("bgmOn", "false");
+		}
 
 		/**
 		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。

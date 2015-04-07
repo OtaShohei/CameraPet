@@ -147,17 +147,55 @@ public class CamPePref {
 	}
 
 	/** あるペットのステイタス情報をプリファレンスから取り出す。登録されていなければ空の文字列を返す */
-	public static String loadPetModelNumber(Context context, String petSpecies) {
+	public static String loadPetModelNumber(Context context, String petModelNumber) {
 		/** プリファレンスの準備 */
 		SharedPreferences pref = context.getSharedPreferences("petStatus",
 				Context.MODE_PRIVATE);
 
-		String petStatus = pref.getString(petSpecies, "");
+		String petStatus = pref.getString(petModelNumber, "");
 
-		CameLog.setLog(TAG, "ペット" + petSpecies + "のステイタス" + petStatus + "を取得");
+		CameLog.setLog(TAG, "ペット" + petModelNumber + "のステイタス" + petStatus + "を取得");
 
 		/** "startStatus" というキーで保存されている値を読み出す */
 		return petStatus;
+	}
+
+	/**
+	 * 写真撮影やSNS投稿によるペットのバージョンアップに備えて、
+	 * 写真撮影やSNS投稿直前のペットModelNumberをプリファレンスに保存する
+	 */
+	public static void savePetModelNumberForUnexpectedVersionUp(Context context,
+			String beforePetModelNumber) {
+
+		/** プリファレンスの準備 */
+		SharedPreferences pref = context.getSharedPreferences("PetModelNumberForUnexpectedVersionUp",
+				Context.MODE_PRIVATE);
+
+		/** プリファレンスに書き込むためのEditorオブジェクト取得 */
+		Editor editor = pref.edit();
+
+			/** "petSpecies" というキーで現在そのペットであることを示すnowを登録 */
+			editor.putString("PetModelNumberForUnexpectedVersionUp", beforePetModelNumber);
+
+		/** 書き込みの確定（実際にファイルに書き込む） */
+		editor.commit();
+		CameLog.setLog(TAG, "savePetModelNumberForUnexpectedVersionUpにて、PetModelNumberForUnexpectedVersionUpキーで"
+				+ beforePetModelNumber + "を登録");
+	}
+
+	/** 写真撮影やSNS投稿直前のペットModelNumberをプリファレンスから取り出す。 */
+	public static String loadPetModelNumberForUnexpectedVersionUp(Context context) {
+		/** プリファレンスの準備 */
+		SharedPreferences pref = context.getSharedPreferences("PetModelNumberForUnexpectedVersionUp",
+				Context.MODE_PRIVATE);
+
+		String beforePetModelNumber = pref.getString("PetModelNumberForUnexpectedVersionUp", "");
+
+		CameLog.setLog(TAG, "loadPetModelNumberForUnexpectedVersionUpにて、PetModelNumberForUnexpectedVersionUpキーで"
+				+ beforePetModelNumber + "を取得");
+
+		/** "startStatus" というキーで保存されている値を読み出す */
+		return beforePetModelNumber;
 	}
 
 	/** Gameでの累計エサ獲得成功回数と累計経験値をプリファレンスに保存する */

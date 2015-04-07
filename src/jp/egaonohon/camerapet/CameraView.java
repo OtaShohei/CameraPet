@@ -47,23 +47,24 @@ public class CameraView extends SurfaceView {
 
 	/**
 	 * コンストラクタ3種ー＞オリジナルの部品XMLからの利用を可能にするため。
+	 * @throws Exception
 	 */
-	public CameraView(Context context, AttributeSet attrs, int defStyle) {
+	public CameraView(Context context, AttributeSet attrs, int defStyle) throws Exception {
 		super(context, attrs, defStyle);
 		init(context);
 	}
 
-	public CameraView(Context context, AttributeSet attrs) {
+	public CameraView(Context context, AttributeSet attrs) throws Exception {
 		super(context, attrs);
 		init(context);
 	}
 
-	public CameraView(Context context) {
+	public CameraView(Context context) throws Exception {
 		super(context);
 		init(context);
 	}
 
-	public void init(Context context) {
+	public void init(Context context) throws Exception{
 		contentResolver = context.getContentResolver();
 
 		SurfaceHolder holder = getHolder();

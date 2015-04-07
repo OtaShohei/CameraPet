@@ -3,8 +3,6 @@ package jp.egaonohon.camerapet;
 import java.util.ArrayList;
 
 import jp.egaonohon.camerapet.pet.AbstractPet;
-import android.R.integer;
-import android.R.string;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -20,7 +18,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.widget.Toast;
 
 /**
  * ゲーム画面の動作を司るSurfaceViewのクラス。
@@ -53,10 +50,10 @@ public class GameSurfaceView extends SurfaceView implements
 	private AbstractPet myPet;
 	/** レベルアップ後のペットの参照 */
 	private AbstractPet updatedMyPet;
-	/** ペット画像右向き */
-	private Bitmap petPhR;
-	/** ペット画像右向き */
-	private Bitmap petPhL;
+	// /** ペット画像右向き */
+	// private Bitmap petPhR;
+	// /** ペット画像右向き */
+	// private Bitmap petPhL;
 	/** レベルアップ前のペット型番 */
 	String beforePetModelNumber;
 	/** レベルアップ後のペット型番 */
@@ -114,6 +111,10 @@ public class GameSurfaceView extends SurfaceView implements
 	int EsakokutiCnt = 0;
 	/** セリフでの満腹告知回数 */
 	int ManpukuCnt = 0;
+	/** ペットにユーザーが触れてよろこぶ仕草をペットがするかどうかを判定するためのタッチ位置X座標 */
+	private float petAmuseX;
+	/** ペットにユーザーが触れてよろこぶ仕草をペットがするかどうかを判定するためのタッチ位置Y座標 */
+	private float petAmuseY;
 
 	/** 満腹時のペット喜びの声 */
 	String petWelcomMessage;
@@ -210,14 +211,18 @@ public class GameSurfaceView extends SurfaceView implements
 					else if (camPeItems.get(i).equals(myPet)) {
 
 						/** ユーザーの指がペットに触れているか判定 */
-						if (myPet.rectF.contains(usertouchedX, usertouchedY)) {
+						if (myPet.rectF.contains(petAmuseX, petAmuseY)) {
 							CameLog.setLog(
 									TAG,
 									"ユーザーの指がペットに触れているか判定"
-											+ myPet.rectF.contains(
-													usertouchedX, usertouchedY));
+											+ myPet.rectF.contains(petAmuseX,
+													petAmuseY));
 							/** ペットが震える */
 							myPet.pleased();
+							/** ペットが一度震えたら同じ位置で2回目は震えないように判定位置を画面の外にセットし直す */
+							petAmuseX = viewWidth + 5;
+							/** ペットが一度震えたら同じ位置で2回目は震えないように判定位置を画面の外にセットし直す */
+							petAmuseY = viewHeight + 5;
 						}
 
 						/** 現在のステータスでレベルアップが可能と判定されたら、ペットをレベルアップする。 */
@@ -355,6 +360,25 @@ public class GameSurfaceView extends SurfaceView implements
 		/** ペット種別名取得 */
 		speciesName = myPet.getPetName();
 
+		/** プレイ中以外にペットがレベルアップした場合に対応するために、現在のペット型番名を取得してステイタスと比較する */
+		String petModelNumber = myPet.getPetModelNumber();
+		String preferenceSavedPetModelNumber = CamPePref.loadPetModelNumber(
+				context, petModelNumber);
+		/** 現在のステータスがnowで無いならば */
+		if (!preferenceSavedPetModelNumber.equals("now")) {
+			/** 直前のペットModelNumberを取得 */
+			String beforePetModelNumber = CamPePref
+					.loadPetModelNumberForUnexpectedVersionUp(context);
+			/** 直前のペットModelNumberがインストール直後などで空でないならば */
+			if (!beforePetModelNumber.equals("")) {
+				/** ステイタスを保存し直す */
+				CamPePref.savePetModelNumber(context, beforePetModelNumber,
+						petModelNumber);
+				CameLog.setLog(TAG,
+						"ペットのModelNumberステイタスを保存し直した@surfaceChanged");
+			}
+		}
+
 		/** 経験値取得 */
 		try {
 			gettedtotalEXP = CamPePref.loadTotalExp(context);
@@ -402,8 +426,11 @@ public class GameSurfaceView extends SurfaceView implements
 			CameLog.setLog(TAG, "プリファレンスからの経験値表示に失敗@onResume");
 		}
 
-		/** プリファレンスから3時間以内エサ獲得成功数を取得 */
-		gettedThreeHoursEatCnt = CamPePref.loadTotalEsaGetCnt(context);
+		/**
+		 * プリファレンスから3時間以内エサ獲得成功数を取得。
+		 * 2015年4月7日まで、誤って累計エサ獲得数を取得していたため、ゲーム画面表示直後にはプログレスバーがフル状態となっていた模様。
+		 */
+		gettedThreeHoursEatCnt = CamPePref.load3hoursEatCnt(context);
 
 		if (gettedThreeHoursEatCnt == -1) {
 			gettedThreeHoursEatCnt = 0;
@@ -422,8 +449,12 @@ public class GameSurfaceView extends SurfaceView implements
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
+		/** SNS投稿や写真撮影によるレベルアップに備えて現在のペットModelNumberを取得し確保 */
+		CamPePref.savePetModelNumberForUnexpectedVersionUp(context,
+				myPet.getPetModelNumber());
+
 		/** 起動していたペット種別名をプリファレンスに保存 */
-		CamPePref.savePetSpeciesName(context,speciesName);
+		CamPePref.savePetSpeciesName(context, speciesName);
 		/** 落下させたエサ数を初期化する */
 		throwedEsa = 0;
 		/** 落下予定のエサ数も初期化する */
@@ -550,8 +581,8 @@ public class GameSurfaceView extends SurfaceView implements
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 
-		usertouchedX = event.getX(); // X座標を取得
-		usertouchedY = event.getY(); // Y座標を取得
+		petAmuseX = usertouchedX = event.getX(); // X座標を取得
+		petAmuseY = usertouchedY = event.getY(); // Y座標を取得
 		// speedMove = true;
 		/** petに移動量をセット */
 		myPet.setPetMoveSize(usertouchedX, usertouchedY);
@@ -683,12 +714,13 @@ public class GameSurfaceView extends SurfaceView implements
 					 * @param viewHeight
 					 *            エサが動くViewの高さ
 					 */
-					
+
 					/** エサのX初期位置を生成 */
-					int defaultX =(int) ((esaDefaultX * ((Math.random() * 10)+1)) * ((viewWidth/128)*10));
+					int defaultX = (int) ((esaDefaultX * ((Math.random() * 10) + 1)) * ((viewWidth / 128) * 10));
 					/** 画面幅を超えた場合の調整 */
 					if (defaultX > viewWidth) {
-						defaultX = (int) ((defaultX - viewWidth) + ((viewWidth/128)*((Math.random() * 5)+1)));
+						defaultX = (int) ((defaultX - viewWidth) + ((viewWidth / 128) * ((Math
+								.random() * 5) + 1)));
 					}
 
 					camPeItems
@@ -736,7 +768,7 @@ public class GameSurfaceView extends SurfaceView implements
 
 	/**
 	 * 現在のペットの名前を取得するメソッド。
-	 * 
+	 *
 	 * @return speciesName
 	 */
 	public static String getSpeciesName() {

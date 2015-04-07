@@ -4,7 +4,6 @@ import jp.egaonohon.camerapet.CamPeItem;
 import jp.egaonohon.camerapet.CameLog;
 import jp.egaonohon.camerapet.Fukidasi;
 import jp.egaonohon.camerapet.R;
-import jp.egaonohon.camerapet.R.drawable;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -20,7 +19,6 @@ import android.view.View;
  *
  */
 public abstract class AbstractPet extends CamPeItem implements Runnable {
-
 
 	/** ペットが存在しているView */
 	protected View petView;
@@ -146,9 +144,10 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 		// CameLog.setLog(TAG, "onTouchEventからペットに移動距離を設定");
 	}
 
-	/** エサと衝突したらPetを反転させるメソッド。GameSurfaceViewから呼び出す */
+	/** エサと衝突したらPetを反転させるメソッド。GameSurfaceViewから呼び出す。さらに移動方向も反転させる。 */
 	public void returnEsaKrush() {
 		moveX = 1;
+		moveX *= -1;
 		moveY = 0;
 		if (itemPh.equals(petPhR)) {
 			itemPh = petPhL;
@@ -169,15 +168,19 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 
 		/** 画面端のチェック：X軸。 */
 		if (nowX < 0 || this.viewWidth - itemWidth < nowX) {
-			if (itemPh.equals(petPhR)) {
-				itemPh = petPhL;
-			} else if (itemPh.equals(petPhL)) {
-				itemPh = petPhR;
-			}
-
 			/** 次の行のようにすると、左端に行った時も左へ向かってしまう */
 			// moveX = -moveX;
 			moveX *= -1;
+		}
+
+		/**
+		 * moveXが0以下の時は、左向きの画像に差し替え。0より大きい時は右向きの画像に差し替え。
+		 * この判断を画面端チェックのif文の中に入れているとその時にしか判断してくれなくなるので要注意。
+		 */
+		if (moveX < 0) {
+			itemPh = petPhL;
+		} else {
+			itemPh = petPhR;
 		}
 
 		/** 画面端のチェック：Y軸。(itemHeight/2)は、ペットの体の半分がはみ出ていたのでその調整 */
@@ -302,11 +305,11 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 		nowFukidasi = new Fukidasi();
 
 		if (!nowFukidasi.isVisible()) {
-			CameLog.setLog(TAG, "nowFukidasi.isVisibleは"
-					+ nowFukidasi.isVisible());
+			CameLog.setLog(TAG,
+					"nowFukidasi.isVisibleは" + nowFukidasi.isVisible());
 			nowFukidasi.setVisible(true);
-			CameLog.setLog(TAG, "nowFukidasi.isVisibleを"
-					+ nowFukidasi.isVisible() + "にセット");
+			CameLog.setLog(TAG,
+					"nowFukidasi.isVisibleを" + nowFukidasi.isVisible() + "にセット");
 		}
 		if (nowFukidasi.getTh() == null) {
 			nowFukidasi.getTh().start();
@@ -322,8 +325,9 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 				.getResources(), R.drawable.fukidasi);
 
 		/** 吹き出し座布団画像を端末の画面に合わせてリサイズ */
-		Bitmap fukidasiPh02 = Bitmap.createScaledBitmap(fukidasiPh, ((view.getWidth()/128) * 59),
-				((view.getWidth()/128) * 59), false);
+		Bitmap fukidasiPh02 = Bitmap.createScaledBitmap(fukidasiPh,
+				((view.getWidth() / 128) * 59), ((view.getWidth() / 128) * 59),
+				false);
 		fukidasiPh = fukidasiPh02;
 
 		/** 吹き出し用のペイントを準備 */

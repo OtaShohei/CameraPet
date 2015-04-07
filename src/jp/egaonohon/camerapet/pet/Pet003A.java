@@ -2,8 +2,6 @@ package jp.egaonohon.camerapet.pet;
 
 import jp.egaonohon.camerapet.CameLog;
 import jp.egaonohon.camerapet.R;
-import jp.egaonohon.camerapet.R.raw;
-import jp.egaonohon.camerapet.R.string;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.RectF;

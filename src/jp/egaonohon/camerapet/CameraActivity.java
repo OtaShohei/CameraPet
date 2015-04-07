@@ -18,7 +18,39 @@ public class CameraActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		new CameraView(this);
+		try {
+			new CameraView(this);
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			/**
+			 * ここでデフォルトのカメラアプリを呼び出す?　→ちょっと難易度高そうで保留。
+			 * 参考　http://y-anz-m.blogspot.jp/2014/04/1chooser.html
+			 */
+			// /** インテントのインスタンス生成 */
+			// Intent intent = new Intent();
+			// /**
+			// * ファイル名を指定 File型変数picture 第一引数にストレージのディレクトリを指定します。
+			// * 第二引数にはカメラで撮影してできた画像ファイル名を指定。
+			// */
+			// File picture = new
+			// File(Environment.getExternalStorageDirectory(),
+			// getPicFileName());
+			// /** カメラで撮影した画像をキャプチャー。カメラで撮影するアクションをセット */
+			// intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+			// /** intentにカテゴリーを追加 */
+			// intent.addCategory(Intent.CATEGORY_DEFAULT);
+			// /**
+			// * MediaStore.EXTRA_OUTPUT コンテンツリゾルバURIを表すのに使うintent-extraの名前。
+			// * コンテンツリゾルバURI リクエストされたビデオや画像をおいておくためにつかわれる。fromFile
+			// * ファイルからURIを作るメソッド
+			// */
+			// intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(picture));
+			// /** インテントを開始　カメラアプリが起動 */
+			// startActivityForResult(intent, 333);
+		}
+
 		/** カメラビューをsetContentView */
 		setContentView(R.layout.camera);
 		LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT,
@@ -45,6 +77,10 @@ public class CameraActivity extends Activity {
 		/** スクリーンが自動でオフになるのを防いでいたフラグをきちんとオフにする。画面から抜けるときにはOFFにしないと大変なことに。 */
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		finish();
+	}
+
+	public void makeCameraView() throws Exception {
+		new CameraView(this);
 	}
 
 	/**

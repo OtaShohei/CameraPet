@@ -81,5 +81,6 @@
     <string name="alarm_body_txt01">"I don""'""t eat a food many days."</string>
     <string name="alarm_body_txt02">" I stomach has vacant.(From "</string>
     <string name="alarm_body_txt03">" you are kept.)"</string>
+    <string name="now_pet">Now pet!</string>
 
 </resources>
