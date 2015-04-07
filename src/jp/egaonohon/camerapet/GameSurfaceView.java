@@ -684,13 +684,20 @@ public class GameSurfaceView extends SurfaceView implements
 					 * @param viewHeight
 					 *            エサが動くViewの高さ
 					 */
+					
+					/** エサのX初期位置を生成 */
+					int defaultX =(int) ((esaDefaultX * ((Math.random() * 10)+1)) * ((viewWidth/128)*10));
+					/** 画面幅を超えた場合の調整 */
+					if (defaultX > viewWidth) {
+						defaultX = (int) ((defaultX - viewWidth) + ((viewWidth/128)*((Math.random() * 5)+1)));
+					}
 
 					camPeItems
 							.add(new Esa(
 									esaPhList.get(i),
 									viewWidth / 13,
 									viewWidth / 13,
-									(int) ((esaDefaultX * (Math.random() * 10)) * 90),
+									defaultX,
 									esaDefaultY,
 									viewWidth,
 									viewHeight,

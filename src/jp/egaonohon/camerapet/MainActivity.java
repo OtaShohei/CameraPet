@@ -284,7 +284,7 @@ public class MainActivity extends Activity {
 	 */
 	public void setPetAlarmBroadcastReceiver() {
 
-		TimePicker tPicker;
+//		TimePicker tPicker;
 		int notificationId = 0;
 		PendingIntent alarmIntent;
 

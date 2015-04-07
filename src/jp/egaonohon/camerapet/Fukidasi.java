@@ -3,7 +3,7 @@ package jp.egaonohon.camerapet;
 import android.content.res.Resources;
 import android.view.View;
 
-public class simpleFukidasi implements Runnable {
+public class Fukidasi implements Runnable {
 
 	protected boolean isVisible;
 	protected Thread th;
@@ -14,7 +14,7 @@ public class simpleFukidasi implements Runnable {
 	/**
 	 * コンストラクタ。
 	 */
-	public simpleFukidasi() {
+	public Fukidasi() {
 		super();
 		isVisible = true;
 		CameLog.setLog(TAG, "isVisibleは" + isVisible);

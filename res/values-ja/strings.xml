@@ -78,8 +78,9 @@
     <string name="pet_sns_report_species_name">。種類は</string>
     <string name="pet_sns_report_finish">。</string>
     <string name="alarm_sign">が腹ペコみたい。</string>
-    <string name="alarm_body_txt01">もう何日もごはん食べていないよ…。お腹がすいてきちゃったワン（あなたが飼っている</string>
-    <string name="alarm_body_txt02">より）。</string>
+    <string name="alarm_body_txt01">何日も食べてなくてお腹すいたワン。</string>
+    <string name="alarm_body_txt02">（あなたが飼っている</string>
+    <string name="alarm_body_txt03">より）。</string>
 
 
 </resources>

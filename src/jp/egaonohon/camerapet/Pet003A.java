@@ -84,7 +84,7 @@ public class Pet003A extends AbstractPet implements Runnable {
 	private int petKasokudoY = viewWidth / 6;
 
 	/** 現在の吹き出し */
-	private simpleFukidasi nowFukidasi;
+	private Fukidasi nowFukidasi;
 	/** 吹き出し座布団画像の参照 */
 	private Bitmap fukidasiPh;
 	/** 吹き出しセリフ文字の参照 */
@@ -375,7 +375,7 @@ public class Pet003A extends AbstractPet implements Runnable {
 	// fukidasiDefaultY
 	) {
 
-		nowFukidasi = new simpleFukidasi();
+		nowFukidasi = new Fukidasi();
 
 		if (!nowFukidasi.isVisible) {
 			CameLog.setLog(TAG, "nowFukidasi.isVisibleは"

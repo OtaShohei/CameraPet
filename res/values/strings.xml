@@ -74,11 +74,12 @@
     <string name="exp_increased_01">times.Your EXP has increased</string>
     <string name="exp_increased_02">.</string>
     <string name="pet_sns_report_age">"Pet which I have kept in the Android app "CameraPet" are as follows! "</string>
-    <string name="pet_sns_report_exp">. EXP is </string>
+    <string name="pet_sns_report_exp">". EXP is "</string>
     <string name="pet_sns_report_species_name">". Species name is "</string>
     <string name="pet_sns_report_finish">.</string>
     <string name="alarm_sign">" is seems hungry."</string>
-    <string name="alarm_body_txt01">I also do not eat the food many days. I stomach has vacant.(From</string>
-    <string name="alarm_body_txt02">" you are kept.)"</string>
+    <string name="alarm_body_txt01">"I don""'""t eat a food many days."</string>
+    <string name="alarm_body_txt02">" I stomach has vacant.(From "</string>
+    <string name="alarm_body_txt03">" you are kept.)"</string>
 
 </resources>
