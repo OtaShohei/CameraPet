@@ -5,8 +5,8 @@ import android.view.View;
 
 public class Fukidasi implements Runnable {
 
-	protected boolean isVisible;
-	protected Thread th;
+	private boolean isVisible;
+	private Thread th;
 	protected static final int fukidasiHyojiTime = 10000;
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "simpleFukidasi";
@@ -16,20 +16,20 @@ public class Fukidasi implements Runnable {
 	 */
 	public Fukidasi() {
 		super();
-		isVisible = true;
-		CameLog.setLog(TAG, "isVisibleは" + isVisible);
-		th = new Thread(this);
-		th.start();
+		setVisible(true);
+		CameLog.setLog(TAG, "isVisibleは" + isVisible());
+		setTh(new Thread(this));
+		getTh().start();
 		CameLog.setLog(TAG, "吹き出しスレッドを開始");
 	}
 
 	@Override
 	public void run() {
-		while (th != null) {
+		while (getTh() != null) {
 			try {
 				CameLog.setLog(TAG, "吹き出しスレッドを10秒停止。10秒吹き出しを掲出。");
 				Thread.sleep(fukidasiHyojiTime);
-				isVisible = false;
+				setVisible(false);
 				stop();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -40,7 +40,7 @@ public class Fukidasi implements Runnable {
 	/** 吹き出しスレッドを停止 */
 	public void stop() {
 		CameLog.setLog(TAG, "吹き出しスレッドを停止");
-		th = null;
+		setTh(null);
 	}
 
 	public String getMsg(View view, int eventCode) {
@@ -73,6 +73,22 @@ public class Fukidasi implements Runnable {
 			/** いずれにも当てはまらない時 */
 			return res.getString(R.string.pet_message_generic);
 		}
+	}
+
+	public boolean isVisible() {
+		return isVisible;
+	}
+
+	public void setVisible(boolean isVisible) {
+		this.isVisible = isVisible;
+	}
+
+	public Thread getTh() {
+		return th;
+	}
+
+	public void setTh(Thread th) {
+		this.th = th;
 	}
 
 }

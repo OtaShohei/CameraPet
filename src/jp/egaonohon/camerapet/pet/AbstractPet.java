@@ -1,106 +1,106 @@
-package jp.egaonohon.camerapet;
+package jp.egaonohon.camerapet.pet;
 
-import android.content.res.Resources;
+import jp.egaonohon.camerapet.CamPeItem;
+import jp.egaonohon.camerapet.CameLog;
+import jp.egaonohon.camerapet.Fukidasi;
+import jp.egaonohon.camerapet.R;
+import jp.egaonohon.camerapet.R.drawable;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.RectF;
-import android.media.MediaPlayer;
 import android.view.View;
 
 /**
- * ゲーム画面で動くペットレベル3Aのクラス。
+ * ゲーム画面で動く各種ペットの抽象クラス
  *
  * @author OtaShohei
  *
  */
-public class Pet003A extends AbstractPet implements Runnable {
+public abstract class AbstractPet extends CamPeItem implements Runnable {
+
 
 	/** ペットが存在しているView */
-	private View petView;
+	protected View petView;
 
 	/** 描画設定 */
-	private Paint petPaint = new Paint();
+	protected Paint petPaint = new Paint();
 	/**
 	 * Petの画像拡大縮小用 拡大縮小に関しては、こちらのサイトを参照。
 	 * http://blog.livedoor.jp/tmtlplus/archives/19016162.html
 	 */
-	final Matrix matrix = new Matrix();
-
-	/** ペットの型番 */
-	private static final String MODEL_NUMBER = "Pet003A";
-	/** ペットの種名 */
-	private String petName;
+	protected final Matrix matrix = new Matrix();
 
 	/** Viewの幅 */
-	private int viewWidth;
+	protected int viewWidth;
 	/** Viewの高さ */
-	private int viewHeight;
+	protected int viewHeight;
 
 	/** 実行中ペット画像 */
-	private Bitmap itemPh;
+	protected Bitmap itemPh;
 	/** ペット右向き画像 */
-	private Bitmap petPhR;
+	protected Bitmap petPhR;
 	/** ペット左向き画像 */
-	private Bitmap petPhL;
+	protected Bitmap petPhL;
 
-	/** くすぐったい時用サウンド */
-	private MediaPlayer pleasedSE;
 	/** 表示写真を左右入れ替えていいか否か */
-	private boolean changeItemPh;
+	protected boolean changeItemPh;
 
 	/** X方向の拡大縮小率算出 */
-	float scaleX = 1.0f;
+	protected float scaleX = 1.0f;
 	/** Y方向の拡大縮小率算出 */
-	float scaleY = 1.0f;
+	protected float scaleY = 1.0f;
 	/** Itemの回転角度 */
-	private float degree = 1.0f;
+	protected float degree = 1.0f;
 	/** Itemの幅 */
-	private int itemWidth;
+	protected int itemWidth;
 	/** Itemの高さ */
-	private int itemHeight;
+	protected int itemHeight;
 	/** Item初期位置：X軸 */
-	private int defaultX;
+	protected int defaultX;
 	/** Item初期位置：Y軸 */
-	private int defaultY;
+	protected int defaultY;
 	/** Item現在位置：X軸 */
-	private int nowX = 0;
+	protected int nowX = 0;
 	/** Item現在位置：Y軸 */
-	private int nowY = 0;
+	protected int nowY = 0;
 	/** Item移動距離：X軸 */
-	private int moveX = 1;
+	protected int moveX = 1;
 	/** Item移動距離：Y軸 */
-	private int moveY = 2;
+	protected int moveY = 2;
 	/** ペットの歩くアニメーション効果用（歩数カウント） */
-	private int cnt;
+	protected int cnt;
 	/** ペットが動くスピード（移動および歩くアニメーションに影響） */
-	private long speed = 60;
+	protected long speed = 60;
 	/** ペット移動加速度X軸 */
-	private int petKasokudoX = viewWidth / 7;
+	protected int petKasokudoX = viewWidth / 7;
 	/** ペット移動加速度Y軸 */
-	private int petKasokudoY = viewWidth / 6;
+	protected int petKasokudoY = viewWidth / 6;
 
 	/** 現在の吹き出し */
-	private Fukidasi nowFukidasi;
+	protected Fukidasi nowFukidasi;
 	/** 吹き出し座布団画像の参照 */
-	private Bitmap fukidasiPh;
+	protected Bitmap fukidasiPh;
+
 	/** 吹き出しセリフ文字の参照 */
-	private String fukidasiTxt;
+	protected String fukidasiTxt;
 	/** 吹き出し改行基準スケール */
-	private int layoutScale = viewWidth / 128;
+	protected int layoutScale = viewWidth / 128;
 	/** テキストの改行に必要なローカル変数 */
-	private int lineBreakPoint;
-	private int currentIndex = 0;
+	protected int lineBreakPoint;
+	protected int currentIndex = 0;
 	/** 本文開始位置のY値 */
-	private int linePointY;
+	protected int linePointY;
 
 	/** ペット用のスレッド */
-	private Thread petThread;
-	// /** 衝突判定用のRectF */
-	// private static RectF rectF;
+	protected Thread petThread;
+	/** ペットの種別名 */
+	protected final String model_number = "AbstractPet";
+	/** ペットの種名 */
+	protected String petName;
+
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "Pet";
 
@@ -113,17 +113,14 @@ public class Pet003A extends AbstractPet implements Runnable {
 	 * @param defaultX
 	 * @param defaultY
 	 */
-	public Pet003A(Bitmap itemPh, int width, int height, int defaultX,
+	public AbstractPet(Bitmap itemPh, int width, int height, int defaultX,
 			int defaultY, int viewWidth, int viewHeight) {
-		super(itemPh, width, height, defaultX, defaultY, viewWidth, viewHeight);
+		super(width, height, defaultX, defaultY, viewWidth, viewHeight);
 	}
 
 	/**
 	 * ペットのコンストラクタ。左右画像が必要です。
 	 *
-	 * @param view
-	 * @param petPhR
-	 * @param petPhL
 	 * @param itemWidth
 	 * @param itemHeight
 	 * @param defaultX
@@ -131,60 +128,12 @@ public class Pet003A extends AbstractPet implements Runnable {
 	 * @param viewWidth
 	 * @param viewHeight
 	 */
-	public Pet003A(View view, Bitmap petPhR, Bitmap petPhL, int itemWidth,
+	public AbstractPet(View view, Bitmap petPhR, Bitmap petPhL, int itemWidth,
 			int itemHeight, int defaultX, int defaultY, int viewWidth,
 			int viewHeight) {
-		super(petPhR, itemWidth, itemHeight, defaultX, defaultY, viewWidth,
-				viewHeight);
+		super(itemWidth, itemHeight, defaultX, defaultY, viewWidth, viewHeight);
 		CameLog.setLog(TAG, "petPhRは" + petPhR + "petPhLは" + petPhL
 				+ "itemWidthは" + itemWidth);
-
-		this.petView = view;
-		this.petPhR = petPhR;
-		this.petPhL = petPhL;
-		this.itemPh = petPhR;
-		this.itemWidth = itemWidth;
-		this.itemHeight = itemHeight;
-		/** Defaultの位置を現在地に代入する */
-		this.nowX = defaultX;
-		this.nowY = defaultY;
-		this.viewWidth = viewWidth;
-		this.viewHeight = viewHeight;
-
-		/** petの名前を取得 */
-		Resources res = petView.getResources();
-		petName = res.getString(R.string.pet_03_name);
-
-		/** 衝突判定用RectFをインスタンス化 */
-		rectF = new RectF();
-
-		CameLog.setLog(TAG, "CPPetがnewされた時点でのViewのWidthは" + this.viewWidth
-				+ "。ViewのHeightは" + this.viewHeight);
-
-		CameLog.setLog(TAG, "CPPetがnewされた時点でのペットのWidthは" + this.itemWidth
-				+ "。Heightは" + this.itemHeight);
-
-		/**
-		 * PetPhの拡大・縮小率設定 ここでfloatにキャストしないと拡大率が小数点以下切り捨てられてしまうので要注意
-		 */
-		scaleX = (float) itemWidth / petPhR.getWidth();
-		scaleY = (float) itemHeight / petPhR.getHeight();
-
-		/** くすぐったい時用SEのインスタンス生成し準備 */
-		pleasedSE = MediaPlayer.create(view.getContext(), R.raw.payohn);
-
-		CameLog.setLog(TAG, "scaleXは" + scaleX + "scaleYは" + scaleY);
-
-		matrix.setScale(scaleX, scaleY);
-		// matrix.postScale(scaleX, scaleY);
-		// /** PetPhの拡大縮小率確認 */
-		// CameLog.setLog(TAG, "PetPhの拡大縮小率はXが" + scaleX + "。Yは" + scaleY);
-
-		/** PetPhの回転角設定 */
-		// matrix.postRotate(degree);
-
-		petThread = new Thread(this);
-		petThread.start();
 	}
 
 	/**
@@ -245,8 +194,8 @@ public class Pet003A extends AbstractPet implements Runnable {
 		nowX = nowX + moveX;
 		nowY = nowY + moveY;
 
-		// CameLog.setLog(TAG, "move時点でのViewのWidthは" + this.viewWidth
-		// + "。ViewのHeightは" + this.viewHeight);
+		// CameLog.setLog(TAG, "ペットのnowXは" + nowX
+		// + "。ペットのnowYは" + nowY);
 
 		/**
 		 * 描画座標の更新。表示する座標を設定する。移動ベクトル_vecが指す方向に移動させる petCurrentX += petMoveX
@@ -284,8 +233,10 @@ public class Pet003A extends AbstractPet implements Runnable {
 		/** ここで描画位置を指定 */
 		canvas.translate(nowX, nowY);
 
-		if (nowFukidasi.isVisible) {
+		if (nowFukidasi.isVisible()) {
 
+			// canvas.drawBitmap(fukidasiPh, fukidasiPhMatrix, petPaint);
+			//
 			canvas.drawBitmap(fukidasiPh, 0, itemHeight + (layoutScale * 4),
 					petPaint);
 
@@ -311,15 +262,8 @@ public class Pet003A extends AbstractPet implements Runnable {
 		}
 
 		canvas.drawBitmap(itemPh, matrix, petPaint);
-		canvas.restore();
-	}
 
-	/** 触られてペットが喜ぶメソッド */
-	public void pleased() {
-		/** 鳴き声を上げる */
-		pleasedSE.start();
-		// /** 写真を入れ替えて震えてもいい */
-		// changeItemPh = true;
+		canvas.restore();
 	}
 
 	@Override
@@ -342,7 +286,6 @@ public class Pet003A extends AbstractPet implements Runnable {
 				// }
 				// changeItemPh = false;
 				// }
-
 				Thread.sleep(1000 / speed);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -350,42 +293,23 @@ public class Pet003A extends AbstractPet implements Runnable {
 		}
 	}
 
-	public int getNowX() {
-		return nowX;
-	}
-
-	public void setNowX(int nowX) {
-		this.nowX = nowX;
-	}
-
-	public int getNowY() {
-		return nowY;
-	}
-
-	public void setNowY(int nowY) {
-		this.nowY = nowY;
-	}
-
-	public String getPetModelNumber() {
-		return MODEL_NUMBER;
-	}
-
+	/** ペットの喋らせるメソッド。 */
 	public void talk(View view, int eventCode
-	// Context context, View view, int eventCode,int fukidasiDefaultX, int
-	// fukidasiDefaultY
+	// Context context, View view, int eventCode,
+	// int fukidasiDefaultX, int fukidasiDefaultY
 	) {
 
 		nowFukidasi = new Fukidasi();
 
-		if (!nowFukidasi.isVisible) {
+		if (!nowFukidasi.isVisible()) {
 			CameLog.setLog(TAG, "nowFukidasi.isVisibleは"
-					+ nowFukidasi.isVisible);
-			nowFukidasi.isVisible = true;
+					+ nowFukidasi.isVisible());
+			nowFukidasi.setVisible(true);
 			CameLog.setLog(TAG, "nowFukidasi.isVisibleを"
-					+ nowFukidasi.isVisible + "にセット");
+					+ nowFukidasi.isVisible() + "にセット");
 		}
-		if (nowFukidasi.th == null) {
-			nowFukidasi.th.start();
+		if (nowFukidasi.getTh() == null) {
+			nowFukidasi.getTh().start();
 			CameLog.setLog(TAG, "nowFukidasi.thをStart");
 		}
 
@@ -417,22 +341,40 @@ public class Pet003A extends AbstractPet implements Runnable {
 		/** ペット解説用テキストサイズと書体を変更 */
 		petPaint.setTextSize(viewWidth / 26);
 
-		/** テキストを改行する位置を仮置きで最大値としておく */
+		/** テキストの改行に必要なローカル変数 */
 		lineBreakPoint = Integer.MAX_VALUE;
-
-		/** セリフの現在の行数 */
 		currentIndex = 0;
 
 		/** 本文開始位置のY値 */
-		linePointY = viewWidth / 28;
+		linePointY = viewWidth / 60;
+
 	}
+
+	/** 触られてペットが喜ぶメソッド */
+	public abstract void pleased();
+
+	public int getNowX() {
+		return nowX;
+	}
+
+	public void setNowX(int nowX) {
+		this.nowX = nowX;
+	}
+
+	public int getNowY() {
+		return nowY;
+	}
+
+	public void setNowY(int nowY) {
+		this.nowY = nowY;
+	}
+
+	public abstract String getPetModelNumber();
 
 	/**
 	 * @return petName
 	 */
-	public String getPetName() {
-		return petName;
-	}
+	public abstract String getPetName();
 
 	/**
 	 * @param itemPh

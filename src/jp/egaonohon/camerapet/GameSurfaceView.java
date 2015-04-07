@@ -2,6 +2,7 @@ package jp.egaonohon.camerapet;
 
 import java.util.ArrayList;
 
+import jp.egaonohon.camerapet.pet.AbstractPet;
 import android.R.integer;
 import android.R.string;
 import android.content.Context;
@@ -132,8 +133,6 @@ public class GameSurfaceView extends SurfaceView implements
 
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "GameSurfaceView";
-
-	OnFcsChangeListener listener;
 
 	public GameSurfaceView(Context context) {
 		super(context);

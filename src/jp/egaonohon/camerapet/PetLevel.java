@@ -1,5 +1,9 @@
 package jp.egaonohon.camerapet;
 
+import jp.egaonohon.camerapet.pet.AbstractPet;
+import jp.egaonohon.camerapet.pet.Pet001A;
+import jp.egaonohon.camerapet.pet.Pet002A;
+import jp.egaonohon.camerapet.pet.Pet003A;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
