@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- How long a session exists before giving up -->
+    <integer name="ga_sessionTimeout">300</integer>
+    <!-- Enable automatic Activity measurement -->
+    <bool name="ga_autoActivityTracking">true</bool>
+    <!-- The screen names that will appear in reports -->
+    <!-- Google Analyticsの対象Activityをすべて記述する。 -->
+
+    <screenName name="jp.egaonohon.camerapet.MainActivity">Main</screenName>
+    <screenName name="jp.egaonohon.camerapet.CameraActivity">Camera</screenName>
+    <screenName name="jp.egaonohon.camerapet.tutorial.TutorialFirstActivity">TutorialFirst</screenName>
+    <screenName name="jp.egaonohon.camerapet.tutorial.TutorialSecondActivity">TutorialSecond</screenName>
+    <screenName name="jp.egaonohon.camerapet.tutorial.TutorialThirdActivity">TutorialThird</screenName>
+    <screenName name="jp.egaonohon.camerapet.tutorial.TutorialFourthActivity">TutorialFourth</screenName>
+    <screenName name="jp.egaonohon.camerapet.tutorial.TutorialFifthActivity">TutorialFifth</screenName>
+    <screenName name="jp.egaonohon.camerapet.tutorial.TutorialSixthActivity">TutorialSixth</screenName>
+    <screenName name="jp.egaonohon.camerapet.tutorial.TutorialSeventhActivity">TutorialSeventh</screenName>
+    <screenName name="jp.egaonohon.camerapet.encyc.Encyc01Activity">Encyc01</screenName>
+    <screenName name="jp.egaonohon.camerapet.encyc.Encyc02Activity">Encyc02</screenName>
+    <screenName name="jp.egaonohon.camerapet.encyc.Encyc03Activity">Encyc03</screenName>
+    <screenName name="jp.egaonohon.camerapet.encyc.Encyc04Activity">Encyc04</screenName>
+    <screenName name="jp.egaonohon.camerapet.encyc.Encyc05Activity">Encyc05</screenName>
+    <screenName name="jp.egaonohon.camerapet.encyc.Encyc06Activity">Encyc06</screenName>
+    <screenName name="jp.egaonohon.camerapet.encyc.Encyc07Activity">Encyc07</screenName>
+    <screenName name="jp.egaonohon.camerapet.encyc.Encyc08Activity">Encyc08</screenName>
+    <screenName name="jp.egaonohon.camerapet.encyc.Encyc09Activity">Encyc09</screenName>
+    <screenName name="jp.egaonohon.camerapet.encyc.Encyc10Activity">Encyc10</screenName>
+    <screenName></screenName>
+    <!-- The following value should be replaced with correct property id. -->
+    <string name="ga_trackingId">UA-61693929-1</string>
+
+</resources>

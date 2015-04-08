@@ -1,5 +1,9 @@
 package jp.egaonohon.camerapet.tutorial;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
+import jp.egaonohon.camerapet.App;
 import jp.egaonohon.camerapet.CameLog;
 import jp.egaonohon.camerapet.MainActivity;
 import jp.egaonohon.camerapet.R;
@@ -11,14 +15,16 @@ import android.os.Bundle;
 import android.view.View;
 
 public class TutorialSecondActivity extends Activity {
-	
+
 	/** BGM用変数 */
 	private static MediaPlayer tutorialBgm;
 
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "TutorialSecondActivity";
-	
-	/* (非 Javadoc)
+
+	/*
+	 * (非 Javadoc)
+	 * 
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
 	@Override
@@ -26,20 +32,22 @@ public class TutorialSecondActivity extends Activity {
 		// TODO 自動生成されたメソッド・スタブ
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tutorial_second);
-		
-//		/** BGMインスタンス生成し準備 */
-//		tutorialBgm = MediaPlayer.create(this, R.raw.honwaka);
-//		
-//		/** BGMスタート */
-//		tutorialBgm.setLooping(true);
-//		tutorialBgm.start(); // SEを鳴らす
-		
+
+		// /** BGMインスタンス生成し準備 */
+		// tutorialBgm = MediaPlayer.create(this, R.raw.honwaka);
+		//
+		// /** BGMスタート */
+		// tutorialBgm.setLooping(true);
+		// tutorialBgm.start(); // SEを鳴らす
+
 		/** 起動したクラスをLogで確認 */
 		CameLog.setLog(TAG, "onCreate");
 
 	}
 
-	/* (非 Javadoc)
+	/*
+	 * (非 Javadoc)
+	 * 
 	 * @see android.app.Activity#onResume()
 	 */
 	@Override
@@ -48,15 +56,17 @@ public class TutorialSecondActivity extends Activity {
 		super.onResume();
 	}
 
-	/* (非 Javadoc)
+	/*
+	 * (非 Javadoc)
+	 * 
 	 * @see android.app.Activity#onPause()
 	 */
 	@Override
 	protected void onPause() {
 		// TODO 自動生成されたメソッド・スタブ
-		super.onPause();	
-//		/** BGMを停止 */
-//		tutorialBgm.stop();
+		super.onPause();
+		// /** BGMを停止 */
+		// tutorialBgm.stop();
 		finish();
 	}
 
@@ -66,13 +76,15 @@ public class TutorialSecondActivity extends Activity {
 
 	/**
 	 * 戻るボタンメソッド。
+	 * 
 	 * @param v
 	 */
 	public void goBack(View v) {
 		/**
 		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
 		 */
-		Intent intent = new Intent(TutorialSecondActivity.this, TutorialFirstActivity.class);
+		Intent intent = new Intent(TutorialSecondActivity.this,
+				TutorialFirstActivity.class);
 
 		/**
 		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
@@ -82,34 +94,52 @@ public class TutorialSecondActivity extends Activity {
 
 	/**
 	 * 次へボタンメソッド。
+	 * 
 	 * @param v
 	 */
 	public void goNext(View v) {
 		/**
 		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
 		 */
-		Intent intent = new Intent(TutorialSecondActivity.this, TutorialThirdActivity.class);
+		Intent intent = new Intent(TutorialSecondActivity.this,
+				TutorialThirdActivity.class);
 
 		/**
 		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
 		 */
 		startActivity(intent);
-	}	
-	
+	}
+
 	/**
 	 * チュートリアルを終えるボタンメソッド。
+	 * 
 	 * @param v
 	 */
 	public void goHome(View v) {
 		/**
 		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
 		 */
-		Intent intent = new Intent(TutorialSecondActivity.this, MainActivity.class);
+		Intent intent = new Intent(TutorialSecondActivity.this,
+				MainActivity.class);
 
 		/**
 		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
 		 */
 		startActivity(intent);
-	}	
+	}
 
+	/*
+	 * (非 Javadoc)
+	 * 
+	 * @see android.app.Activity#onStart()
+	 */
+	@Override
+	protected void onStart() {
+		super.onStart();
+		/** Google Analytics用の記述 */
+		Tracker t = ((App) getApplication())
+				.getTracker(App.TrackerName.APP_TRACKER);
+		t.setScreenName(this.getClass().getSimpleName());
+		t.send(new HitBuilders.AppViewBuilder().build());
+	}
 }

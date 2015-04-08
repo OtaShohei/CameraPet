@@ -1,5 +1,9 @@
 package jp.egaonohon.camerapet.tutorial;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
+import jp.egaonohon.camerapet.App;
 import jp.egaonohon.camerapet.CameLog;
 import jp.egaonohon.camerapet.MainActivity;
 import jp.egaonohon.camerapet.R;
@@ -43,7 +47,6 @@ public class TutorialSixthActivity extends Activity {
 	 */
 	@Override
 	protected void onResume() {
-		// TODO 自動生成されたメソッド・スタブ
 		super.onResume();
 	}
 
@@ -108,4 +111,18 @@ public class TutorialSixthActivity extends Activity {
 		startActivity(intent);
 	}	
 
+	/*
+	 * (非 Javadoc)
+	 * 
+	 * @see android.app.Activity#onStart()
+	 */
+	@Override
+	protected void onStart() {
+		super.onStart();
+		/** Google Analytics用の記述 */
+		Tracker t = ((App) getApplication())
+				.getTracker(App.TrackerName.APP_TRACKER);
+		t.setScreenName(this.getClass().getSimpleName());
+		t.send(new HitBuilders.AppViewBuilder().build());
+	}
 }

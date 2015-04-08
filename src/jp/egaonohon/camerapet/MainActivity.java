@@ -15,6 +15,11 @@ import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.LinearLayout;
+
+import com.google.android.gms.ads.*;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 /**
  * カメラペットのゲーム画面Activity（=MainActivity）のクラス。
@@ -53,6 +58,8 @@ public class MainActivity extends Activity {
 	private static boolean returnTutorial = false;
 	/** 図鑑から戻ってきた直後を判定するBoolean */
 	private static boolean returnEncyc = false;
+	/** Admob用のインスタンス */
+	private AdView adView;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -85,13 +92,43 @@ public class MainActivity extends Activity {
 		this.window_height = size.y; // height
 		CameLog.setLog(TAG, "Activityのwidthは" + windows_width
 				+ "Activityのheightは" + window_height);
+
+		// ////////
+		// 以下、Admob用記述
+		// http://skys.co.jp/archives/1579
+		// を参考にEclipseへのメモリ割り当てを増やさないとEclipseがフリーズするので要注意。
+		// ////////
+
+		/** adView を作成する */
+		adView = new AdView(this);
+		adView.setAdUnitId("ca-app-pub-1135628131797223/1945135213");
+		adView.setAdSize(AdSize.SMART_BANNER);
+
+		/** 属性 android:id="@+id/adMobSpace" が与えられているものとしてLinearLayout をルックアップする */
+		LinearLayout layout = (LinearLayout) findViewById(R.id.adMobSpace);
+
+		/** adView を追加する */
+		layout.addView(adView);
+
+		// /** 一般的なリクエストを行う */
+		// AdRequest adRequest = new AdRequest.Builder().build();
+
+		/** テスト用のリクエストを行う */
+		AdRequest adRequest = new AdRequest.Builder()
+		/** エミュレータ */
+		.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+		/** Nexus */
+		.addTestDevice("9F62663AFEF7E4EC5B3F231A4AB93A9C")
+		/** 広告対象を女性に */
+		.setGender(AdRequest.GENDER_FEMALE).build();
+
+		/** 広告リクエストを行って adView を読み込む */
+		adView.loadAd(adRequest);
 	}
 
 	@Override
 	protected void onResume() { // アクティビティが動き始める時呼ばれる
 		super.onResume();
-
-		// setfirstPetAlarmBroadcastReceiver();
 
 		/** BGMの制御 */
 		if (bgmOn) {
@@ -102,6 +139,8 @@ public class MainActivity extends Activity {
 			mp.pause();
 			bgmOn = false;
 		}
+		/** Admobの一時停止 */
+		adView.resume();
 	}
 
 	/** アクティビティの動きが止まる時呼ばれる */
@@ -111,6 +150,8 @@ public class MainActivity extends Activity {
 		// AcSensor.Inst().onPause();// 中断時にセンサーを止める
 		/** BGMの一時停止 */
 		mp.pause();
+		/** Admobの一時停止 */
+		adView.pause();
 		CameLog.setLog(TAG, "onPause");
 	}
 
@@ -128,6 +169,8 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		/** Admobの破棄 */
+		adView.destroy();
 
 		CameLog.setLog(TAG, "onDestroy");
 	}
@@ -351,4 +394,20 @@ public class MainActivity extends Activity {
 	public static void setReturnTut(boolean returnTut) {
 		MainActivity.returnTutorial = returnTut;
 	}
+
+	/*
+	 * (非 Javadoc)
+	 * 
+	 * @see android.app.Activity#onStart()
+	 */
+	@Override
+	protected void onStart() {
+		super.onStart();
+		/** Google Analytics用の記述 */
+		Tracker t = ((App) getApplication())
+				.getTracker(App.TrackerName.APP_TRACKER);
+		t.setScreenName(this.getClass().getSimpleName());
+		t.send(new HitBuilders.AppViewBuilder().build());
+	}
+
 }

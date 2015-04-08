@@ -1,5 +1,9 @@
 package jp.egaonohon.camerapet.encyc;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
+import jp.egaonohon.camerapet.App;
 import jp.egaonohon.camerapet.CameLog;
 import jp.egaonohon.camerapet.MainActivity;
 import jp.egaonohon.camerapet.R;
@@ -21,7 +25,7 @@ public class Encyc01Activity extends Activity {
 
 	/*
 	 * (非 Javadoc)
-	 *
+	 * 
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
 	@Override
@@ -51,7 +55,7 @@ public class Encyc01Activity extends Activity {
 
 	/*
 	 * (非 Javadoc)
-	 *
+	 * 
 	 * @see android.app.Activity#onResume()
 	 */
 	@Override
@@ -61,7 +65,7 @@ public class Encyc01Activity extends Activity {
 
 	/*
 	 * (非 Javadoc)
-	 *
+	 * 
 	 * @see android.app.Activity#onPause()
 	 */
 	@Override
@@ -157,5 +161,20 @@ public class Encyc01Activity extends Activity {
 		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
 		 */
 		startActivity(intent);
+	}
+
+	/*
+	 * (非 Javadoc)
+	 * 
+	 * @see android.app.Activity#onStart()
+	 */
+	@Override
+	protected void onStart() {
+		super.onStart();
+		/** Google Analytics用の記述 */
+		Tracker t = ((App) getApplication())
+				.getTracker(App.TrackerName.APP_TRACKER);
+		t.setScreenName(this.getClass().getSimpleName());
+		t.send(new HitBuilders.AppViewBuilder().build());
 	}
 }
