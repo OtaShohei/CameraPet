@@ -104,8 +104,9 @@ public class MainActivity extends Activity {
 		}
 	}
 
+	/** アクティビティの動きが止まる時呼ばれる */
 	@Override
-	protected void onPause() { // アクティビティの動きが止まる時呼ばれる
+	protected void onPause() {
 		super.onPause();
 		// AcSensor.Inst().onPause();// 中断時にセンサーを止める
 		/** BGMの一時停止 */
@@ -115,16 +116,7 @@ public class MainActivity extends Activity {
 
 	@Override
 	protected void onStop() {
-		// TODO 自動生成されたメソッド・スタブ
 		super.onStop();
-		// /** インストール後初の起動かどうかを確認 */
-		// String startStatus = CamPePref.loadStartStatus(this);
-		// /** インストール後初の起動でないならば */
-		// if (startStatus.equals("notFirst")) {
-		// /** 前回のAlarmManager & NotificationManagerをキャンセルする動かすメソッドを動かす */
-		// CameLog.setLog(TAG, "インストール後初の起動でないので「おなかがすいた！」通知をキャンセルする。");
-		// canceltPetAlarmBroadcastReceiver();
-		// }
 		/** AlarmManager & NotificationManagerを動かすメソッドを呼び出す */
 		setPetAlarmBroadcastReceiver();
 		CameLog.setLog(TAG, "onStop");
@@ -168,7 +160,8 @@ public class MainActivity extends Activity {
 	 */
 	public void onClickTwitterBtn(View v) {
 		if (bgmOn) {
-			mp2.start(); // SEを鳴らす
+			/** SEを鳴らす */
+			mp2.start();
 		}
 
 		/** Twitterから戻ってくることを示す */
@@ -290,7 +283,7 @@ public class MainActivity extends Activity {
 	 */
 	public void setPetAlarmBroadcastReceiver() {
 
-//		TimePicker tPicker;
+		// TimePicker tPicker;
 		int notificationId = 0;
 		PendingIntent alarmIntent;
 

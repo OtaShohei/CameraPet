@@ -219,11 +219,12 @@ public class GameSurfaceView extends SurfaceView implements
 													petAmuseY));
 							/** ペットが震える */
 							myPet.pleased();
-							/** ペットが一度震えたら同じ位置で2回目は震えないように判定位置を画面の外にセットし直す */
-							petAmuseX = viewWidth + 5;
-							/** ペットが一度震えたら同じ位置で2回目は震えないように判定位置を画面の外にセットし直す */
-							petAmuseY = viewHeight + 5;
 						}
+
+						/** ペットに触れていようがいまいが同じ位置で2回目は震えないように判定位置を画面の外にセットし直す */
+						petAmuseX = viewWidth + 5;
+						/** ペットに触れていようがいまいが同じ位置で2回目は震えないように判定位置を画面の外にセットし直す */
+						petAmuseY = viewHeight + 5;
 
 						/** 現在のステータスでレベルアップが可能と判定されたら、ペットをレベルアップする。 */
 						if (PetLevel.judge(context, myPet)) {
@@ -459,9 +460,18 @@ public class GameSurfaceView extends SurfaceView implements
 		throwedEsa = 0;
 		/** 落下予定のエサ数も初期化する */
 		nowFalldownEsaCnt = 0;
-		/** 起動済みの旨プリファレンスに情報を保存 */
-		CamPePref.saveStartStatus(getContext());
-		CameLog.setLog(TAG, "起動済みの旨プリファレンスに情報を保存");
+
+		/** 起動ステイタスを取得する */
+		String startStatus = CamPePref.loadStartStatus(context);
+		/**
+		 * 初めての起動でないならばViewの幅をPreferenceに保存する。
+		 * */
+		if (!startStatus.equals("notFirst")) {
+			CamPePref.saveViewWidth(context, viewWidth);
+			/** 起動済みの旨プリファレンスに情報を保存 */
+			CamPePref.saveStartStatus(getContext());
+			CameLog.setLog(TAG, "起動済みの旨プリファレンスに情報を保存");
+		}
 		thread = null;
 	}
 
@@ -578,12 +588,50 @@ public class GameSurfaceView extends SurfaceView implements
 		}
 	}
 
+	/**
+	 * 以下のサイトを参考に、フリックごとにきちんと処理するように変更する。
+	 *
+	 * http://lostlinksearch.net/blog/2011/03/android-%E3%83%95%E3%83%AA%E3%83%
+	 * 83 %E3%82%AF%E6%93%8D%E4%BD%9C%E3%81%AE%E5%AE%9F%E8%A3%85%E6%96%B9%E6%B3%
+	 * 95/
+	 */
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 
 		petAmuseX = usertouchedX = event.getX(); // X座標を取得
 		petAmuseY = usertouchedY = event.getY(); // Y座標を取得
+
+		float lastTouchX = 0;
+		float currentX;
+
+		switch (event.getAction()) {
+		case MotionEvent.ACTION_DOWN:
+			lastTouchX = event.getX();
+			break;
+		case MotionEvent.ACTION_UP:
+			currentX = event.getX();
+			if (lastTouchX < currentX) {
+				// 前に戻る動作
+			}
+
+			if (lastTouchX > currentX) {
+				// 次に移動する動作
+			}
+			break;
+		case MotionEvent.ACTION_CANCEL:
+			currentX = event.getX();
+			if (lastTouchX < currentX) {
+				// 前に戻る動作
+			}
+			if (lastTouchX > currentX) {
+				// 次に移動する動作
+			}
+			break;
+		}
+
+		// return true;
 		// speedMove = true;
+
 		/** petに移動量をセット */
 		myPet.setPetMoveSize(usertouchedX, usertouchedY);
 		return true;

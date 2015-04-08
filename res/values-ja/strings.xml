@@ -19,12 +19,12 @@
     <string name="age_months">か月</string>
     <string name="exp_points">経験値 :</string>
     <string name="tutorial01">カメラペットはカメラアプリ。でも、ただのカメラじゃないのです。このアプリで写真を撮るとアプリの中に住んでいるあなたのペットも成長するのです。</string>
-    <string name="tutorial02">まずは写真を撮ります。プレビュー画面をタップするだけでオートフォーカスで撮れちゃいますよ。</string>
-    <string name="tutorial03">戻ると、先ほど撮った写真が浮かんでいます。画面をフリックしてペットを動かしてみて！　ペットが写真を食べちゃいます（スマホの写真は消えないから安心して）。</string>
-    <string name="tutorial04">ペットを動かすには下方向にフリックして、ペットを画面下で跳ね返らせます。ペットの近くをフリックするとゆっくり。遠くだと早く動くよ！</string>
-    <string name="tutorial05">ペットが3時間以内に食べたエサの数は左上のバーと数字で表示。ペットが成長して新しいキャラになる目安の経験値が右上。その下はペットの年齢です。</string>
+    <string name="tutorial02">まずは写真を撮ります。プレビュー画面をタップするだけでオートフォーカスで撮れちゃいますよ。ゲーム画面に戻るには下のボタンをタップ。</string>
+    <string name="tutorial03">戻ると、先ほど撮った写真が浮かんでます。画面をフリックしてペットを動かしてみて！　ペットが写真を食べちゃいます（スマホの写真は消えないから大丈夫）。</string>
+    <string name="tutorial04">ペットを動かすには下方向にフリックして、ペットを画面下で跳ね返らせます。ペットの近くをフリックするとゆっくり。遠くだと速く動くよ！</string>
+    <string name="tutorial05">3時間以内に食べたエサの数と満腹度が左上。レベルアップの目安である経験値が右上。その下はエサの残り数。画面の下でペットの年齢と種類がわかります。</string>
     <string name="tutorial06">ペットの経験値のため方はいろいろ。写真を撮る（1枚10pt）。写真を食べさせる（1枚1 pt）。TwitterやFacebookでこのペットのことをつぶやく（1回20 pt）。</string>
-    <string name="tutorial07">かわいい。ときにはキモかわいい。育て方でいろんなペットに成長していきます。友だちと一緒に育てていろんなペットの姿をカメラペットで楽しんじゃおう！</string>
+    <string name="tutorial07">かわいい。ときにはキモかわいい。育て方でいろんなペットに成長していきます。友だちと一緒に育てていろんなペットをカメラペットで楽しんじゃおう！</string>
     <string name="tutorial_end">ゲームへ！</string>
     <string name="back_logo">＜</string>
     <string name="next_logo">＞</string>
@@ -35,7 +35,7 @@
     <string name="pet_unknown_length">●体長:？？？？？</string>
     <string name="pet_unknown_favorite">●好物:？？？？？</string>
     <string name="pet_unknown_comment">？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？？</string>
-    <string name="pet_01_name">拾ったワンちゃん</string>
+    <string name="pet_01_name">拾ったワンコ</string>
     <string name="pet_01_spec">●体重:メロン1個分くらい\n●体長:筆箱より少し長い\n●好物:飼い主の匂い</string>
     <string name="pet_01_weight">●体重:メロン1個分くらい</string>
     <string name="pet_01_length">●体長:筆箱より少し長い</string>
@@ -77,10 +77,12 @@
     <string name="pet_sns_report_exp">。経験値は</string>
     <string name="pet_sns_report_species_name">。種類は</string>
     <string name="pet_sns_report_finish">。</string>
-    <string name="alarm_sign">が腹ペコみたい。</string>
+    <string name="alarm_sign">からメッセージ。</string>
     <string name="alarm_body_txt01">何日も食べてなくてお腹すいたワン。</string>
-    <string name="alarm_body_txt02">（あなたが飼っている</string>
-    <string name="alarm_body_txt03">より）。</string>
+    <string name="alarm_body_txt01b">" "</string>
+    <string name="alarm_body_txt02">あなたが飼っている</string>
+    <string name="alarm_body_txt03">より。</string>
     <string name="now_pet">今のペット!</string>
+    <string name="from_camerapet">カメラペットのペットからでした。</string>
 
 </resources>

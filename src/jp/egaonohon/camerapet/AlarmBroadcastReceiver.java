@@ -7,7 +7,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 
 /**
@@ -46,8 +45,10 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 		String hinagataTxt = res.getString(R.string.alarm_sign);
 		/** 本文用の文字列を取得する */
 		String bodyMsg01 = res.getString(R.string.alarm_body_txt01);
+		String bodyMsg01b = res.getString(R.string.alarm_body_txt01b);
 		String bodyMsg02 = res.getString(R.string.alarm_body_txt02);
 		String bodyMsg03 = res.getString(R.string.alarm_body_txt03);
+		String fromCamerapet = res.getString(R.string.from_camerapet);
 		/** 最後に起動していた時のペット種別名を取得する */
 		String SpeciesName = CamPePref.loadPetSpeciesName(alarmReceiverContext);
 		CameLog.setLog(TAG, "取得したペット名は" + SpeciesName);
@@ -67,12 +68,20 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 				.setDefaults(Notification.DEFAULT_SOUND)
 				.setContentIntent(contentIntent);
 
-		NotificationCompat.BigPictureStyle pictureStyle = new NotificationCompat.BigPictureStyle(
-				builder);
-		/** 拡大表示時の画像をセット。Android4.4.4では見られない？？ */
-		pictureStyle.bigPicture(BitmapFactory.decodeResource(
-				alarmReceiverContext.getResources(), R.drawable.pet001a_r));
-
-		return pictureStyle.build();
+		/**
+		 * InboxStyle。
+		 * 詳しくは
+		 * http://dev.classmethod.jp/smartphone/android/android-tips-23-android4-1-notification-style/
+		 */
+		NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle(builder);
+		inboxStyle.setBigContentTitle(SpeciesName + hinagataTxt);
+		inboxStyle.addLine(" ");
+		inboxStyle.addLine(bodyMsg01);
+		inboxStyle.addLine(bodyMsg01b);
+		inboxStyle.addLine("/// " + bodyMsg02);
+		inboxStyle.addLine("/// " + SpeciesName + bodyMsg03);
+		inboxStyle.addLine(" ");
+		inboxStyle.setSummaryText(fromCamerapet);
+		return inboxStyle.build();
 	}
 }

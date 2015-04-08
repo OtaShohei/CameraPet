@@ -41,6 +41,40 @@ public class CamPePref {
 		return startStatus;
 	}
 
+	/** Viewの幅をプリファレンスに保存する */
+	public static void saveViewWidth(Context context, int viewWidth) {
+		/** プリファレンスの準備 */
+		SharedPreferences pref = context.getSharedPreferences("viewWidth",
+				Context.MODE_PRIVATE);
+
+		/** プリファレンスに書き込むためのEditorオブジェクト取得 */
+		Editor editor = pref.edit();
+
+		/** "NotificationID" というキーでNotificationIdNumを登録 */
+		editor.putInt("viewWidth", viewWidth);
+
+		/** 書き込みの確定（実際にファイルに書き込む） */
+		editor.commit();
+		CameLog.setLog(TAG, "viewWidthへ" + "viewWidth" + "キーで"
+				+ viewWidth + "を登録");
+	}
+
+	/** Viewの幅をプリファレンスから取り出す。登録されていなければ空の文字列を返す */
+	public static int loadViewWidth(Context context) {
+		/** プリファレンスの準備 */
+		SharedPreferences pref = null;
+		pref = context.getSharedPreferences("viewWidth",
+				Context.MODE_PRIVATE);
+
+		int viewWidth = pref.getInt("viewWidth", 0);
+
+		CameLog.setLog(TAG, "viewWidth" + viewWidth + "を取得");
+
+		/** "PetSpeciesName" というキーで保存されている値を読み出す */
+		return viewWidth;
+	}
+
+
 	/** ペット種別名をプリファレンスに保存する */
 	public static void savePetSpeciesName(Context context, String PetSpeciesName) {
 		/** プリファレンスの準備 */

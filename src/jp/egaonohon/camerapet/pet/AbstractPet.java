@@ -255,7 +255,7 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 				if (lineBreakPoint != 0) {
 					String line = fukidasiTxt.substring(currentIndex,
 							currentIndex + lineBreakPoint);
-					canvas.drawText(line, (layoutScale * 7),
+					canvas.drawText(line, (layoutScale * 10),
 							((itemHeight + (layoutScale * 16)) + linePointY),
 							petPaint);
 					linePointY = linePointY + (viewWidth / 22);
@@ -326,7 +326,7 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 
 		/** 吹き出し座布団画像を端末の画面に合わせてリサイズ */
 		Bitmap fukidasiPh02 = Bitmap.createScaledBitmap(fukidasiPh,
-				((view.getWidth() / 128) * 59), ((view.getWidth() / 128) * 59),
+				((view.getWidth() / 128) * 64), ((view.getWidth() / 128) * 64),
 				false);
 		fukidasiPh = fukidasiPh02;
 

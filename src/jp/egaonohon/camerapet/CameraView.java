@@ -3,6 +3,7 @@ package jp.egaonohon.camerapet;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Calendar;
+import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
@@ -13,7 +14,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.AutoFocusCallback;
-import android.hardware.Camera.Parameters;
 import android.hardware.Camera.ShutterCallback;
 import android.hardware.Camera.Size;
 import android.net.Uri;
@@ -21,15 +21,18 @@ import android.provider.MediaStore.Images.ImageColumns;
 import android.provider.MediaStore.Images.Media;
 import android.provider.MediaStore.MediaColumns;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 /**
- * CameraViewは、CameraBasicほぼ、そのまま。 ただ、AFを使うようにしているのが違う。
+ * カメラを司るクラス。AFを使うようにしている。
  *
- * @author 1107AND
+ * @author OtaShohei
  *
  */
 @SuppressLint("ClickableViewAccessibility")
@@ -44,12 +47,20 @@ public class CameraView extends SurfaceView {
 	private int gettedtotalEXP;
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "CameraView";
+	/**
+	 * プレビューのサイズ。詳しくは、 http://labs.techfirm.co.jp/android/cho/1647
+	 * http://d.hatena.ne.jp/TAC/20101214/1292347298
+	 */
+	private Size previewSize;
+	private Size pictureSize;
 
 	/**
 	 * コンストラクタ3種ー＞オリジナルの部品XMLからの利用を可能にするため。
+	 *
 	 * @throws Exception
 	 */
-	public CameraView(Context context, AttributeSet attrs, int defStyle) throws Exception {
+	public CameraView(Context context, AttributeSet attrs, int defStyle)
+			throws Exception {
 		super(context, attrs, defStyle);
 		init(context);
 	}
@@ -64,7 +75,7 @@ public class CameraView extends SurfaceView {
 		init(context);
 	}
 
-	public void init(Context context) throws Exception{
+	public void init(final Context context) throws Exception {
 		contentResolver = context.getContentResolver();
 
 		SurfaceHolder holder = getHolder();
@@ -72,36 +83,77 @@ public class CameraView extends SurfaceView {
 			@Override
 			public void surfaceCreated(SurfaceHolder holder) {
 				petCam = Camera.open(0);
+			}
+
+			@SuppressWarnings("deprecation")
+			@Override
+			public void surfaceChanged(SurfaceHolder holder, int format,
+					int width, int height) {
+
+				petCam.stopPreview();
+
+				Camera.Parameters params = petCam.getParameters();
+
+				/**
+				 * 端末がサポートするサイズを取得する。
+				 * これにより、機種によって発生する例外を防止する。
+				 */
+				List<Size> supportedPictureSizes = SupportedSizesReflect
+						.getSupportedPictureSizes(params);
+				List<Size> supportedPreviewSizes = SupportedSizesReflect
+						.getSupportedPreviewSizes(params);
+
+				if (supportedPictureSizes != null
+						&& supportedPreviewSizes != null
+						&& supportedPictureSizes.size() > 0
+						&& supportedPreviewSizes.size() > 0) {
+
+					/** 2.xの場合 */
+
+					/** 撮影サイズを設定する */
+					pictureSize = supportedPictureSizes.get(0);
+
+					/** 画像サイズを必要に応じて制限する(おまけ) */
+					int maxSize = 1280;
+					if (maxSize > 0) {
+						for (Size size : supportedPictureSizes) {
+							if (maxSize >= Math.max(size.width, size.height)) {
+								pictureSize = size;
+								break;
+							}
+						}
+					}
+
+					/** ディスプレイサイズを取得する。引数で与えられるサイズはたまにおかしいので、DisplayMetricsで取得する */
+					WindowManager windowManager = (WindowManager) context
+							.getSystemService(Context.WINDOW_SERVICE);
+					Display display = windowManager.getDefaultDisplay();
+					DisplayMetrics displayMetrics = new DisplayMetrics();
+					display.getMetrics(displayMetrics);
+
+					previewSize = getOptimalPreviewSize(supportedPreviewSizes,
+							display.getWidth(), display.getHeight());
+
+					params.setPictureSize(pictureSize.width, pictureSize.height);
+					params.setPreviewSize(previewSize.width, previewSize.height);
+
+				}
+				petCam.setParameters(params);
 				try {
 					petCam.setPreviewDisplay(holder);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				CameLog.setLog(TAG, "surfaceCreated");
-			}
+				petCam.startPreview();
 
-			@Override
-			public void surfaceChanged(SurfaceHolder holder, int format,
-					int width, int height) {
-				petCam.stopPreview();
-				Parameters params = petCam.getParameters();
-
-				// 縦画面の場合回転させる
+				/** 縦画面の場合回転させる */
 				if (width < height) {
-					// 縦画面
+					/** 縦画面 */
 					petCam.setDisplayOrientation(90);
 				} else {
-					// 横画面
+					/** 横画面 */
 					petCam.setDisplayOrientation(0);
 				}
-				Size sz = params.getSupportedPreviewSizes().get(0);
-				params.setPreviewSize(sz.width, sz.height);
-
-				petCam.setParameters(params);
-				setCameraParameters(petCam);
-				petCam.startPreview();
-				CameLog.setLog(TAG, "surfaceChanged");
-
 			}
 
 			@Override
@@ -126,16 +178,6 @@ public class CameraView extends SurfaceView {
 		CameLog.setLog(TAG, "init");
 	}
 
-	// カメラに対して画像のサイズの指定をしている。
-	private void setCameraParameters(Camera camera) {
-		// 元の設定を読んでおく
-		Parameters parameters = camera.getParameters();
-		// 変更するところだけ変更する。
-		parameters.setPictureSize(480, 320); // Default:2048x1536
-		// 変更内容を保存する。
-		camera.setParameters(parameters);
-	}
-
 	/**
 	 * onAutoFocus()メソッドを呼び出すことを onTouchのタイミングで実は行っている。 したがって、やや時間がかかっている。
 	 */
@@ -150,6 +192,47 @@ public class CameraView extends SurfaceView {
 			CameLog.setLog(TAG, "onTouchEvent");
 		}
 		return true;
+	}
+
+	/**
+	 * ApiDemoでよく使うgetOptimalPreviewSize 詳しくはこちら。
+	 * http://qiita.com/zaburo/items/b5d3815d3ec45b0daf4f
+	 *
+	 */
+	private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w,
+			int h) {
+
+		final double ASPECT_TOLERANCE = 0.1;
+		double targetRatio = (double) h / w;
+
+		if (sizes == null)
+			return null;
+
+		Camera.Size optimalSize = null;
+		double minDiff = Double.MAX_VALUE;
+
+		int targetHeight = h;
+
+		for (Camera.Size size : sizes) {
+			double ratio = (double) size.width / size.height;
+			if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE)
+				continue;
+			if (Math.abs(size.height - targetHeight) < minDiff) {
+				optimalSize = size;
+				minDiff = Math.abs(size.height - targetHeight);
+			}
+		}
+
+		if (optimalSize == null) {
+			minDiff = Double.MAX_VALUE;
+			for (Camera.Size size : sizes) {
+				if (Math.abs(size.height - targetHeight) < minDiff) {
+					optimalSize = size;
+					minDiff = Math.abs(size.height - targetHeight);
+				}
+			}
+		}
+		return optimalSize;
 	}
 
 	public void onAutoFocus() {
@@ -241,7 +324,7 @@ public class CameraView extends SurfaceView {
 		Toast.makeText(
 				getContext(),
 				res.getString(R.string.number_shooting) + " " + cntNum + " "
-				+ res.getString(R.string.exp_increased_01) + " "
+						+ res.getString(R.string.exp_increased_01) + " "
 						+ (cntNum * 10)
 						+ res.getString(R.string.exp_increased_02),
 				Toast.LENGTH_SHORT).show();
