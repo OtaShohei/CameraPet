@@ -3,6 +3,7 @@ package jp.egaonohon.camerapet.pet;
 import jp.egaonohon.camerapet.CamPeItem;
 import jp.egaonohon.camerapet.CameLog;
 import jp.egaonohon.camerapet.Fukidasi;
+import jp.egaonohon.camerapet.GameSurfaceView;
 import jp.egaonohon.camerapet.R;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -72,10 +73,6 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 	protected int cnt;
 	/** ペットが動くスピード（移動および歩くアニメーションに影響） */
 	protected long speed = 60;
-	// /** ペット移動加速度X軸 */
-	// protected int petKasokudoX = viewWidth / 7;
-	// /** ペット移動加速度Y軸 */
-	// protected int petKasokudoY = viewWidth / 6;
 
 	/** 現在の吹き出し */
 	protected Fukidasi nowFukidasi;
@@ -92,8 +89,6 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 	/** 本文開始位置のY値 */
 	protected int linePointY;
 
-	// /** ペット用のスレッド */
-	// protected Thread petThread;
 	/** ペットの種別名 */
 	protected final String model_number = "AbstractPet";
 	/** ペットの種名 */
@@ -170,16 +165,11 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 		/** 歩数を数える */
 		cnt++;
 
-		/** 画面左端のチェック：X軸。 */
-		if (nowX <= 0) {
-			nowX = (float) (viewWidth / 128);
+		/** 画面端のチェック：X軸。 */
+		if (nowX < 0 || this.viewWidth - itemWidth < nowX) {
+			GameSurfaceView.setFlickOk(false);
 			moveX *= -1;
-		}
-
-		/** 画面右端のチェック：X軸。 */
-		if (this.viewWidth - itemWidth < nowX) {
-			// nowX = (float)(viewWidth - (viewWidth/128));
-			moveX *= -1;
+			GameSurfaceView.setFlickOk(true);
 		}
 
 		/**
@@ -192,16 +182,13 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 			itemPh = petPhR;
 		}
 
-		/** 画面上端のチェック：Y軸。 */
-		if (nowY <= 0) {
-			nowY = (float) (viewHeight / 128);
+		/** 画面端のチェック：Y軸。(itemHeight/2)は、ペットの体の半分がはみ出ていたのでその調整 */
+		if (nowY < 0 || this.viewHeight - itemHeight < nowY) {
+			GameSurfaceView.setFlickOk(false);
 			moveY *= -1;
-		}
-
-		/** 画面下端のチェック：Y軸。 */
-		if (this.viewHeight - itemHeight < nowY) {
-			// nowY = (float) (viewHeight - (float)(viewHeight / 128));
-			moveY *= -1;
+			GameSurfaceView.setFlickOk(true);
+			// CameLog.setLog(TAG, "ペット移動範囲のwidthは" + viewWidth
+			// + "ペット移動範囲のheightは" + viewHeight);
 		}
 
 		/** 移動させる */

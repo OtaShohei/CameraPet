@@ -52,10 +52,6 @@ public class GameSurfaceView extends SurfaceView implements
 	private AbstractPet myPet;
 	/** レベルアップ後のペットの参照 */
 	private AbstractPet updatedMyPet;
-	// /** ペット画像右向き */
-	// private Bitmap petPhR;
-	// /** ペット画像右向き */
-	// private Bitmap petPhL;
 	/** レベルアップ前のペット型番 */
 	String beforePetModelNumber;
 	/** レベルアップ後のペット型番 */
@@ -117,6 +113,8 @@ public class GameSurfaceView extends SurfaceView implements
 	private float petAmuseX;
 	/** ペットにユーザーが触れてよろこぶ仕草をペットがするかどうかを判定するためのタッチ位置Y座標 */
 	private float petAmuseY;
+	/** フリック検出をPetに伝えていいか否か */
+	private static boolean flickOk = true;
 
 	/** フリック動作を拾うためのGestureDetector */
 	private GestureDetector mGestureDetector;
@@ -831,8 +829,10 @@ public class GameSurfaceView extends SurfaceView implements
 		CameLog.setLog(TAG, "ペットがフリックで移動するX軸距離を" + usertouchedX + "にセット");
 		CameLog.setLog(TAG, "ペットがフリックで移動するY軸距離を" + usertouchedY + "にセット");
 
-		/** petに移動量をセット */
-		myPet.setPetMoveSize(usertouchedX, usertouchedY);
+		if (flickOk) {
+			/** petに移動量をセット */
+			myPet.setPetMoveSize(usertouchedX, usertouchedY);
+		}
 		return true;
 	}
 
@@ -942,5 +942,12 @@ public class GameSurfaceView extends SurfaceView implements
 		// /** petに移動量をセット */
 		// myPet.setPetMoveSize(usertouchedX, usertouchedY);
 		// return true;
+	}
+
+	/**
+	 * @param flickOk セットする flickOk
+	 */
+	public static void setFlickOk(boolean flickOk) {
+		GameSurfaceView.flickOk = flickOk;
 	}
 }
