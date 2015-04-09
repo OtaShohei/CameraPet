@@ -15,6 +15,8 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
+import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -25,7 +27,7 @@ import android.view.SurfaceView;
  * @author OtaShohei
  */
 public class GameSurfaceView extends SurfaceView implements
-		SurfaceHolder.Callback, Runnable {
+		SurfaceHolder.Callback, Runnable, OnGestureListener {
 
 	/** SurfaceViewを呼び出したContext */
 	Context context;
@@ -116,6 +118,9 @@ public class GameSurfaceView extends SurfaceView implements
 	/** ペットにユーザーが触れてよろこぶ仕草をペットがするかどうかを判定するためのタッチ位置Y座標 */
 	private float petAmuseY;
 
+	/** フリック動作を拾うためのGestureDetector */
+	private GestureDetector mGestureDetector;
+
 	/** 満腹時のペット喜びの声 */
 	String petWelcomMessage;
 
@@ -180,6 +185,8 @@ public class GameSurfaceView extends SurfaceView implements
 		/** フォーカスをあてる */
 		setFocusable(true);
 
+		mGestureDetector = new GestureDetector(context, this);
+
 		/** サウンドエフェクトのインスタンス生成し準備 */
 		bakubakuSE = MediaPlayer.create(context, R.raw.dog1b);
 
@@ -229,8 +236,8 @@ public class GameSurfaceView extends SurfaceView implements
 						/** 現在のステータスでレベルアップが可能と判定されたら、ペットをレベルアップする。 */
 						if (PetLevel.judge(context, myPet)) {
 							/** 現在のペットの位置を取得する */
-							int nowX = camPeItems.get(i).getNowX();
-							int nowY = camPeItems.get(i).getNowY();
+							float nowX = camPeItems.get(i).getNowX();
+							float nowY = camPeItems.get(i).getNowY();
 							CameLog.setLog(TAG, "レベルアップ可能と判定");
 
 							/** ペットステイタスの書き換えに備えてレベルアップ前のペット種別名を取得し確保しておく */
@@ -472,7 +479,18 @@ public class GameSurfaceView extends SurfaceView implements
 			CamPePref.saveStartStatus(getContext());
 			CameLog.setLog(TAG, "起動済みの旨プリファレンスに情報を保存");
 		}
+
+//		/** ペットのThreadを停止する。 */
+//		myPet.stopPetThread();
+
+		/** camPeItemsのThreadを停止する。 */
+		for (int j = 0; j < camPeItems.size(); j++) {
+			camPeItems.get(j).stopCamPeItemThread();
+		}
+		
+		/** このThreadを停止する */
 		thread = null;
+
 	}
 
 	/**
@@ -586,55 +604,6 @@ public class GameSurfaceView extends SurfaceView implements
 			/** 夜時間帯なら晩御飯表示文字を準備 */
 			esaStatus = context.getString(R.string.esa_status_dinner);
 		}
-	}
-
-	/**
-	 * 以下のサイトを参考に、フリックごとにきちんと処理するように変更する。
-	 *
-	 * http://lostlinksearch.net/blog/2011/03/android-%E3%83%95%E3%83%AA%E3%83%
-	 * 83 %E3%82%AF%E6%93%8D%E4%BD%9C%E3%81%AE%E5%AE%9F%E8%A3%85%E6%96%B9%E6%B3%
-	 * 95/
-	 */
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-
-		petAmuseX = usertouchedX = event.getX(); // X座標を取得
-		petAmuseY = usertouchedY = event.getY(); // Y座標を取得
-
-		float lastTouchX = 0;
-		float currentX;
-
-		switch (event.getAction()) {
-		case MotionEvent.ACTION_DOWN:
-			lastTouchX = event.getX();
-			break;
-		case MotionEvent.ACTION_UP:
-			currentX = event.getX();
-			if (lastTouchX < currentX) {
-				// 前に戻る動作
-			}
-
-			if (lastTouchX > currentX) {
-				// 次に移動する動作
-			}
-			break;
-		case MotionEvent.ACTION_CANCEL:
-			currentX = event.getX();
-			if (lastTouchX < currentX) {
-				// 前に戻る動作
-			}
-			if (lastTouchX > currentX) {
-				// 次に移動する動作
-			}
-			break;
-		}
-
-		// return true;
-		// speedMove = true;
-
-		/** petに移動量をセット */
-		myPet.setPetMoveSize(usertouchedX, usertouchedY);
-		return true;
 	}
 
 	/** 衝突判定を実行するメソッド */
@@ -821,5 +790,157 @@ public class GameSurfaceView extends SurfaceView implements
 	 */
 	public static String getSpeciesName() {
 		return speciesName;
+	}
+
+	@Override
+	public boolean onDown(MotionEvent e) {
+		return false;
+	}
+
+	@Override
+	public void onShowPress(MotionEvent e) {
+	}
+
+	@Override
+	public boolean onSingleTapUp(MotionEvent e) {
+		petAmuseY = e.getY();
+		petAmuseX = e.getX();
+		return true;
+	}
+
+	@Override
+	public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX,
+			float distanceY) {
+		return false;
+	}
+
+	@Override
+	public void onLongPress(MotionEvent e) {
+	}
+
+	@Override
+	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
+			float velocityY) {
+		CameLog.setLog(TAG, "onFlingの引数はe1が" + e1 + "e2が" + e2 + "velocityXが"
+				+ velocityX + "velocityYが" + velocityY);
+
+		/** フリックから移動量を取り出す */
+		usertouchedX = (e2.getX() - e1.getX()) / (float)((viewWidth / 128) * 6);
+		usertouchedY = (e2.getY() - e1.getY()) / (float)((viewWidth / 128) * 6);
+
+		CameLog.setLog(TAG, "ペットがフリックで移動するX軸距離を" + usertouchedX + "にセット");
+		CameLog.setLog(TAG, "ペットがフリックで移動するY軸距離を" + usertouchedY + "にセット");
+
+		/** petに移動量をセット */
+		myPet.setPetMoveSize(usertouchedX, usertouchedY);
+		return true;
+	}
+
+	/**
+	 * 以下のサイトを参考に、フリックごとにきちんと処理するように変更する。
+	 *
+	 * http://lostlinksearch.net/blog/2011/03/android-%E3%83%95%E3%83%AA%E3%83%
+	 * 83 %E3%82%AF%E6%93%8D%E4%BD%9C%E3%81%AE%E5%AE%9F%E8%A3%85%E6%96%B9%E6%B3%
+	 * 95/
+	 */
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
+
+		/** GestureDetectorにすべてを任せる */
+		mGestureDetector.onTouchEvent(event);
+
+		CameLog.setLog(TAG, "onTouchEventでのMotionEventのxは" + event.getRawX()
+				+ "onTouchEventでのMotionEventのyは" + event.getRawY());
+
+		return true;
+
+		// // petAmuseX = usertouchedX = event.getX(); // X座標を取得
+		// // petAmuseY = usertouchedY = event.getY(); // Y座標を取得
+		//
+		// float lastTouchX = 0;
+		// float currentX;
+		//
+		// /** X軸をセットするswitch文 */
+		// switch (event.getAction()) {
+		// case MotionEvent.ACTION_DOWN:
+		// lastTouchX = event.getX();
+		// break;
+		// case MotionEvent.ACTION_UP:
+		// currentX = event.getX();
+		// if (lastTouchX < currentX) {
+		// // 前に戻る動作
+		// usertouchedX = (currentX - lastTouchX)/((viewWidth/128)*8);
+		// }
+		//
+		// if (lastTouchX > currentX) {
+		// // 次に移動する動作
+		// usertouchedX = (currentX - lastTouchX)/((viewWidth/128)*8);
+		// }
+		// petAmuseX = lastTouchX;
+		// CameLog.setLog(TAG, "ペットがフリックで移動するX軸距離を" + usertouchedX + "にセット");
+		// CameLog.setLog(TAG, "ペットを触れた時に鳴かせるx位置を" + petAmuseX + "にセット");
+		// break;
+		//
+		// case MotionEvent.ACTION_CANCEL:
+		// currentX = event.getX();
+		// if (lastTouchX < currentX) {
+		// // 前に戻る動作
+		// usertouchedX = (currentX - lastTouchX)/((viewWidth/128)*8);
+		// }
+		// if (lastTouchX > currentX) {
+		// // 次に移動する動作
+		// usertouchedX = (currentX - lastTouchX)/((viewWidth/128)*8);
+		// }
+		// petAmuseX = lastTouchX;
+		// CameLog.setLog(TAG, "ペットがフリックで移動するX軸距離を" + usertouchedX + "にセット");
+		// CameLog.setLog(TAG, "ペットを触れた時に鳴かせるx位置を" + petAmuseX + "にセット");
+		// break;
+		// }
+		//
+		// float lastTouchY = 0;
+		// float currentY;
+		//
+		// /** Y軸をセットするswitch文 */
+		// switch (event.getAction()) {
+		// case MotionEvent.ACTION_DOWN:
+		// lastTouchY = event.getY();
+		// break;
+		// case MotionEvent.ACTION_UP:
+		// currentY = event.getY();
+		// if (lastTouchY < currentY) {
+		// // 前に戻る動作
+		// usertouchedY = (currentY - lastTouchY)/((viewWidth/128)*8);
+		// }
+		//
+		// if (lastTouchY > currentY) {
+		// // 次に移動する動作
+		// usertouchedY = (currentY - lastTouchY)/((viewWidth/128)*8);
+		// }
+		// petAmuseY = lastTouchY;
+		// CameLog.setLog(TAG, "ペットがフリックで移動するy軸距離を" + usertouchedY + "にセット");
+		// CameLog.setLog(TAG, "ペットを触れた時に鳴かせるy位置を" + petAmuseY + "にセット");
+		// break;
+		// case MotionEvent.ACTION_CANCEL:
+		// currentY = event.getY();
+		// if (lastTouchY < currentY) {
+		// // 前に戻る動作
+		// usertouchedY = (currentY - lastTouchY)/((viewWidth/128)*8);
+		// }
+		// if (lastTouchY > currentY) {
+		// // 次に移動する動作
+		// usertouchedY = (currentY - lastTouchY)/((viewWidth/128)*8);
+		// }
+		// petAmuseY = lastTouchY;
+		// CameLog.setLog(TAG, "ペットがフリックで移動するy軸距離を" + usertouchedY + "にセット");
+		// CameLog.setLog(TAG, "ペットを触れた時に鳴かせるy位置を" + petAmuseY + "にセット");
+		// break;
+		// }
+		//
+		// // return true;
+		// // speedMove = true;
+		//
+		// /** petに移動量をセット */
+		// myPet.setPetMoveSize(usertouchedX, usertouchedY);
+		// return true;
 	}
 }

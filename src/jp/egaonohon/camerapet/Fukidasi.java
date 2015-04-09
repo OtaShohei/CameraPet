@@ -90,5 +90,10 @@ public class Fukidasi implements Runnable {
 	public void setTh(Thread th) {
 		this.th = th;
 	}
+	
+	/** 吹き出しのThreadを停止するメソッド */
+	public void stopThread() {
+		th = null;
+	}
 
 }

@@ -14,7 +14,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.AutoFocusCallback;
-import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.ShutterCallback;
 import android.hardware.Camera.Size;
 import android.net.Uri;
@@ -25,7 +24,6 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.MotionEvent;
-import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager;
@@ -56,8 +54,6 @@ public class CameraView extends SurfaceView {
 	private Size previewSize;
 	private Size pictureSize;
 
-	Context thisContext;
-
 	/**
 	 * コンストラクタ3種ー＞オリジナルの部品XMLからの利用を可能にするため。
 	 *
@@ -80,7 +76,6 @@ public class CameraView extends SurfaceView {
 	}
 
 	public void init(final Context context) throws Exception {
-		thisContext = context;
 		contentResolver = context.getContentResolver();
 
 		SurfaceHolder holder = getHolder();
@@ -88,8 +83,6 @@ public class CameraView extends SurfaceView {
 			@Override
 			public void surfaceCreated(SurfaceHolder holder) {
 				petCam = Camera.open(0);
-				// ディスプレイの向き設定
-				setCameraDisplayOrientation(0);
 			}
 
 			@SuppressWarnings("deprecation")
@@ -102,7 +95,8 @@ public class CameraView extends SurfaceView {
 				Camera.Parameters params = petCam.getParameters();
 
 				/**
-				 * 端末がサポートするサイズを取得する。 これにより、機種によって発生する例外を防止する。
+				 * 端末がサポートするサイズを取得する。
+				 * これにより、機種によって発生する例外を防止する。
 				 */
 				List<Size> supportedPictureSizes = SupportedSizesReflect
 						.getSupportedPictureSizes(params);
@@ -152,14 +146,14 @@ public class CameraView extends SurfaceView {
 				}
 				petCam.startPreview();
 
-//				/** 縦画面の場合回転させる */
-//				if (width < height) {
-//					/** 縦画面 */
-//					petCam.setDisplayOrientation(90);
-//				} else {
-//					/** 横画面 */
-//					petCam.setDisplayOrientation(0);
-//				}
+				/** 縦画面の場合回転させる */
+				if (width < height) {
+					/** 縦画面 */
+					petCam.setDisplayOrientation(90);
+				} else {
+					/** 横画面 */
+					petCam.setDisplayOrientation(0);
+				}
 			}
 
 			@Override
@@ -335,41 +329,5 @@ public class CameraView extends SurfaceView {
 						+ res.getString(R.string.exp_increased_02),
 				Toast.LENGTH_SHORT).show();
 		CameLog.setLog(TAG, "btnCount");
-	}
-
-	// ディスプレイの向き設定
-	public void setCameraDisplayOrientation(int cameraId) {
-		// カメラの情報取得
-		CameraInfo cameraInfo = new CameraInfo();
-		Camera.getCameraInfo(cameraId, cameraInfo);
-		// ディスプレイの向き取得
-		int rotation = ((WindowManager) thisContext
-				.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay()
-				.getRotation();
-		int degrees = 0;
-		switch (rotation) {
-		case Surface.ROTATION_0:
-			degrees = 0;
-			break;
-		case Surface.ROTATION_90:
-			degrees = 90;
-			break;
-		case Surface.ROTATION_180:
-			degrees = 180;
-			break;
-		case Surface.ROTATION_270:
-			degrees = 270;
-			break;
-		}
-		// プレビューの向き計算
-		int result;
-		if (cameraInfo.facing == CameraInfo.CAMERA_FACING_FRONT) {
-			result = (cameraInfo.orientation + degrees) % 360;
-			result = (360 - result) % 360; // compensate the mirror
-		} else {// back-facing
-			result = (cameraInfo.orientation - degrees + 360) % 360;
-		}
-		// ディスプレイの向き設定
-		petCam.setDisplayOrientation(result);
 	}
 }

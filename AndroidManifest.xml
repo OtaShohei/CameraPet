@@ -6,7 +6,9 @@
 
     <uses-sdk
         android:minSdkVersion="15"
-        android:targetSdkVersion="19" />
+        android:targetSdkVersion="21" />
+
+    <!-- Google Analyticsを使うために android:name=".App" 追加 -->
 
     <application
         android:name=".App"

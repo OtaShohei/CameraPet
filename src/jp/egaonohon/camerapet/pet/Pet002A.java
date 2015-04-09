@@ -106,10 +106,10 @@ public class Pet002A extends AbstractPet implements Runnable {
 		/** PetPhの回転角設定 */
 		// matrix.postRotate(degree);
 
-		petThread = new Thread(this);
-		petThread.start();
+		camPeItemThread = new Thread(this);
+		camPeItemThread.start();
 	}
-	
+
 	/** 触られてペットが喜ぶメソッド */
 	public void pleased() {
 		/** 鳴き声を上げる */
@@ -117,7 +117,7 @@ public class Pet002A extends AbstractPet implements Runnable {
 		// /** 写真を入れ替えて震えてもいい */
 		// changeItemPh = true;
 	}
-	
+
 	public String getPetModelNumber() {
 		return MODEL_NUMBER;
 	}

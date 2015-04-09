@@ -56,8 +56,8 @@ public class Esa extends CamPeItem implements Runnable {
 	/** エサの数 */
 	int esaCnt = 1;
 
-	/** エサ用のスレッド */
-	private Thread esaThread;
+//	/** エサ用のスレッド */
+//	private Thread esaThread;
 	// /** 衝突判定用のRectF */
 	// private static RectF esaRectF;
 	/** Logのタグを定数で確保 */
@@ -119,8 +119,8 @@ public class Esa extends CamPeItem implements Runnable {
 		// // 移動ベクトルを下に向ける
 		// moveY = (int) (1 * (Math.random() * 10));
 
-		esaThread = new Thread(this);
-		esaThread.start();
+		camPeItemThread = new Thread(this);
+		camPeItemThread.start();
 	}
 
 	@Override
@@ -192,7 +192,7 @@ public class Esa extends CamPeItem implements Runnable {
 
 	@Override
 	public void run() {
-		while (esaThread != null) {
+		while (camPeItemThread != null) {
 			move();
 			try {
 				Thread.sleep(1000 / speed);

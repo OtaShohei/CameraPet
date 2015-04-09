@@ -57,25 +57,25 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 	/** Itemの高さ */
 	protected int itemHeight;
 	/** Item初期位置：X軸 */
-	protected int defaultX;
+	protected float defaultX;
 	/** Item初期位置：Y軸 */
-	protected int defaultY;
+	protected float defaultY;
 	/** Item現在位置：X軸 */
-	protected int nowX = 0;
+	protected float nowX = 0;
 	/** Item現在位置：Y軸 */
-	protected int nowY = 0;
+	protected float nowY = 0;
 	/** Item移動距離：X軸 */
-	protected int moveX = 1;
+	protected float moveX = 1;
 	/** Item移動距離：Y軸 */
-	protected int moveY = 2;
+	protected float moveY = 2;
 	/** ペットの歩くアニメーション効果用（歩数カウント） */
 	protected int cnt;
 	/** ペットが動くスピード（移動および歩くアニメーションに影響） */
 	protected long speed = 60;
-	/** ペット移動加速度X軸 */
-	protected int petKasokudoX = viewWidth / 7;
-	/** ペット移動加速度Y軸 */
-	protected int petKasokudoY = viewWidth / 6;
+	// /** ペット移動加速度X軸 */
+	// protected int petKasokudoX = viewWidth / 7;
+	// /** ペット移動加速度Y軸 */
+	// protected int petKasokudoY = viewWidth / 6;
 
 	/** 現在の吹き出し */
 	protected Fukidasi nowFukidasi;
@@ -92,8 +92,8 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 	/** 本文開始位置のY値 */
 	protected int linePointY;
 
-	/** ペット用のスレッド */
-	protected Thread petThread;
+	// /** ペット用のスレッド */
+	// protected Thread petThread;
 	/** ペットの種別名 */
 	protected final String model_number = "AbstractPet";
 	/** ペットの種名 */
@@ -139,8 +139,12 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 	 * GameSurfaceView側での呼び出しがもちろん必要。
 	 */
 	public void setPetMoveSize(float x, float y) {
-		moveX = (int) (x / (viewWidth / 7));
-		moveY = (int) (y / (viewWidth / 5));
+		// moveX = (int) (x / (viewWidth / 7));
+		// moveY = (int) (y / (viewWidth / 5));
+		moveX = x;
+		moveY = y;
+		CameLog.setLog(TAG, "ペットがフリックで移動するx軸距離を" + moveX + "にセット");
+		CameLog.setLog(TAG, "ペットがフリックで移動するy軸距離を" + moveY + "にセット");
 		// CameLog.setLog(TAG, "onTouchEventからペットに移動距離を設定");
 	}
 
@@ -166,10 +170,15 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 		/** 歩数を数える */
 		cnt++;
 
-		/** 画面端のチェック：X軸。 */
-		if (nowX < 0 || this.viewWidth - itemWidth < nowX) {
-			/** 次の行のようにすると、左端に行った時も左へ向かってしまう */
-			// moveX = -moveX;
+		/** 画面左端のチェック：X軸。 */
+		if (nowX <= 0) {
+			nowX = (float) (viewWidth / 128);
+			moveX *= -1;
+		}
+
+		/** 画面右端のチェック：X軸。 */
+		if (this.viewWidth - itemWidth < nowX) {
+			// nowX = (float)(viewWidth - (viewWidth/128));
 			moveX *= -1;
 		}
 
@@ -183,22 +192,23 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 			itemPh = petPhR;
 		}
 
-		/** 画面端のチェック：Y軸。(itemHeight/2)は、ペットの体の半分がはみ出ていたのでその調整 */
-		if (nowY < 0 || this.viewHeight - itemHeight < nowY) {
-
-			/** 次の行はそもそもXとYが食い違っているので動いているようだが妙な動きになってしまう。かつ、上下判定も変なことに */
-			// moveY = -moveX;
+		/** 画面上端のチェック：Y軸。 */
+		if (nowY <= 0) {
+			nowY = (float) (viewHeight / 128);
 			moveY *= -1;
-			// CameLog.setLog(TAG, "ペット移動範囲のwidthは" + viewWidth
-			// + "ペット移動範囲のheightは" + viewHeight);
+		}
+
+		/** 画面下端のチェック：Y軸。 */
+		if (this.viewHeight - itemHeight < nowY) {
+			// nowY = (float) (viewHeight - (float)(viewHeight / 128));
+			moveY *= -1;
 		}
 
 		/** 移動させる */
 		nowX = nowX + moveX;
 		nowY = nowY + moveY;
 
-		// CameLog.setLog(TAG, "ペットのnowXは" + nowX
-		// + "。ペットのnowYは" + nowY);
+		CameLog.setLog(TAG, "ペットのnowXは" + nowX + "。ペットのnowYは" + nowY);
 
 		/**
 		 * 描画座標の更新。表示する座標を設定する。移動ベクトル_vecが指す方向に移動させる petCurrentX += petMoveX
@@ -271,7 +281,7 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 
 	@Override
 	public void run() {
-		while (petThread != null) {
+		while (camPeItemThread != null) {
 			move();
 			try {
 				// /** userに触られた際には写真を入れ替えて震えて喜ぶ */
@@ -357,20 +367,12 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 	/** 触られてペットが喜ぶメソッド */
 	public abstract void pleased();
 
-	public int getNowX() {
+	public float getNowX() {
 		return nowX;
 	}
 
-	public void setNowX(int nowX) {
+	public void setNowX(float nowX) {
 		this.nowX = nowX;
-	}
-
-	public int getNowY() {
-		return nowY;
-	}
-
-	public void setNowY(int nowY) {
-		this.nowY = nowY;
 	}
 
 	public abstract String getPetModelNumber();
@@ -400,5 +402,22 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 	 */
 	public Bitmap getPetPhL() {
 		return petPhL;
+	}
+
+	public void setNowY(float nowY) {
+		this.nowY = nowY;
+	}
+
+	/*
+	 * (非 Javadoc)
+	 * 
+	 * @see jp.egaonohon.camerapet.CamPeItem#stopCamPeItemThread()
+	 */
+	@Override
+	public void stopCamPeItemThread() {
+		super.stopCamPeItemThread();
+
+		/** 吹き出しスレッドを停止 */
+		nowFukidasi.stopThread();
 	}
 }

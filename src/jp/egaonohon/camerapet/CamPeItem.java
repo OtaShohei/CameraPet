@@ -29,6 +29,9 @@ public abstract class CamPeItem {
 	/** Item現在位置：Y軸 */
 	protected int nowY;
 
+	/** CamPeItemのスレッド */
+	protected Thread camPeItemThread;
+
 	/** 衝突判定用のRectF。ここをstaticにするとペットかエサどちらか先にRectに数値をセットした方が確保してしまうので要注意。 */
 	protected RectF rectF;
 
@@ -61,21 +64,26 @@ public abstract class CamPeItem {
 	public int getWidth() {
 		return itemWidth;
 	}
-	
+
 	public int getHeight() {
 		return itemHeight;
 	}
 
-	public int getNowX() {
+	public float getNowX() {
 		return nowX;
 	}
 
-	public int getNowY() {
+	public float getNowY() {
 		return nowY;
 	}
 
 	/** RectFをGameSurfaceViewに渡すメソッド */
 	public RectF getRectF() {
 		return rectF;
+	}
+
+	/** CamPeItemのThreadを停止するメソッド */
+	public void stopCamPeItemThread() {
+		camPeItemThread = null;
 	}
 }
