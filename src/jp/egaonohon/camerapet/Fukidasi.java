@@ -1,6 +1,5 @@
 package jp.egaonohon.camerapet;
 
-import android.content.res.Resources;
 import android.view.View;
 
 public class Fukidasi implements Runnable {
@@ -9,7 +8,7 @@ public class Fukidasi implements Runnable {
 	private Thread th;
 	protected static final int fukidasiHyojiTime = 10000;
 	/** Logのタグを定数で確保 */
-	private static final String TAG = "simpleFukidasi";
+	private static final String TAG = "Fukidasi";
 
 	/**
 	 * コンストラクタ。
@@ -44,35 +43,8 @@ public class Fukidasi implements Runnable {
 	}
 
 	public String getMsg(View view, int eventCode) {
-
-		Resources res = view.getResources();
-
-		switch (eventCode) {
-
-		/** その日最初のアプリ起動時 */
-		case 1:
-			return res.getString(R.string.pet_message_welcome);
-
-			/** お腹いっぱいになったとき */
-		case 2:
-			return res.getString(R.string.pet_message_satiety);
-
-			/** 降ってくるエサの残数が0になったとき */
-		case 3:
-			return res.getString(R.string.pet_message_esa_zero);
-
-			/** レベルアップした時 */
-		case 4:
-			return res.getString(R.string.pet_message_levelup);
-
-			/** SNS投稿で成長日記を投稿してくれた時 */
-		case 5:
-			return res.getString(R.string.pet_message_thanksSNS);
-
-		default:
-			/** いずれにも当てはまらない時 */
-			return res.getString(R.string.pet_message_generic);
-		}
+		CameLog.setLog(TAG, "飼い主歓迎メッセージを呼び出し。イベントコードは" + eventCode);
+		return FukidasiTxt.make(view, eventCode);
 	}
 
 	public boolean isVisible() {
@@ -90,7 +62,7 @@ public class Fukidasi implements Runnable {
 	public void setTh(Thread th) {
 		this.th = th;
 	}
-	
+
 	/** 吹き出しのThreadを停止するメソッド */
 	public void stopThread() {
 		th = null;

@@ -16,8 +16,11 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import jp.basicinc.gamefeat.android.sdk.controller.GameFeatAppController;
 
-import com.google.android.gms.ads.*;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
@@ -58,8 +61,17 @@ public class MainActivity extends Activity {
 	private static boolean returnTutorial = false;
 	/** 図鑑から戻ってきた直後を判定するBoolean */
 	private static boolean returnEncyc = false;
+
+	/**
+	 * Notificationを出したい間隔。デフォルトは4日後の345600000。開発中のテストでは1分後の60000。
+	 * 本番時には、正規の数字に必ず変更すること。
+	 */
+	private static final long NOTIFICATION_INTERVAL_TIME = 60000L;
+
 	/** Admob用のインスタンス */
 	private AdView adView;
+	/** GameFeat用のインスタンス */
+	private GameFeatAppController gfAppController;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -110,6 +122,9 @@ public class MainActivity extends Activity {
 		/** adView を追加する */
 		layout.addView(adView);
 
+		/** NotificationManager用に、現在起動中である旨、プリファレンスに登録 */
+		CamPePref.saveOperationStatus(this);
+
 		// /** 一般的なリクエストを行う */
 		// AdRequest adRequest = new AdRequest.Builder().build();
 
@@ -124,6 +139,12 @@ public class MainActivity extends Activity {
 
 		/** 広告リクエストを行って adView を読み込む */
 		adView.loadAd(adRequest);
+
+		// //////
+		// 以下、gamefeat用記述
+		// //////
+		/** GFコントローラ */
+		gfAppController = new GameFeatAppController();
 	}
 
 	@Override
@@ -158,6 +179,9 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onStop() {
 		super.onStop();
+		/** NotificationManager用に、現在起動中でない旨、プリファレンスに登録 */
+		CamPePref.saveNotWorkStatus(this);
+
 		/** AlarmManager & NotificationManagerを動かすメソッドを呼び出す */
 		setPetAlarmBroadcastReceiver();
 		CameLog.setLog(TAG, "onStop");
@@ -322,7 +346,7 @@ public class MainActivity extends Activity {
 
 	/**
 	 * アプリをしばらく起動していないと、「おなかがすいた！」とペットがユーザーに4日後に通知を出すメソッド。
-	 * PetAlarmBroadcastReceiverクラスと連携する。
+	 * PetAlarmBroadcastReceiverクラスと連携する。 本番時には、
 	 */
 	public void setPetAlarmBroadcastReceiver() {
 
@@ -332,10 +356,10 @@ public class MainActivity extends Activity {
 
 		/** 現在時間を取得 */
 		long now = System.currentTimeMillis();
-		/** 10秒後にalert */
+		/** テスト時は、30秒後にalert */
 		long fourDayAfter = now + (30 * 1000);
 		// /** 4日後を割り出す */
-		// long fourDayAfter = now + 345600000;
+		// long fourDayAfter = now + NOTIFICATION_INTERVAL_TIME;
 
 		/** 4日後の20時台を割り出すコードは一時保留 */
 		// /** 4日後を持つDateインスタンス生成 */
@@ -408,6 +432,12 @@ public class MainActivity extends Activity {
 				.getTracker(App.TrackerName.APP_TRACKER);
 		t.setScreenName(this.getClass().getSimpleName());
 		t.send(new HitBuilders.AppViewBuilder().build());
+
+		/**
+		 * GAME FEAT広告設定初期化 初期化コードの引数は次の通り。 activateGF(【Activity名】.this,
+		 * カスタム広告の使用, アイコン広告の使用, 全画面広告の使用);
+		 */
+		gfAppController.activateGF(MainActivity.this, true, false, false);
 	}
 
 }

@@ -1,6 +1,7 @@
 package jp.egaonohon.camerapet;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import jp.egaonohon.camerapet.pet.AbstractPet;
 import android.content.Context;
@@ -20,6 +21,7 @@ import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 
 /**
  * ゲーム画面の動作を司るSurfaceViewのクラス。
@@ -71,6 +73,8 @@ public class GameSurfaceView extends SurfaceView implements
 	private int esaKasokudoMax = 4;
 	/** インストール直後エサ生成数初期値 */
 	private int esaDefaultMakeCnt = 30;
+	/** 前回エサを作った時間 */
+	private long lastEsaMakeTime;
 
 	/** プリファレンスから取得した3時間以内エサ獲得成功数 */
 	private int gettedThreeHoursEatCnt;
@@ -106,15 +110,20 @@ public class GameSurfaceView extends SurfaceView implements
 	/** その日最初の起動か否か */
 	private boolean firstOfTheDay = true;
 	/** セリフでのえさ告知回数 */
-	int EsakokutiCnt = 0;
+	private int EsakokutiCnt = 0;
 	/** セリフでの満腹告知回数 */
-	int ManpukuCnt = 0;
+	private int ManpukuCnt = 0;
+	/** 世間話を行っていいかどうか */
+	private boolean sekenBanasi = false;
 	/** ペットにユーザーが触れてよろこぶ仕草をペットがするかどうかを判定するためのタッチ位置X座標 */
 	private float petAmuseX;
 	/** ペットにユーザーが触れてよろこぶ仕草をペットがするかどうかを判定するためのタッチ位置Y座標 */
 	private float petAmuseY;
 	/** フリック検出をPetに伝えていいか否か */
 	private static boolean flickOk = true;
+
+	/** エサの残数がゼロになった時間。世間話を開始する基準時間となる */
+	private long esaZeroTime = 0;
 
 	/** フリック動作を拾うためのGestureDetector */
 	private GestureDetector mGestureDetector;
@@ -132,8 +141,10 @@ public class GameSurfaceView extends SurfaceView implements
 	private int pet_message_levelup = 4;
 	/** 吹き出し発行時のイベント:SNS投稿で成長日記を投稿してくれた時 */
 	private int pet_message_thanksSNS = 5;
-	/** 吹き出し発行時のイベント:いずれにも当てはまらない時 */
+	/** 吹き出し発行時のイベント:エサが落ちてこなくてペットが暇な時。 */
 	private int pet_message_generic = 6;
+	/** 吹き出し発行時のイベント:ペットが触られた時。 */
+	private int pet_message_touch = 7;
 
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "GameSurfaceView";
@@ -199,7 +210,7 @@ public class GameSurfaceView extends SurfaceView implements
 	public void run() {
 		Canvas canvas = null;
 		while (thread != null) {
-			long time = System.currentTimeMillis();
+			long nowTime = System.currentTimeMillis();
 			canvas = holder.lockCanvas();
 			if (canvas != null) {
 				for (int i = 0; i < camPeItems.size(); i++) {
@@ -223,7 +234,7 @@ public class GameSurfaceView extends SurfaceView implements
 											+ myPet.rectF.contains(petAmuseX,
 													petAmuseY));
 							/** ペットが震える */
-							myPet.pleased();
+							myPet.pleased(this, pet_message_touch);
 						}
 
 						/** ペットに触れていようがいまいが同じ位置で2回目は震えないように判定位置を画面の外にセットし直す */
@@ -282,27 +293,46 @@ public class GameSurfaceView extends SurfaceView implements
 
 				/** 画面に表示されているエサの残数が1または0になったら新たなエサを1つ生成する */
 				if (camPeItems.size() == 2 || camPeItems.size() == 1) {
-					esaMake(1);
+					/** かつ、前回エサを作った時間から1秒以上経過しているならエサを作る */
+					if (nowTime > (lastEsaMakeTime + 4000)) {
+						makeEsa(1);
+						lastEsaMakeTime = nowTime;
+					}
 				}
 
 				/** 残りエサ数が0になったらエサの獲得方法告知 */
 				if ((nowFalldownEsaCnt - throwedEsa) == 0) {
+
 					EsakokutiCnt++;
 
 					/** 1回だけ表示 */
 					if (EsakokutiCnt <= 1) {
 						myPet.talk(this, pet_message_esa_zero);
+						/** 世間話を開始する基準時間をセット。エサゼロになった時間から21～44秒後 */
+						esaZeroTime = (System.currentTimeMillis() + ((new Random()
+								.nextInt(25) + 21) * 1000));
+					}
+
+					/** 残りエサ数が0になってエサゼロになった時間から15～60秒後になっていたら世間話をできるようにする */
+					if (nowTime > esaZeroTime) {
+						sekenBanasi = true;
 					}
 				}
 
+				if (sekenBanasi) {
+					myPet.talk(this, pet_message_generic);
+					/** 今、喋ったので次に備えて基準時間を再設定する。ランダムに設定。21～44秒。 */
+					esaZeroTime = (nowTime + ((new Random().nextInt(25) + 21) * 1000));
+					sekenBanasi = false;
+				}
 				holder.unlockCanvasAndPost(canvas);
 			}
 
-			time = System.currentTimeMillis() - time;
+			nowTime = System.currentTimeMillis() - nowTime;
 
-			if (time < FPS) {
+			if (nowTime < FPS) {
 				try {
-					Thread.sleep(FPS - time);
+					Thread.sleep(FPS - nowTime);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -354,8 +384,11 @@ public class GameSurfaceView extends SurfaceView implements
 		/** 飼い主歓迎メッセージを表示 */
 		myPet.talk(this, pet_message_welcome);
 
-		/** エサを生成するメソッド呼び出し。初期値は1枚を設定 */
-		esaMake(1);
+		CameLog.setLog(TAG, "飼い主歓迎メッセージを呼び出し。イベントコードは" + pet_message_welcome);
+
+		/** エサを生成するメソッド呼び出し。初期値は1枚を設定。エサを作った時間も記録 */
+		makeEsa(1);
+		lastEsaMakeTime = System.currentTimeMillis();
 
 		/** エサ落下予定表示文字取得 */
 		foodCntThisTime = context.getString(R.string.number_of_food_this_time);
@@ -465,6 +498,10 @@ public class GameSurfaceView extends SurfaceView implements
 		throwedEsa = 0;
 		/** 落下予定のエサ数も初期化する */
 		nowFalldownEsaCnt = 0;
+		/** エサゼロ時間を極大にしてエサが出なくする（初期化？） */
+		esaZeroTime = 2145888061L;
+		/** 世間話をできなくする */
+		sekenBanasi = false;
 
 		/** 起動ステイタスを取得する */
 		String startStatus = CamPePref.loadStartStatus(context);
@@ -478,14 +515,11 @@ public class GameSurfaceView extends SurfaceView implements
 			CameLog.setLog(TAG, "起動済みの旨プリファレンスに情報を保存");
 		}
 
-//		/** ペットのThreadを停止する。 */
-//		myPet.stopPetThread();
-
-		/** camPeItemsのThreadを停止する。 */
+		/** camPeItemsの全Threadを停止する。 */
 		for (int j = 0; j < camPeItems.size(); j++) {
 			camPeItems.get(j).stopCamPeItemThread();
 		}
-		
+
 		/** このThreadを停止する */
 		thread = null;
 
@@ -611,72 +645,70 @@ public class GameSurfaceView extends SurfaceView implements
 		// CameLog.setLog(TAG, "Esaのrectは"
 		// + camPeItems.get(i).getRectF().toString());
 		if (RectF.intersects(myPet.getRectF(), camPeItems.get(i).getRectF())) {
+			int hitCnt;
+			hitCnt = camPeItems.get(i).getHitCnt();
+			hitCnt++;
+			camPeItems.get(i).setHitCnt(hitCnt);
+			camPeItems.get(i).returnAfterKrush();
 
-			/** プリファレンスから3時間以内エサ獲得成功数を取得 */
-			gettedThreeHoursEatCnt = CamPePref.load3hoursEatCnt(context);
-
-			if (gettedThreeHoursEatCnt == -1) {
-				gettedThreeHoursEatCnt = 0;
-			}
-
-			esaGetCnt = gettedThreeHoursEatCnt;
-
-			/**
-			 * プログレスバー最大値になるまで3時間以内エサ獲得成功数をUpする。
-			 */
-			if (esaGetCnt < progressMax) {
-				esaGetCnt++;
-			}
-
-			/** 新たな累計エサ獲得成功回数と新たな累計経験値をプリファレンスに保存 */
-			CamPePref.save3hoursEatCnt(context, esaGetCnt);
-
-			/** プリファレンスから累計エサ獲得成功回数を取得 */
-			int gettedTotalEsaGetCnt = CamPePref.loadTotalEsaGetCnt(context);
-
-			if (gettedTotalEsaGetCnt == -1) {
-				gettedTotalEsaGetCnt = 0;
-			}
-
-			/** プリファレンスから累計経験値を取得 */
-			gettedtotalEXP = CamPePref.loadTotalExp(context);
-
-			/** 新たな累計エサ獲得成功回数の算出 */
-			gettedTotalEsaGetCnt++;
-
-			/** インストール直後で累積経験値が-1の場合は0に初期化 */
-			try {
-				if (gettedtotalEXP == -1) {
-					gettedtotalEXP = 0;
+			if (hitCnt >= 2) {
+				/** プリファレンスから3時間以内エサ獲得成功数を取得 */
+				gettedThreeHoursEatCnt = CamPePref.load3hoursEatCnt(context);
+				if (gettedThreeHoursEatCnt == -1) {
+					gettedThreeHoursEatCnt = 0;
 				}
-
-				/** 新たな累計経験値の算出 */
-				gettedtotalEXP++;
-
-				expTxt = context.getString(R.string.exp_points) + " "
-						+ String.valueOf(gettedtotalEXP);
-			} catch (Exception e) {
-				CameLog.setLog(TAG, "プリファレンスからの経験値表示に失敗@onResume");
-			}
-
-			/** 新たな累計エサ獲得成功回数と新たな累計経験値をプリファレンスに保存 */
-			CamPePref.saveTotalExpAndEsaGetCnt(context, gettedTotalEsaGetCnt,
-					gettedtotalEXP);
-
-			/** 今回のエサ獲得数がプログレスバー最大値になったら… */
-			if (progressMax == esaGetCnt) {
-				ManpukuCnt++;
-				/** お腹いっぱいメッセージを1回だけ表示 */
-				if (ManpukuCnt <= 1) {
-					myPet.talk(this, pet_message_satiety);
+				esaGetCnt = gettedThreeHoursEatCnt;
+				/**
+				 * プログレスバー最大値になるまで3時間以内エサ獲得成功数をUpする。
+				 */
+				if (esaGetCnt < progressMax) {
+					esaGetCnt++;
 				}
-			}
-			CameLog.setLog(TAG, "エサの現在位置は" + camPeItems.get(i).getRectF().top);
+				/** 新たな累計エサ獲得成功回数と新たな累計経験値をプリファレンスに保存 */
+				CamPePref.save3hoursEatCnt(context, esaGetCnt);
+				/** プリファレンスから累計エサ獲得成功回数を取得 */
+				int gettedTotalEsaGetCnt = CamPePref
+						.loadTotalEsaGetCnt(context);
+				if (gettedTotalEsaGetCnt == -1) {
+					gettedTotalEsaGetCnt = 0;
+				}
+				/** プリファレンスから累計経験値を取得 */
+				gettedtotalEXP = CamPePref.loadTotalExp(context);
+				/** 新たな累計エサ獲得成功回数の算出 */
+				gettedTotalEsaGetCnt++;
+				/** インストール直後で累積経験値が-1の場合は0に初期化 */
+				try {
+					if (gettedtotalEXP == -1) {
+						gettedtotalEXP = 0;
+					}
 
-			/** 獲得したエサを削除する */
-			camPeItems.remove(i);
+					/** 新たな累計経験値の算出 */
+					gettedtotalEXP++;
+
+					expTxt = context.getString(R.string.exp_points) + " "
+							+ String.valueOf(gettedtotalEXP);
+				} catch (Exception e) {
+					CameLog.setLog(TAG, "プリファレンスからの経験値表示に失敗@onResume");
+				}
+				/** 新たな累計エサ獲得成功回数と新たな累計経験値をプリファレンスに保存 */
+				CamPePref.saveTotalExpAndEsaGetCnt(context,
+						gettedTotalEsaGetCnt, gettedtotalEXP);
+				/** 今回のエサ獲得数がプログレスバー最大値になったら… */
+				if (progressMax == esaGetCnt) {
+					ManpukuCnt++;
+					/** お腹いっぱいメッセージを1回だけ表示 */
+					if (ManpukuCnt <= 1) {
+						myPet.talk(this, pet_message_satiety);
+					}
+				}
+				CameLog.setLog(TAG, "エサの現在位置は"
+						+ camPeItems.get(i).getRectF().top);
+				/** 獲得したエサを削除する */
+				camPeItems.remove(i);
+			}
+
 			/** エサに衝突したらペットを反転させる */
-			myPet.returnEsaKrush();
+			myPet.returnAfterKrush();
 			CameLog.setLog(TAG, "現在の残数は" + camPeItems.size());
 			bakubakuSE.start();
 			// CameLog.setLog(TAG, "Petとエサの接触を検知しました!");
@@ -687,97 +719,56 @@ public class GameSurfaceView extends SurfaceView implements
 	}
 
 	/** エサを生成するメソッド */
-	public void esaMake(int makeEsaCnt) {
+	public void makeEsa(int makeEsaCnt) {
 
-		try {
-			/** 餌写真取得準備 */
-			CamPePh camPePh = new CamPePh();
-			/**
-			 * エサ写真を格納するArrayListを用意しておく
-			 */
-			esaPhList = new ArrayList<Bitmap>();
+		/** 餌写真取得準備 */
+		CamPePh camPePh = new CamPePh();
+		/**
+		 * エサ写真を格納するArrayListを用意しておく
+		 */
+		esaPhList = new ArrayList<Bitmap>();
 
-			/** 落下させたエサの数が今回落下予定のエサの数未満ならばエサを作る */
-			if (throwedEsa <= (nowFalldownEsaCnt - 1)) {
+		/** 落下させたエサの数が今回落下予定のエサの数未満ならばエサを作る */
+		if (throwedEsa <= (nowFalldownEsaCnt - 1)) {
 
-				if (esaCnt <= 0) {
-					esaCnt = 1;
-				}
-
-				/** 引数でエサを生成 */
-				esaPhList = camPePh.get(context, makeEsaCnt, esaCnt);
-
-				CameLog.setLog(TAG,
-						"コンストラクタにて画像の読み込み完了。餌Phは" + esaPhList.size() + "枚");
-
-				for (int i = 0; i < esaPhList.size(); i++) {
-					/**
-					 * 複数写真使用での餌インスタンス生成
-					 *
-					 * @param itemPh
-					 *            エサ写真
-					 * @param width
-					 *            エサ写真の幅
-					 * @param height
-					 *            エサ写真の高さ
-					 * @param defaultX
-					 *            エサの初期位置X
-					 * @param defaultY
-					 *            エサの初期位置Y
-					 * @param viewWidth
-					 *            エサが動くViewの幅
-					 * @param viewHeight
-					 *            エサが動くViewの高さ
-					 */
-
-					/** エサのX初期位置を生成 */
-					int defaultX = (int) ((esaDefaultX * ((Math.random() * 10) + 1)) * ((viewWidth / 128) * 10));
-					/** 画面幅を超えた場合の調整 */
-					if (defaultX > viewWidth) {
-						defaultX = (int) ((defaultX - viewWidth) + ((viewWidth / 128) * ((Math
-								.random() * 5) + 1)));
-					}
-
-					camPeItems
-							.add(new Esa(
-									esaPhList.get(i),
-									viewWidth / 13,
-									viewWidth / 13,
-									defaultX,
-									esaDefaultY,
-									viewWidth,
-									viewHeight,
-									(Double) (esaKasokudo * (Math.random() * esaKasokudoMax))));
-					/** 落下させたエサの数をインクリメント */
-					throwedEsa++;
-				}
-				CameLog.setLog(TAG, "複数写真使用で餌作成");
-			}
-		} catch (Exception e) {
-			/** 餌写真取得準備 */
-			CamPePh camPePh = new CamPePh();
-			esaPhList = new ArrayList<Bitmap>();
-
-			CameLog.setLog(TAG, "例外発生のためデフォルト写真枚数1枚で餌写真取得");
 			if (esaCnt <= 0) {
 				esaCnt = 1;
 			}
-			for (int i = 0; i < 1; i++) {
-				try {
-					/** 写真を1枚取得しその写真をArrayListに格納 */
 
-					esaPhList = camPePh.get(context, i, esaCnt);
-					/** 複数写真使用での餌インスタンス生成。こちらは、餌作成に成功しても直近撮影回数は0に戻さない */
-					camPeItems.add(new Esa(esaPhList.get(i), viewWidth / 10,
-							viewWidth / 10, (int) ((esaDefaultX * (Math
-									.random() * 10)) * 90), esaDefaultY,
-							viewWidth, viewHeight, (Double) (1.5f * (Math
-									.random() * 5))));
-					throwedEsa++;
-				} catch (Exception e1) {
-					CameLog.setLog(TAG, "例外対策の1枚写真でのエサ生成にも失敗。初期状態ではエサを生成しない。");
+			/** 引数でエサを生成 */
+			esaPhList = camPePh.get(context, makeEsaCnt, esaCnt);
+
+			CameLog.setLog(TAG, "コンストラクタにて画像の読み込み完了。餌Phは" + esaPhList.size()
+					+ "枚");
+
+			for (int i = 0; i < esaPhList.size(); i++) {
+				/** エサのX初期位置を生成 */
+				int defaultX = (int) ((esaDefaultX * ((Math.random() * 10) + 1)) * ((viewWidth / 128) * 10));
+
+				/** 画面幅を超えた場合の調整 */
+				if (defaultX > viewWidth) {
+					defaultX = (int) ((defaultX - viewWidth) + ((viewWidth / 128) * ((Math
+							.random() * 5) + 1)));
+					CameLog.setLog(TAG, "defaultXが画面を超えたので位置修正。修正位置は"
+							+ defaultX);
 				}
+
+				if (defaultX < (viewWidth / 5)) {
+					defaultX = (int) (defaultX + (viewWidth / 128) * 32);
+					CameLog.setLog(TAG, "defaultXが画面左に寄り過ぎたので位置修正。修正位置は"
+							+ defaultX);
+				}
+
+				CameLog.setLog(TAG, "Esaのコンストラクタに渡すdefaultXは" + defaultX);
+
+				camPeItems.add(new Esa(esaPhList.get(i), viewWidth / 13,
+						viewWidth / 13, defaultX, esaDefaultY, viewWidth,
+						viewHeight, esaKasokudo
+								* (new Random().nextInt(esaKasokudoMax) + 1)));
+				/** 落下させたエサの数をインクリメント */
+				throwedEsa++;
 			}
+			CameLog.setLog(TAG, "複数写真使用で餌作成");
 		}
 	}
 
@@ -819,15 +810,17 @@ public class GameSurfaceView extends SurfaceView implements
 	@Override
 	public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
 			float velocityY) {
-		CameLog.setLog(TAG, "onFlingの引数はe1が" + e1 + "e2が" + e2 + "velocityXが"
-				+ velocityX + "velocityYが" + velocityY);
+		// CameLog.setLog(TAG, "onFlingの引数はe1が" + e1 + "e2が" + e2 + "velocityXが"
+		// + velocityX + "velocityYが" + velocityY);
 
-		/** フリックから移動量を取り出す */
-		usertouchedX = (e2.getX() - e1.getX()) / (float)((viewWidth / 128) * 6);
-		usertouchedY = (e2.getY() - e1.getY()) / (float)((viewWidth / 128) * 6);
+		/** フリックから移動量を取り出す。引数最後の数字を小さくすると動きが速くなる */
+		usertouchedX = (e2.getX() - e1.getX())
+				/ (float) ((viewWidth / 128) * 11);
+		usertouchedY = (e2.getY() - e1.getY())
+				/ (float) ((viewWidth / 128) * 11);
 
-		CameLog.setLog(TAG, "ペットがフリックで移動するX軸距離を" + usertouchedX + "にセット");
-		CameLog.setLog(TAG, "ペットがフリックで移動するY軸距離を" + usertouchedY + "にセット");
+		// CameLog.setLog(TAG, "ペットがフリックで移動するX軸距離を" + usertouchedX + "にセット");
+		// CameLog.setLog(TAG, "ペットがフリックで移動するY軸距離を" + usertouchedY + "にセット");
 
 		if (flickOk) {
 			/** petに移動量をセット */
@@ -849,8 +842,8 @@ public class GameSurfaceView extends SurfaceView implements
 		/** GestureDetectorにすべてを任せる */
 		mGestureDetector.onTouchEvent(event);
 
-		CameLog.setLog(TAG, "onTouchEventでのMotionEventのxは" + event.getRawX()
-				+ "onTouchEventでのMotionEventのyは" + event.getRawY());
+		// CameLog.setLog(TAG, "onTouchEventでのMotionEventのxは" + event.getRawX()
+		// + "onTouchEventでのMotionEventのyは" + event.getRawY());
 
 		return true;
 
@@ -945,7 +938,8 @@ public class GameSurfaceView extends SurfaceView implements
 	}
 
 	/**
-	 * @param flickOk セットする flickOk
+	 * @param flickOk
+	 *            セットする flickOk
 	 */
 	public static void setFlickOk(boolean flickOk) {
 		GameSurfaceView.flickOk = flickOk;

@@ -1,17 +1,37 @@
 package jp.egaonohon.camerapet.encyc;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import jp.basicinc.gamefeat.android.sdk.controller.GameFeatAppController;
 import jp.egaonohon.camerapet.App;
 import jp.egaonohon.camerapet.CameLog;
 import jp.egaonohon.camerapet.MainActivity;
 import jp.egaonohon.camerapet.R;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
 public class Encyc01Activity extends Activity {
 
@@ -19,18 +39,20 @@ public class Encyc01Activity extends Activity {
 	private MediaPlayer encycBgm;
 	/** BGM用変数 */
 	private boolean bgmOn = true;
+	/** GameFeat用のインスタンス */
+	private GameFeatAppController gfAppController;
+	protected getImageData getImageData;
 
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "Encyc01";
 
 	/*
 	 * (非 Javadoc)
-	 * 
+	 *
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO 自動生成されたメソッド・スタブ
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.encyclopedia_first);
 
@@ -49,13 +71,75 @@ public class Encyc01Activity extends Activity {
 			CameLog.setLog(TAG, "bgmOnが" + bgmOn + "なのでBGMは鳴らさない");
 		}
 
+		/** 属性 android:id="@+id/adMobSpace" が与えられているものとしてLinearLayout をルックアップする */
+		LinearLayout layout = (LinearLayout) findViewById(R.id.adMobSpace);
+
+		// GFコントローラ
+		gfAppController = new GameFeatAppController();
+		gfAppController.init(Encyc01Activity.this);
+
+		// LinearLayout incLayout = null;
+		RelativeLayout incLayout = null;
+		LinearLayout mainLayout = (LinearLayout) findViewById(R.id.adMobSpace);
+
+		// カスタム広告のデータを取得
+		ArrayList<HashMap<String, String>> customArrayList = gfAppController
+				.getCustomAds();
+
+		for (final HashMap<String, String> map : customArrayList) {
+			// LayoutInflaterの準備
+			LayoutInflater inflater = (LayoutInflater) getApplicationContext()
+					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			incLayout = (RelativeLayout) inflater.inflate(R.layout.custom_row,
+					null);
+
+			// アイコン画像の読み込み
+			ImageView appIcon = (ImageView) incLayout
+					.findViewById(R.id.app_icon);
+			getImageData = new getImageData(map.get("appIconUrl"), appIcon);
+			getImageData.execute();
+
+			// タイトルの設定
+			TextView title = (TextView) incLayout.findViewById(R.id.title);
+			title.setText(map.get("appTitle"));
+
+			// タイトルの設定
+			TextView description = (TextView) incLayout
+					.findViewById(R.id.description);
+			description.setText(map.get("appDescription"));
+
+			// レビューボタンの設定
+			Button btnReview = (Button) incLayout.findViewById(R.id.btn_review);
+			if (map.get("hasReview") == "0") {
+				btnReview.setVisibility(View.GONE);
+			}
+			btnReview.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					// レビューへ
+					gfAppController.onAdReviewClick(map);
+				}
+			});
+
+			// DLボタンの設定
+			Button btnStore = (Button) incLayout.findViewById(R.id.btn_store);
+			btnStore.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					// AppStoreへ
+					gfAppController.onAdStoreClick(map);
+				}
+			});
+
+			mainLayout.addView(incLayout);
+		}
 		/** 起動したクラスをLogで確認 */
 		CameLog.setLog(TAG, "onCreate");
 	}
 
 	/*
 	 * (非 Javadoc)
-	 * 
+	 *
 	 * @see android.app.Activity#onResume()
 	 */
 	@Override
@@ -65,7 +149,7 @@ public class Encyc01Activity extends Activity {
 
 	/*
 	 * (非 Javadoc)
-	 * 
+	 *
 	 * @see android.app.Activity#onPause()
 	 */
 	@Override
@@ -165,7 +249,7 @@ public class Encyc01Activity extends Activity {
 
 	/*
 	 * (非 Javadoc)
-	 * 
+	 *
 	 * @see android.app.Activity#onStart()
 	 */
 	@Override
@@ -177,4 +261,43 @@ public class Encyc01Activity extends Activity {
 		t.setScreenName(this.getClass().getSimpleName());
 		t.send(new HitBuilders.AppViewBuilder().build());
 	}
+
+	/**
+	 * 画像の非同期読み込み
+	 *
+	 */
+	class getImageData extends AsyncTask<String, Integer, Bitmap> {
+
+		private ImageView imageView;
+		private String imageUrl;
+
+		public getImageData(String imageUrl, ImageView imageView) {
+			super();
+			this.imageView = imageView;
+			this.imageUrl = imageUrl;
+		}
+
+		@Override
+		protected Bitmap doInBackground(String... param) {
+			Bitmap bitmap;
+
+			try {
+				URL url = new URL(this.imageUrl);
+				InputStream inputStream = url.openStream();
+				bitmap = BitmapFactory.decodeStream(inputStream);
+				return bitmap;
+			} catch (IOException ex) {
+				Logger.getLogger(Encyc01Activity.class.getName()).log(
+						Level.SEVERE, null, ex);
+			}
+
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Bitmap result) {
+			imageView.setImageBitmap(result);
+		}
+	}
+
 }

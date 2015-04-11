@@ -8,7 +8,7 @@ import android.graphics.RectF;
 
 public class Esa extends CamPeItem implements Runnable {
 
-	/** 描画設定 */
+	/** Esa描画設定 */
 	private Paint paint = new Paint();
 	/**
 	 * Petの画像拡大縮小用 拡大縮小に関しては、こちらのサイトを参照。
@@ -36,12 +36,10 @@ public class Esa extends CamPeItem implements Runnable {
 	private int itemWidth = 10;
 	/** エサの高さ */
 	private int itemHeight = 10;
-//	/** エサの初期位置：X軸 */
-//	private int defaultX;
-//	/** エサの初期位置：Y軸 */
-//	private int defaultY;
 	/** エサの現在位置：X軸 */
 	private int nowX = 10;
+	/** エサの初期位置：X軸 */
+	private int defaultX;
 	/** エサの現在距離：Y軸 */
 	private double nowY;
 	/** エサ移動距離：X軸 */
@@ -52,14 +50,15 @@ public class Esa extends CamPeItem implements Runnable {
 	private int cnt;
 	/** エサが動くスピード（移動および歩くアニメーションに影響） */
 	private long speed = 60;
+	/** X軸の進行方向を変更した時間 */
+	private long moveChangeTime;
+
+	/** 1度でも何かに衝突したか否か */
+	private boolean oneTimeKrush = false;
 
 	/** エサの数 */
 	int esaCnt = 1;
 
-//	/** エサ用のスレッド */
-//	private Thread esaThread;
-	// /** 衝突判定用のRectF */
-	// private static RectF esaRectF;
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "Esa";
 
@@ -84,14 +83,16 @@ public class Esa extends CamPeItem implements Runnable {
 	 *            エサが落下するY方向dp値
 	 */
 	public Esa(Bitmap itemPh, int width, int height, int defaultX,
-			int defaultY, int viewWidth, int viewHeight, Double moveY) {
+			int defaultY, int viewWidth, int viewHeight, float moveY) {
 		super(width, height, defaultX, defaultY, viewWidth, viewHeight);
 		this.itemPh = itemPh;
 		this.itemWidth = width;
 		this.itemHeight = height;
+		// this.defaultX = defaultX;
 		this.nowX = defaultX;
-		/** エサのY座標の初期位置をマイナスに設定して画面表示直後でのペットとの接触をさける */
-		this.nowY = defaultY - (viewWidth/4);
+		// /** エサのY座標の初期位置をマイナスに設定して画面表示直後でのペットとの接触をさける */
+		// this.nowY = defaultY - (viewWidth / 5);
+		this.nowY = defaultY;
 		this.viewWidth = viewWidth;
 		this.viewHeight = viewHeight;
 		this.moveY = moveY;
@@ -102,22 +103,29 @@ public class Esa extends CamPeItem implements Runnable {
 		CameLog.setLog(TAG, "Esaがnewされた時点でのViewのWidthは" + this.viewWidth
 				+ "。ViewのHeightは" + this.viewHeight + "defaultXは" + defaultX);
 
-		/** PetPhの拡大・縮小率設定
-		 * ここでfloatにキャストしないと拡大率が小数点以下切り捨てられてしまうので要注意 */
-		scaleX = (float)itemWidth / itemPh.getWidth();
-		scaleY = (float)itemHeight / itemPh.getHeight();
+		/**
+		 * PetPhの拡大・縮小率設定 ここでfloatにキャストしないと拡大率が小数点以下切り捨てられてしまうので要注意
+		 */
+		scaleX = (float) itemWidth / itemPh.getWidth();
+		scaleY = (float) itemHeight / itemPh.getHeight();
 
 		/** EsaPhの拡大・縮小率設定 */
 		matrix.postScale(scaleX, scaleY);
 		// /** EsaPhの拡大縮小率確認 */
 		// CameLog.setLog(TAG, "EsaPhの拡大縮小率はXが" + scaleX + "。Yは" + scaleY);
 
-		/** EsaPhの回転角設定 */
-		degree = (cnt % 2 == 0) ? 0 : -15f;
-		matrix.postRotate(degree);
+		// /** EsaPhの回転角設定 */
+		// degree = (cnt % 2 == 0) ? 0 : -15f;
+		// matrix.postRotate(degree);
 
 		// // 移動ベクトルを下に向ける
 		// moveY = (int) (1 * (Math.random() * 10));
+
+		// /** 最初に進行方向を決めた時間を記録（X方向をランダムに動かすため） */
+		// moveChangeTime = System.currentTimeMillis();
+
+		// /** 最初の進む方向を決める */
+		// moveX = new Random().nextInt((viewWidth / 128) * 2) + 1;
 
 		camPeItemThread = new Thread(this);
 		camPeItemThread.start();
@@ -130,17 +138,33 @@ public class Esa extends CamPeItem implements Runnable {
 
 		/** 画面端のチェック：X軸 */
 		if (nowX < 0 || this.viewWidth - itemWidth < nowX) {
-			/** 次の行のようにすると、左端に行った時も左へ向かってしまう */
-			// moveX = -moveX;
 			moveX *= -1;
 		}
 
-		/** 画面端のチェック：Y軸 は行わずに落下したら画面から出て行くように変更するので次のブロックはコメントアウトする */
-//		if (nowY < 0 || this.viewHeight - itemHeight < nowY) {
-//			/** 次の行はそもそもXとYが食い違っているので動いているようだが妙な動きになってしまう。かつ、上下判定も変なことに */
-//			// moveY = -moveX;
-//			moveY *= -1;
-//		}
+		/** 画面端のチェック：Y軸 は画面上部のみ跳ね返るようにする */
+		if (nowY < 0) {
+			moveY *= -1;
+		}
+
+		// /** ふらふらと舞う横方向の限界点チェック：X軸 */
+		// if (nowX < (defaultX - ((viewWidth/128)*40) ) || nowX > (defaultX +
+		// ((viewWidth/128)*40) )) {
+		// moveX *= -1;
+		// }
+		//
+		// /** 画面端のチェック：Y軸 は行わずに落下したら画面から出て行くように変更するので次のブロックはコメントアウトする */
+		// if (nowY < 0 || this.viewHeight - itemHeight < nowY) {
+		// /** 次の行はそもそもXとYが食い違っているので動いているようだが妙な動きになってしまう。かつ、上下判定も変なことに */
+		// // moveY = -moveX;
+		// moveY *= -1;
+		// }
+		//
+		// /** */
+		// long now = System.currentTimeMillis();
+		// if (now > moveChangeTime +1000) {
+		// moveX = new Random().nextInt(viewWidth/128) + 1;
+		// moveChangeTime = now;
+		// }
 
 		/** 移動させる */
 		nowX = nowX + moveX;
@@ -166,11 +190,12 @@ public class Esa extends CamPeItem implements Runnable {
 		 *
 		 * 次の2行もコメントアウト。設定した拡大縮小率がmatrix.reset()ですぐになかったことになってしまうから。
 		 * */
-//		matrix.reset();
-//		matrix.postTranslate(nowX, nowY);
+		// matrix.reset();
+		// matrix.postTranslate(nowX, nowY);
 
 		/** 衝突判定用RectFの更新 */
-		rectF.set(nowX, (float) nowY, nowX + itemWidth, (float)nowY + itemHeight);
+		rectF.set(nowX, (float) nowY, nowX + itemWidth, (float) nowY
+				+ itemHeight);
 
 		// /** 衝突判定用RectFにセットした数値の確認 */
 		// CameLog.setLog(TAG, "更新されたnowXは" + nowX + "。nowYは" + nowY
@@ -188,6 +213,13 @@ public class Esa extends CamPeItem implements Runnable {
 		canvas.translate(nowX, (float) nowY);
 		canvas.drawBitmap(itemPh, matrix, paint);
 		canvas.restore();
+		/** 一度衝突したエサは赤く変わる。キャンバスをリストアしたあとにこの記述を書かないと反映されないので要注意。 */
+		if (oneTimeKrush) {
+			/** Esa描画設定 */
+			Paint krushPaint = new Paint();
+			krushPaint.setARGB(125, 100, 0, 0);
+			canvas.drawRect(rectF, krushPaint);
+		}
 	}
 
 	@Override
@@ -201,4 +233,12 @@ public class Esa extends CamPeItem implements Runnable {
 			}
 		}
 	}
+
+	@Override
+	public void returnAfterKrush() {
+		// CameLog.setLog(TAG,"returnAfterKrush");
+		oneTimeKrush = true;
+		moveY *= -1;
+	}
+
 }

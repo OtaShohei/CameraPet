@@ -20,8 +20,6 @@ public class Pet003A extends AbstractPet implements Runnable {
 	private static final String MODEL_NUMBER = "Pet003A";
 	/** ペットの種名 */
 	private String petName;
-	/** くすぐったい時用サウンド */
-	private MediaPlayer pleasedSE;
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "Pet003A";
 
@@ -108,14 +106,6 @@ public class Pet003A extends AbstractPet implements Runnable {
 
 		camPeItemThread = new Thread(this);
 		camPeItemThread.start();
-	}
-
-	/** 触られてペットが喜ぶメソッド */
-	public void pleased() {
-		/** 鳴き声を上げる */
-		pleasedSE.start();
-		// /** 写真を入れ替えて震えてもいい */
-		// changeItemPh = true;
 	}
 
 	public String getPetModelNumber() {

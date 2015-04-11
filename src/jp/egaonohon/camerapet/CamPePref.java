@@ -4,6 +4,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 
+/**
+ * アプリで扱うプリファレンスへの書き込み読み込みすべてを司るクラス。
+ *
+ * @author 1107AND
+ *
+ */
 public class CamPePref {
 
 	/** Logのタグを定数で確保 */
@@ -27,8 +33,100 @@ public class CamPePref {
 				+ "notFirst" + "を登録");
 	}
 
+	/** 現在起動中である旨プリファレンスに保存する */
+	public static void saveOperationStatus(Context context) {
+		/** プリファレンスの準備 */
+		SharedPreferences pref = context.getSharedPreferences("WorkStatus",
+				Context.MODE_PRIVATE);
+
+		/** プリファレンスに書き込むためのEditorオブジェクト取得 */
+		Editor editor = pref.edit();
+
+		/** "startStatus" というキーでnotFirstを登録 */
+		editor.putString("WorkStatus", "operation");
+
+		/** 書き込みの確定（実際にファイルに書き込む） */
+		editor.commit();
+		CameLog.setLog(TAG, "saveWorkStatusにて" + "WorkStatus" + "キーで"
+				+ "operation" + "を登録");
+	}
+
+	/** 現在起動していない旨、Activityが破棄される直前にプリファレンスに保存する */
+	public static void saveNotWorkStatus(Context context) {
+		/** プリファレンスの準備 */
+		SharedPreferences pref = context.getSharedPreferences("WorkStatus",
+				Context.MODE_PRIVATE);
+
+		/** プリファレンスに書き込むためのEditorオブジェクト取得 */
+		Editor editor = pref.edit();
+
+		/** "startStatus" というキーでnotFirstを登録 */
+		editor.putString("WorkStatus", "notWork");
+
+		/** 書き込みの確定（実際にファイルに書き込む） */
+		editor.commit();
+		CameLog.setLog(TAG, "saveNotWorkStatusにて" + "WorkStatus" + "キーで"
+				+ "notWork" + "を登録");
+	}
+
+	/** 現在起動しているか否かを確認するステイタス情報をプリファレンスから取り出す。登録されていなければnotFoundを返す */
+	public static String loadWorkStatus(Context context) {
+
+		/** プリファレンスの準備 */
+		SharedPreferences pref = context.getSharedPreferences("WorkStatus",
+				Context.MODE_PRIVATE);
+
+		String workStatus = pref.getString("WorkStatus", "notFound");
+
+		CameLog.setLog(TAG, "在起動しているか否かを確認するステイタス情報として" + workStatus + "を取得");
+
+		/** "startStatus" というキーで保存されている値を読み出す */
+		return workStatus;
+	}
+
+	/** Notificationを掲出した時間をプリファレンスに保存する */
+	public static void saveNotificationTime(Context context) {
+
+		/** Notificationを掲出した時間 */
+		long notificationSubmitTime = System.currentTimeMillis();
+
+		/** プリファレンスの準備 */
+		SharedPreferences pref = context.getSharedPreferences(
+				"notificationSubmitTime", Context.MODE_PRIVATE);
+
+		/** プリファレンスに書き込むためのEditorオブジェクト取得 */
+		Editor editor = pref.edit();
+
+		/** "notificationSubmitTime" というキーでnotificationSubmitTimeを登録 */
+		editor.putLong("notificationSubmitTime", notificationSubmitTime);
+
+		CameLog.setLog(TAG, "Notificationを掲出した時間" + notificationSubmitTime + "を登録しました");
+
+		/** 書き込みの確定（実際にファイルに書き込む） */
+		editor.commit();
+	}
+
+	/** Notificationを前回掲出した時間を取り出す。登録されていなければ -1 を返す */
+	public static long loadNotificationTime(Context context) {
+
+		/** プリファレンスの準備 */
+		SharedPreferences pref = context.getSharedPreferences(
+				"notificationSubmitTime", Context.MODE_PRIVATE);
+
+		/** "threeHoursEatCnt" というキーで保存されている値を読み出す */
+		long notificationSubmitTime = pref.getLong("notificationSubmitTime",
+				(long) -1);
+
+		CameLog.setLog(TAG, "Notificationを前回掲出した時間" + notificationSubmitTime
+				+ "をプリファレンスから取得");
+
+		/** 3時間以内に食べたエサの数を戻す */
+		return notificationSubmitTime;
+	}
+
 	/** 初回起動か否かを確認するステイタス情報をプリファレンスから取り出す。登録されていなければ空の文字列を返す */
 	public static String loadStartStatus(Context context) {
+
 		/** プリファレンスの準備 */
 		SharedPreferences pref = context.getSharedPreferences("startStatus",
 				Context.MODE_PRIVATE);
@@ -55,16 +153,15 @@ public class CamPePref {
 
 		/** 書き込みの確定（実際にファイルに書き込む） */
 		editor.commit();
-		CameLog.setLog(TAG, "viewWidthへ" + "viewWidth" + "キーで"
-				+ viewWidth + "を登録");
+		CameLog.setLog(TAG, "viewWidthへ" + "viewWidth" + "キーで" + viewWidth
+				+ "を登録");
 	}
 
 	/** Viewの幅をプリファレンスから取り出す。登録されていなければ空の文字列を返す */
 	public static int loadViewWidth(Context context) {
 		/** プリファレンスの準備 */
 		SharedPreferences pref = null;
-		pref = context.getSharedPreferences("viewWidth",
-				Context.MODE_PRIVATE);
+		pref = context.getSharedPreferences("viewWidth", Context.MODE_PRIVATE);
 
 		int viewWidth = pref.getInt("viewWidth", 0);
 
@@ -73,7 +170,6 @@ public class CamPePref {
 		/** "PetSpeciesName" というキーで保存されている値を読み出す */
 		return viewWidth;
 	}
-
 
 	/** ペット種別名をプリファレンスに保存する */
 	public static void savePetSpeciesName(Context context, String PetSpeciesName) {
@@ -107,49 +203,6 @@ public class CamPePref {
 		return PetSpeciesName;
 	}
 
-	/** AlarmManager・NotificationManager利用時のNotificationIDをプリファレンスに保存する */
-	public static void saveNotificationId(Context context, int NotificationIdNum) {
-		/** プリファレンスの準備 */
-		SharedPreferences pref = context.getSharedPreferences("NotificationID",
-				Context.MODE_PRIVATE);
-
-		/** プリファレンスに書き込むためのEditorオブジェクト取得 */
-		Editor editor = pref.edit();
-
-		/** "NotificationID" というキーでNotificationIdNumを登録 */
-		editor.putInt("NotificationID", NotificationIdNum);
-
-		/** 書き込みの確定（実際にファイルに書き込む） */
-		editor.commit();
-		CameLog.setLog(TAG, "NotificationIDへ" + "NotificationID" + "キーで"
-				+ NotificationIdNum + "を登録");
-	}
-
-	/**
-	 * AlarmManager・NotificationManager利用時のNotificationIDをプリファレンスから取り出す。
-	 * 登録されていなければ0を返す
-	 */
-	public static int loadNotificationId(Context context) {
-		/** プリファレンスの準備 */
-		SharedPreferences pref = null;
-		 try {
-		pref = context.getSharedPreferences("NotificationID",
-				Context.MODE_PRIVATE);
-		 } catch (Exception e) {
-		/** Context.MODE_PRIVATEの中身を確認 */
-		CameLog.setLog(TAG, "Context.MODE_PRIVATEは" + Context.MODE_PRIVATE);
-		 }
-//		 finally {
-
-		int NotificationIdNum = pref.getInt("NotificationID", 0);
-
-		CameLog.setLog(TAG, "NotificationID" + NotificationIdNum + "を取得");
-
-		/** "PetSpeciesName" というキーで保存されている値を読み出す */
-		return NotificationIdNum;
-		// }
-	}
-
 	/**
 	 * ペットがレベルアップする直前、現在のペットのステイタスnowをgettedに書き換える。次に、
 	 * レベルアップ後のペットをnowとペットステイタス情報を管理するプリファレンスに保存する
@@ -181,52 +234,60 @@ public class CamPePref {
 	}
 
 	/** あるペットのステイタス情報をプリファレンスから取り出す。登録されていなければ空の文字列を返す */
-	public static String loadPetModelNumber(Context context, String petModelNumber) {
+	public static String loadPetModelNumber(Context context,
+			String petModelNumber) {
 		/** プリファレンスの準備 */
 		SharedPreferences pref = context.getSharedPreferences("petStatus",
 				Context.MODE_PRIVATE);
 
 		String petStatus = pref.getString(petModelNumber, "");
 
-		CameLog.setLog(TAG, "ペット" + petModelNumber + "のステイタス" + petStatus + "を取得");
+		CameLog.setLog(TAG, "ペット" + petModelNumber + "のステイタス" + petStatus
+				+ "を取得");
 
 		/** "startStatus" というキーで保存されている値を読み出す */
 		return petStatus;
 	}
 
 	/**
-	 * 写真撮影やSNS投稿によるペットのバージョンアップに備えて、
-	 * 写真撮影やSNS投稿直前のペットModelNumberをプリファレンスに保存する
+	 * 写真撮影やSNS投稿によるペットのバージョンアップに備えて、 写真撮影やSNS投稿直前のペットModelNumberをプリファレンスに保存する
 	 */
-	public static void savePetModelNumberForUnexpectedVersionUp(Context context,
-			String beforePetModelNumber) {
+	public static void savePetModelNumberForUnexpectedVersionUp(
+			Context context, String beforePetModelNumber) {
 
 		/** プリファレンスの準備 */
-		SharedPreferences pref = context.getSharedPreferences("PetModelNumberForUnexpectedVersionUp",
-				Context.MODE_PRIVATE);
+		SharedPreferences pref = context.getSharedPreferences(
+				"PetModelNumberForUnexpectedVersionUp", Context.MODE_PRIVATE);
 
 		/** プリファレンスに書き込むためのEditorオブジェクト取得 */
 		Editor editor = pref.edit();
 
-			/** "petSpecies" というキーで現在そのペットであることを示すnowを登録 */
-			editor.putString("PetModelNumberForUnexpectedVersionUp", beforePetModelNumber);
+		/** "petSpecies" というキーで現在そのペットであることを示すnowを登録 */
+		editor.putString("PetModelNumberForUnexpectedVersionUp",
+				beforePetModelNumber);
 
 		/** 書き込みの確定（実際にファイルに書き込む） */
 		editor.commit();
-		CameLog.setLog(TAG, "savePetModelNumberForUnexpectedVersionUpにて、PetModelNumberForUnexpectedVersionUpキーで"
-				+ beforePetModelNumber + "を登録");
+		CameLog.setLog(
+				TAG,
+				"savePetModelNumberForUnexpectedVersionUpにて、PetModelNumberForUnexpectedVersionUpキーで"
+						+ beforePetModelNumber + "を登録");
 	}
 
 	/** 写真撮影やSNS投稿直前のペットModelNumberをプリファレンスから取り出す。 */
-	public static String loadPetModelNumberForUnexpectedVersionUp(Context context) {
+	public static String loadPetModelNumberForUnexpectedVersionUp(
+			Context context) {
 		/** プリファレンスの準備 */
-		SharedPreferences pref = context.getSharedPreferences("PetModelNumberForUnexpectedVersionUp",
-				Context.MODE_PRIVATE);
+		SharedPreferences pref = context.getSharedPreferences(
+				"PetModelNumberForUnexpectedVersionUp", Context.MODE_PRIVATE);
 
-		String beforePetModelNumber = pref.getString("PetModelNumberForUnexpectedVersionUp", "");
+		String beforePetModelNumber = pref.getString(
+				"PetModelNumberForUnexpectedVersionUp", "");
 
-		CameLog.setLog(TAG, "loadPetModelNumberForUnexpectedVersionUpにて、PetModelNumberForUnexpectedVersionUpキーで"
-				+ beforePetModelNumber + "を取得");
+		CameLog.setLog(
+				TAG,
+				"loadPetModelNumberForUnexpectedVersionUpにて、PetModelNumberForUnexpectedVersionUpキーで"
+						+ beforePetModelNumber + "を取得");
 
 		/** "startStatus" というキーで保存されている値を読み出す */
 		return beforePetModelNumber;

@@ -5,12 +5,14 @@ import jp.egaonohon.camerapet.CameLog;
 import jp.egaonohon.camerapet.Fukidasi;
 import jp.egaonohon.camerapet.GameSurfaceView;
 import jp.egaonohon.camerapet.R;
+import android.R.integer;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.media.MediaPlayer;
 import android.view.View;
 
 /**
@@ -23,6 +25,9 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 
 	/** ペットが存在しているView */
 	protected View petView;
+
+	/** セリフ描画用Canvas */
+	protected Canvas canvas;
 
 	/** 描画設定 */
 	protected Paint petPaint = new Paint();
@@ -78,21 +83,26 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 	protected Fukidasi nowFukidasi;
 	/** 吹き出し座布団画像の参照 */
 	protected Bitmap fukidasiPh;
-
 	/** 吹き出しセリフ文字の参照 */
 	protected String fukidasiTxt;
 	/** 吹き出し改行基準スケール */
 	protected int layoutScale = viewWidth / 128;
-	/** テキストの改行に必要なローカル変数 */
-	protected int lineBreakPoint;
-	protected int currentIndex = 0;
-	/** 本文開始位置のY値 */
-	protected int linePointY;
+	// protected int maxWidth = itemHeight;// 150pxで改行する。
+	// /** テキストの改行に必要な変数 */
+	protected int lineBreakPoint = Integer.MAX_VALUE;// 仮に、最大値を入れておく
+	protected int currentIndex = 0;// 現在、原文の何文字目まで改行が入るか確認したかを保持する
+	// /** 本文開始位置のY値 */
+	protected int linePointY = (viewWidth / 22);// 文字を描画するY位置。改行の度にインクリメントする。
+	/** ペットが話す際のイベントコード */
+	protected int eventCode;
 
 	/** ペットの種別名 */
 	protected final String model_number = "AbstractPet";
 	/** ペットの種名 */
 	protected String petName;
+
+	/** くすぐったい時用サウンド */
+	protected MediaPlayer pleasedSE;
 
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "Pet";
@@ -134,8 +144,6 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 	 * GameSurfaceView側での呼び出しがもちろん必要。
 	 */
 	public void setPetMoveSize(float x, float y) {
-		// moveX = (int) (x / (viewWidth / 7));
-		// moveY = (int) (y / (viewWidth / 5));
 		moveX = x;
 		moveY = y;
 		CameLog.setLog(TAG, "ペットがフリックで移動するx軸距離を" + moveX + "にセット");
@@ -144,17 +152,16 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 	}
 
 	/** エサと衝突したらPetを反転させるメソッド。GameSurfaceViewから呼び出す。さらに移動方向も反転させる。 */
-	public void returnEsaKrush() {
-		moveX = 1;
+	public void returnAfterKrush() {
+		GameSurfaceView.setFlickOk(false);
 		moveX *= -1;
-		moveY = 0;
+		moveY *= -1;
+		GameSurfaceView.setFlickOk(true);
 		if (itemPh.equals(petPhR)) {
 			itemPh = petPhL;
 		} else if (itemPh.equals(petPhL)) {
 			itemPh = petPhR;
 		}
-		// moveX *= -1;
-		// moveY *= -1;
 	}
 
 	/**
@@ -195,7 +202,7 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 		nowX = nowX + moveX;
 		nowY = nowY + moveY;
 
-		CameLog.setLog(TAG, "ペットのnowXは" + nowX + "。ペットのnowYは" + nowY);
+		// CameLog.setLog(TAG, "ペットのnowXは" + nowX + "。ペットのnowYは" + nowY);
 
 		/**
 		 * 描画座標の更新。表示する座標を設定する。移動ベクトル_vecが指す方向に移動させる petCurrentX += petMoveX
@@ -226,6 +233,9 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 
 	@Override
 	public void draw(Canvas canvas) {
+
+		// this.canvas = canvas;
+
 		/** Canvasの背景色を透明で塗る。 第二引数にPorterDuff.Mode.CLEARを付けないと透明にならないので注意。 */
 		canvas.drawColor(Color.TRANSPARENT,
 				android.graphics.PorterDuff.Mode.CLEAR);
@@ -252,19 +262,31 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 				if (lineBreakPoint != 0) {
 					String line = fukidasiTxt.substring(currentIndex,
 							currentIndex + lineBreakPoint);
-					canvas.drawText(line, (layoutScale * 10),
+					canvas.drawText(line, (layoutScale * 9),
 							((itemHeight + (layoutScale * 16)) + linePointY),
 							petPaint);
 					linePointY = linePointY + (viewWidth / 22);
 					currentIndex += lineBreakPoint;
+
 				}
 			}
 		}
-
 		canvas.drawBitmap(itemPh, matrix, petPaint);
-
 		canvas.restore();
 	}
+
+	// /** 吹き出しの文字を綺麗に改行するメソッド */
+	// public void shapingFukidasiTxt() {
+	// String line = fukidasiTxt.substring(currentIndex,
+	// currentIndex + lineBreakPoint);
+	// canvas.drawText(
+	// line,
+	// (layoutScale * 10),
+	// ((itemHeight + (layoutScale * 16)) + linePointY),
+	// petPaint);
+	// linePointY = linePointY + (viewWidth / 22);
+	// currentIndex += lineBreakPoint;
+	// }
 
 	@Override
 	public void run() {
@@ -294,11 +316,8 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 	}
 
 	/** ペットの喋らせるメソッド。 */
-	public void talk(View view, int eventCode
-	// Context context, View view, int eventCode,
-	// int fukidasiDefaultX, int fukidasiDefaultY
-	) {
-
+	public void talk(View view, int eventCode) {
+		this.eventCode = eventCode;
 		nowFukidasi = new Fukidasi();
 
 		if (!nowFukidasi.isVisible()) {
@@ -323,7 +342,7 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 
 		/** 吹き出し座布団画像を端末の画面に合わせてリサイズ */
 		Bitmap fukidasiPh02 = Bitmap.createScaledBitmap(fukidasiPh,
-				((view.getWidth() / 128) * 64), ((view.getWidth() / 128) * 64),
+				((view.getWidth() / 128) * 60), ((view.getWidth() / 128) * 60),
 				false);
 		fukidasiPh = fukidasiPh02;
 
@@ -352,7 +371,13 @@ public abstract class AbstractPet extends CamPeItem implements Runnable {
 	}
 
 	/** 触られてペットが喜ぶメソッド */
-	public abstract void pleased();
+	public void pleased(View view, int eventCode) {
+		/** 鳴き声を上げる */
+		pleasedSE.start();
+		talk(view, eventCode);
+		// /** 写真を入れ替えて震えてもいい */
+		// changeItemPh = true;
+	}
 
 	public float getNowX() {
 		return nowX;

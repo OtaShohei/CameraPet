@@ -22,20 +22,50 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 
 	private Context alarmReceiverContext;
 	private int notificationProvisionalId;
+
+	/** Notificationを出したい間隔。デフォルトは4日後の345600000。開発中のテストでは3分後の180000。 */
+	private static final long NOTIFICATION_INTERVAL_TIME = 180000;
+
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "PetAlarmBroadcastReceiver";
 
 	@Override
 	public void onReceive(Context context, Intent receivedIntent) {
-		CameLog.setLog(TAG, "onReceiveやってきました!");
-		alarmReceiverContext = context;
 
-		notificationProvisionalId = receivedIntent.getIntExtra(
-				"notificationId", 0);
-		NotificationManager myNotification = (NotificationManager) context
-				.getSystemService(Context.NOTIFICATION_SERVICE);
-		Notification notification = prepareNotification();
-		myNotification.notify(notificationProvisionalId, notification);
+		CameLog.setLog(TAG, "AlarmBroadcastやってきました!");
+
+		/** 現在時間を取得する */
+		long nowTime = System.currentTimeMillis();
+		CameLog.setLog(TAG, "現在時間は" + nowTime);
+
+		/** Notificationを前回掲出した時間を取り出す */
+		long lastNotificationTime = CamPePref.loadNotificationTime(context);
+		CameLog.setLog(TAG, "Notificationを前回掲出した時間は" + lastNotificationTime);
+
+		/** 現在起動しているか否かを確認する */
+
+		String workStatus = CamPePref.loadWorkStatus(context);
+
+		/** 前回よりも掲出間隔が過ぎていて、かつ、現在アプリが起動中でないならばNotificationを出す */
+		if ((nowTime > (lastNotificationTime + NOTIFICATION_INTERVAL_TIME)
+				|| lastNotificationTime == -1) && (workStatus.equals("notWork") || workStatus.equals("notFound"))) {
+
+			CameLog.setLog(TAG, "前回よりも掲出間隔が過ぎているのでNotificationを出します!");
+
+			alarmReceiverContext = context;
+			notificationProvisionalId = receivedIntent.getIntExtra(
+					"notificationId", 0);
+			NotificationManager myNotification = (NotificationManager) context
+					.getSystemService(Context.NOTIFICATION_SERVICE);
+			Notification notification = prepareNotification();
+			myNotification.notify(notificationProvisionalId, notification);
+
+			/** 今回notificationを出した時間を次回に備えて記録しておく。 */
+			CamPePref.saveNotificationTime(context);
+		} else if (!((nowTime + NOTIFICATION_INTERVAL_TIME) > lastNotificationTime)
+				|| lastNotificationTime != -1) {
+			CameLog.setLog(TAG, "前回よりもNotificationの掲出間隔が過ぎていないので何もしません。");
+		}
 	}
 
 	private Notification prepareNotification() {
@@ -63,17 +93,17 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 				.setTicker(bodyMsg01 + bodyMsg02 + SpeciesName + bodyMsg03)
 				.setContentTitle(SpeciesName + hinagataTxt)
 				/** 通知のタイトル下の文字列 */
-				.setContentText(bodyMsg01)
-				.setWhen(System.currentTimeMillis()).setAutoCancel(true)
-				.setDefaults(Notification.DEFAULT_SOUND)
+				.setContentText(bodyMsg01).setWhen(System.currentTimeMillis())
+				.setAutoCancel(true).setDefaults(Notification.DEFAULT_SOUND)
 				.setContentIntent(contentIntent);
 
 		/**
-		 * InboxStyle。
-		 * 詳しくは
-		 * http://dev.classmethod.jp/smartphone/android/android-tips-23-android4-1-notification-style/
+		 * InboxStyle。 詳しくは
+		 * http://dev.classmethod.jp/smartphone/android/android-
+		 * tips-23-android4-1-notification-style/
 		 */
-		NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle(builder);
+		NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle(
+				builder);
 		inboxStyle.setBigContentTitle(SpeciesName + hinagataTxt);
 		inboxStyle.addLine(" ");
 		inboxStyle.addLine(bodyMsg01);

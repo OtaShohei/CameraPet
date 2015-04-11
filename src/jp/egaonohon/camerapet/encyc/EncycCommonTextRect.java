@@ -140,5 +140,6 @@ public class EncycCommonTextRect {
 			int contentsFieldWidth, int contentsFieldHeight, String nowPetTxt) {
 
 	}
+	
 
 }

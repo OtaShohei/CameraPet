@@ -35,6 +35,9 @@ public abstract class CamPeItem {
 	/** 衝突判定用のRectF。ここをstaticにするとペットかエサどちらか先にRectに数値をセットした方が確保してしまうので要注意。 */
 	protected RectF rectF;
 
+	/** 何かとの衝突回数カウント */
+	protected int hitCnt;
+
 	/**
 	 * ゲーム登場Item抽象クラスのコンストラクタ。
 	 *
@@ -61,6 +64,9 @@ public abstract class CamPeItem {
 	/** ItemのCanvasへの描き込みを司る抽象クラス */
 	public abstract void draw(Canvas canvas);
 
+	/** 何かと衝突したら動作するメソッド。GameSurfaceViewから呼び出す。基本的には移動方向を反転させる。 */
+	public abstract void returnAfterKrush();
+
 	public int getWidth() {
 		return itemWidth;
 	}
@@ -85,5 +91,13 @@ public abstract class CamPeItem {
 	/** CamPeItemのThreadを停止するメソッド */
 	public void stopCamPeItemThread() {
 		camPeItemThread = null;
+	}
+
+	public int getHitCnt() {
+		return hitCnt;
+	}
+
+	public void setHitCnt(int hitCnt) {
+		this.hitCnt = hitCnt;
 	}
 }
