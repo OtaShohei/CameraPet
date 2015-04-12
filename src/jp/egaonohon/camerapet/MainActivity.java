@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -125,6 +126,13 @@ public class MainActivity extends Activity {
 		/** NotificationManager用に、現在起動中である旨、プリファレンスに登録 */
 		CamPePref.saveOperationStatus(this);
 
+		// /** ツイート用の子画面は非表示にしておく */
+		// tweetpop.setVisibility(View.GONE);
+		// /** コールバック用文字列取得 */
+		// mTwitter = TwitterUtils.getTwitterInstance(this);
+		// /** 利用ユーザが削除できない文字列を後ろに追加。不要な場合は空にしておくか削除して下さい。 */
+		// sUrl = " http://003sh.ou-net.com/";
+
 		// /** 一般的なリクエストを行う */
 		// AdRequest adRequest = new AdRequest.Builder().build();
 
@@ -134,6 +142,8 @@ public class MainActivity extends Activity {
 		.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
 		/** Nexus */
 		.addTestDevice("9F62663AFEF7E4EC5B3F231A4AB93A9C")
+		/** Motorola */
+		.addTestDevice("F8ACFF2BF5F49E1CD65848BA4BC6E0AD")
 		/** 広告対象を女性に */
 		.setGender(AdRequest.GENDER_FEMALE).build();
 
@@ -168,7 +178,6 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		// AcSensor.Inst().onPause();// 中断時にセンサーを止める
 		/** BGMの一時停止 */
 		mp.pause();
 		/** Admobの一時停止 */
@@ -234,9 +243,33 @@ public class MainActivity extends Activity {
 		/** Twitterから戻ってくることを示す */
 		returnTwitter = true;
 
-		/** 現在のペットの種類名を取得して、Twitterへ投稿実行 */
+		/** スクリーンショットを撮る */
+		bitmap1 = getScreenBitmap(msv);
+		CameLog.setLog(TAG, bitmap1.hashCode() + "");
+
+//		/** ツイッター写真はまだ消せない旨プリファレンスに登録 */
+//		CamPePref.saveTwitterPhDeleteOK(this, false);
+
+		/** ツイッター投稿メソッドを呼び出し */
 		SnsBtn.goTwitter(this, GameSurfaceView.getSpeciesName());
 	}
+
+	public Bitmap getScreenBitmap(View view) {
+		return getViewBitmap(view.getRootView());
+	}
+
+	public Bitmap getViewBitmap(View view) {
+		view.setDrawingCacheEnabled(true);
+		Bitmap cache = view.getDrawingCache();
+		if (cache == null) {
+			return null;
+		}
+		Bitmap bitmap = Bitmap.createBitmap(cache);
+		view.setDrawingCacheEnabled(false);
+		return bitmap;
+	}
+
+	Bitmap bitmap1;
 
 	/**
 	 * カメラ機能呼び出しメソッド。

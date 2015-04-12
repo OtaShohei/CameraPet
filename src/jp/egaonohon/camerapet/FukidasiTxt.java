@@ -27,7 +27,12 @@ public class FukidasiTxt {
 			R.string.pet_message_generic004, R.string.pet_message_generic005,
 			R.string.pet_message_generic006, R.string.pet_message_generic007,
 			R.string.pet_message_generic008, R.string.pet_message_generic009,
-			R.string.pet_message_generic010 };
+			R.string.pet_message_generic010, R.string.pet_message_generic011,
+			R.string.pet_message_generic012, R.string.pet_message_generic013,
+			R.string.pet_message_generic014, R.string.pet_message_generic015,
+			R.string.pet_message_generic016, R.string.pet_message_generic017,
+			R.string.pet_message_generic018, R.string.pet_message_generic019,
+			R.string.pet_message_generic020, R.string.pet_message_generic021, };
 
 	/** 吹き出し発行時のイベント:ペットが触られた時。 */
 	static int[] touchedMsg = { R.string.pet_message_touch001,

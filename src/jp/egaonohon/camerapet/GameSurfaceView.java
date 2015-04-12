@@ -2,7 +2,6 @@ package jp.egaonohon.camerapet;
 
 import java.util.ArrayList;
 import java.util.Random;
-
 import jp.egaonohon.camerapet.pet.AbstractPet;
 import android.content.Context;
 import android.content.res.Resources;
@@ -21,7 +20,6 @@ import android.view.GestureDetector.OnGestureListener;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
 
 /**
  * ゲーム画面の動作を司るSurfaceViewのクラス。
@@ -286,6 +284,9 @@ public class GameSurfaceView extends SurfaceView implements
 					/** レベルアップ前後のペット種別名ごとにペットステイタスを司るプレファレンスを変更しておく */
 					CamPePref.savePetModelNumber(context, beforePetModelNumber,
 							updatedPetModelNumber);
+					/** SNS投稿や写真撮影によるレベルアップに備えて現在のペットModelNumberを取得し確保 */
+					CamPePref.savePetModelNumberForUnexpectedVersionUp(context,
+							myPet.getPetModelNumber());
 
 					myPet.talk(this, pet_message_levelup);
 					CameLog.setLog(TAG, "ペットがレベルアップ!!");
@@ -452,6 +453,8 @@ public class GameSurfaceView extends SurfaceView implements
 			EsakokutiCnt = 0;
 			/** 経験値をアップし終えたので、Booleanを初期状態に戻す */
 			MainActivity.setReturnTwitter(false);
+//			/** ツイッター用写真の削除許可を与える */
+//			CamPePref.saveTwitterPhDeleteOK(context, true);
 		}
 
 		CameLog.setLog(TAG, "プリファレンスから経験値取得に成功@onCreate");
@@ -488,9 +491,6 @@ public class GameSurfaceView extends SurfaceView implements
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
-		/** SNS投稿や写真撮影によるレベルアップに備えて現在のペットModelNumberを取得し確保 */
-		CamPePref.savePetModelNumberForUnexpectedVersionUp(context,
-				myPet.getPetModelNumber());
 
 		/** 起動していたペット種別名をプリファレンスに保存 */
 		CamPePref.savePetSpeciesName(context, speciesName);
@@ -944,4 +944,5 @@ public class GameSurfaceView extends SurfaceView implements
 	public static void setFlickOk(boolean flickOk) {
 		GameSurfaceView.flickOk = flickOk;
 	}
+
 }
