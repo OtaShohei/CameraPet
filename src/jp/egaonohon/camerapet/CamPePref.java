@@ -33,8 +33,8 @@ public class CamPePref {
 				+ "notFirst" + "を登録");
 	}
 
-	/** 現在起動中である旨プリファレンスに保存する */
-	public static void saveOperationStatus(Context context) {
+	/** MainActivityが現在起動中である旨プリファレンスに保存する */
+	public static void saveMainActivityOperationStatus(Context context) {
 		/** プリファレンスの準備 */
 		SharedPreferences pref = context.getSharedPreferences("WorkStatus",
 				Context.MODE_PRIVATE);
@@ -51,8 +51,8 @@ public class CamPePref {
 				+ "operation" + "を登録");
 	}
 
-	/** 現在起動していない旨、Activityが破棄される直前にプリファレンスに保存する */
-	public static void saveNotWorkStatus(Context context) {
+	/** MainActivityが現在起動していない旨、Activityが破棄される直前にプリファレンスに保存する */
+	public static void saveMainActivityNotWorkStatus(Context context) {
 		/** プリファレンスの準備 */
 		SharedPreferences pref = context.getSharedPreferences("WorkStatus",
 				Context.MODE_PRIVATE);
@@ -69,8 +69,8 @@ public class CamPePref {
 				+ "notWork" + "を登録");
 	}
 
-	/** 現在起動しているか否かを確認するステイタス情報をプリファレンスから取り出す。登録されていなければnotFoundを返す */
-	public static String loadWorkStatus(Context context) {
+	/** MainActivityが現在起動しているか否かを確認するステイタス情報をプリファレンスから取り出す。登録されていなければnotFoundを返す */
+	public static String loadMainActivityWorkStatus(Context context) {
 
 		/** プリファレンスの準備 */
 		SharedPreferences pref = context.getSharedPreferences("WorkStatus",
@@ -79,6 +79,114 @@ public class CamPePref {
 		String workStatus = pref.getString("WorkStatus", "notFound");
 
 		CameLog.setLog(TAG, "在起動しているか否かを確認するステイタス情報として" + workStatus + "を取得");
+
+		/** "startStatus" というキーで保存されている値を読み出す */
+		return workStatus;
+	}
+
+	/** MainActivity以外のいずれかが現在起動中である旨プリファレンスに保存する */
+	public static void saveOther01ActivityOperationStatus(Context context) {
+		/** プリファレンスの準備 */
+		SharedPreferences pref = context.getSharedPreferences("Other01ActivityWorkStatus",
+				Context.MODE_PRIVATE);
+
+		/** プリファレンスに書き込むためのEditorオブジェクト取得 */
+		Editor editor = pref.edit();
+
+		/** "startStatus" というキーでnotFirstを登録 */
+		editor.putString("WorkStatus", "operation");
+
+		/** 書き込みの確定（実際にファイルに書き込む） */
+		editor.commit();
+		CameLog.setLog(TAG, "Other01ActivityWorkStatusにて" + "WorkStatus" + "キーで"
+				+ "operation" + "を登録");
+	}
+
+	/** MainActivity以外のいずれかが現在起動していない旨、そのActivityが破棄される直前にプリファレンスに保存する */
+	public static void saveOther01ActivityNotWorkStatus(Context context) {
+		/** プリファレンスの準備 */
+		SharedPreferences pref = context.getSharedPreferences("Other01ActivityWorkStatus",
+				Context.MODE_PRIVATE);
+
+		/** プリファレンスに書き込むためのEditorオブジェクト取得 */
+		Editor editor = pref.edit();
+
+		/** "startStatus" というキーでnotFirstを登録 */
+		editor.putString("WorkStatus", "notWork");
+
+		/** 書き込みの確定（実際にファイルに書き込む） */
+		editor.commit();
+		CameLog.setLog(TAG, "Other01ActivityWorkStatusにて" + "WorkStatus" + "キーで"
+				+ "notWork" + "を登録");
+	}
+
+	/**
+	 * MainActivity以外のいずれかが現在起動しているか否かを確認するステイタス情報をプリファレンスから取り出す。
+	 * 登録されていなければnotFoundを返す
+	 */
+	public static String loadOther01ActivityWorkStatus(Context context) {
+
+		/** プリファレンスの準備 */
+		SharedPreferences pref = context.getSharedPreferences("Other01ActivityWorkStatus",
+				Context.MODE_PRIVATE);
+
+		String workStatus = pref.getString("WorkStatus", "notFound");
+
+		CameLog.setLog(TAG, "MainActivity以外のいずれか（01）が現在起動しているか否かを確認するステイタス情報として" + workStatus + "を取得");
+
+		/** "startStatus" というキーで保存されている値を読み出す */
+		return workStatus;
+	}
+
+	/** MainActivity以外のいずれかが現在起動中である旨プリファレンスに保存する */
+	public static void saveOther02ActivityOperationStatus(Context context) {
+		/** プリファレンスの準備 */
+		SharedPreferences pref = context.getSharedPreferences("Other02ActivityWorkStatus",
+				Context.MODE_PRIVATE);
+
+		/** プリファレンスに書き込むためのEditorオブジェクト取得 */
+		Editor editor = pref.edit();
+
+		/** "startStatus" というキーでnotFirstを登録 */
+		editor.putString("WorkStatus", "operation");
+
+		/** 書き込みの確定（実際にファイルに書き込む） */
+		editor.commit();
+		CameLog.setLog(TAG, "Other02ActivityWorkStatusにて" + "WorkStatus" + "キーで"
+				+ "operation" + "を登録");
+	}
+
+	/** MainActivity以外のいずれかが現在起動していない旨、そのActivityが破棄される直前にプリファレンスに保存する */
+	public static void saveOther02ActivityNotWorkStatus(Context context) {
+		/** プリファレンスの準備 */
+		SharedPreferences pref = context.getSharedPreferences("Other02ActivityWorkStatus",
+				Context.MODE_PRIVATE);
+
+		/** プリファレンスに書き込むためのEditorオブジェクト取得 */
+		Editor editor = pref.edit();
+
+		/** "startStatus" というキーでnotFirstを登録 */
+		editor.putString("WorkStatus", "notWork");
+
+		/** 書き込みの確定（実際にファイルに書き込む） */
+		editor.commit();
+		CameLog.setLog(TAG, "Other02ActivityWorkStatusにて" + "WorkStatus" + "キーで"
+				+ "notWork" + "を登録");
+	}
+
+	/**
+	 * MainActivity以外のいずれかが現在起動しているか否かを確認するステイタス情報をプリファレンスから取り出す。
+	 * 登録されていなければnotFoundを返す
+	 */
+	public static String loadOther02ActivityWorkStatus(Context context) {
+
+		/** プリファレンスの準備 */
+		SharedPreferences pref = context.getSharedPreferences("Other02ActivityWorkStatus",
+				Context.MODE_PRIVATE);
+
+		String workStatus = pref.getString("WorkStatus", "notFound");
+
+		CameLog.setLog(TAG, "MainActivity以外のいずれか（02）が現在起動しているか否かを確認するステイタス情報として" + workStatus + "を取得");
 
 		/** "startStatus" というキーで保存されている値を読み出す */
 		return workStatus;
@@ -100,7 +208,8 @@ public class CamPePref {
 		/** "notificationSubmitTime" というキーでnotificationSubmitTimeを登録 */
 		editor.putLong("notificationSubmitTime", notificationSubmitTime);
 
-		CameLog.setLog(TAG, "Notificationを掲出した時間" + notificationSubmitTime + "を登録しました");
+		CameLog.setLog(TAG, "Notificationを掲出した時間" + notificationSubmitTime
+				+ "を登録しました");
 
 		/** 書き込みの確定（実際にファイルに書き込む） */
 		editor.commit();
@@ -312,42 +421,43 @@ public class CamPePref {
 		/** 書き込みの確定（実際にファイルに書き込む） */
 		editor.commit();
 	}
-	
-//	/** ツイッター用の写真を削除していいかどうかをプリファレンスに保存する */
-//	public static void saveTwitterPhDeleteOK(Context context, Boolean twitterPhDeleteOk) {
-//
-//		/** プリファレンスの準備 */
-//		SharedPreferences pref = context.getSharedPreferences(
-//				"twitterPhDeleteOK", Context.MODE_PRIVATE);
-//
-//		/** プリファレンスに書き込むためのEditorオブジェクト取得 */
-//		Editor editor = pref.edit();
-//
-//		/** "twitterPhDeleteOK" というキーでtwitterPhDeleteOkを登録 */
-//		editor.putBoolean("twitterPhDeleteOK", twitterPhDeleteOk);
-//
-//		/** 書き込みの確定（実際にファイルに書き込む） */
-//		editor.commit();
-//	}
-//
-//	/** ツイッター用の写真を削除していいかどうかをプリファレンスから取り出す */
-//	public static boolean loadTwitterPhDeleteOK(Context context) {
-//
-//		CameLog.setLog(TAG, "ツイッター用の写真を削除していいかどうかで用いているcontextの状態は" + context);
-//		
-//		/** プリファレンスの準備 */
-//		SharedPreferences pref = context.getSharedPreferences(
-//				"twitterPhDeleteOK", Context.MODE_PRIVATE);
-//
-//		/** "twitterPhDeleteOK" というキーで保存されている値を読み出す */
-//		boolean twitterPhDeleteOK = pref.getBoolean("twitterPhDeleteOK", false);
-//
-//		CameLog.setLog(TAG, "ツイッター用の写真を削除していいかどうか" + twitterPhDeleteOK
-//				+ "をプリファレンスから取得");
-//
-//		/** 3時間以内に食べたエサの数をを戻す */
-//		return twitterPhDeleteOK;
-//	}
+
+	// /** ツイッター用の写真を削除していいかどうかをプリファレンスに保存する */
+	// public static void saveTwitterPhDeleteOK(Context context, Boolean
+	// twitterPhDeleteOk) {
+	//
+	// /** プリファレンスの準備 */
+	// SharedPreferences pref = context.getSharedPreferences(
+	// "twitterPhDeleteOK", Context.MODE_PRIVATE);
+	//
+	// /** プリファレンスに書き込むためのEditorオブジェクト取得 */
+	// Editor editor = pref.edit();
+	//
+	// /** "twitterPhDeleteOK" というキーでtwitterPhDeleteOkを登録 */
+	// editor.putBoolean("twitterPhDeleteOK", twitterPhDeleteOk);
+	//
+	// /** 書き込みの確定（実際にファイルに書き込む） */
+	// editor.commit();
+	// }
+	//
+	// /** ツイッター用の写真を削除していいかどうかをプリファレンスから取り出す */
+	// public static boolean loadTwitterPhDeleteOK(Context context) {
+	//
+	// CameLog.setLog(TAG, "ツイッター用の写真を削除していいかどうかで用いているcontextの状態は" + context);
+	//
+	// /** プリファレンスの準備 */
+	// SharedPreferences pref = context.getSharedPreferences(
+	// "twitterPhDeleteOK", Context.MODE_PRIVATE);
+	//
+	// /** "twitterPhDeleteOK" というキーで保存されている値を読み出す */
+	// boolean twitterPhDeleteOK = pref.getBoolean("twitterPhDeleteOK", false);
+	//
+	// CameLog.setLog(TAG, "ツイッター用の写真を削除していいかどうか" + twitterPhDeleteOK
+	// + "をプリファレンスから取得");
+	//
+	// /** 3時間以内に食べたエサの数をを戻す */
+	// return twitterPhDeleteOK;
+	// }
 
 	/** 3時間以内に食べたエサの数を現在時間とともにプリファレンスに保存する */
 	public static void save3hoursEatCnt(Context context, int nowEatCnt) {
@@ -482,6 +592,39 @@ public class CamPePref {
 
 		// 書き込みの確定（実際にファイルに書き込む）
 		editor.commit();
+	}
+
+	/** 未生成残りエサ数をプリファレンスに保存する */
+	public static void saveNextMakeEsaCnt(Context context, int nextMakeEsaCnt) {
+
+		/** プリファレンスの準備 */
+		SharedPreferences pref = context.getSharedPreferences("nextMakeEsaCnt",
+				Context.MODE_PRIVATE);
+
+		/** プリファレンスに書き込むためのEditorオブジェクト取得 */
+		Editor editor = pref.edit();
+
+		/** "nextMakeEsaCnt" というキーでnowEatCntを登録 */
+		editor.putInt("nextMakeEsaCnt", nextMakeEsaCnt);
+
+		CameLog.setLog(TAG, "未生成残りエサ数" + nextMakeEsaCnt + "個をプリファレンスにも保存");
+
+		/** 書き込みの確定（実際にファイルに書き込む） */
+		editor.commit();
+	}
+
+	/** 未生成残りエサ数をプリファレンスから取り出す。登録されていなければ -1 を返す */
+	public static int loadNextMakeEsaCnt(Context context) {
+		/** プリファレンスの準備 */
+		SharedPreferences pref = context.getSharedPreferences("nextMakeEsaCnt",
+				Context.MODE_PRIVATE);
+
+		int nextMakeEsaCnt = pref.getInt("nextMakeEsaCnt", -1);
+
+		CameLog.setLog(TAG, "未生成残りエサ数" + nextMakeEsaCnt + "個をプリファレンスから取得");
+
+		/** "nextMakeEsaCnt" というキーで保存されている値を返す */
+		return nextMakeEsaCnt;
 	}
 
 	/** 【直近】撮影回数のみをプリファレンスに保存する */

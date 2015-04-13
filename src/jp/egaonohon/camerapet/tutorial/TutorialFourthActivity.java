@@ -4,8 +4,10 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import jp.egaonohon.camerapet.App;
+import jp.egaonohon.camerapet.CamPePref;
 import jp.egaonohon.camerapet.CameLog;
 import jp.egaonohon.camerapet.MainActivity;
+import jp.egaonohon.camerapet.PetAlarmBroadcastReceiver;
 import jp.egaonohon.camerapet.R;
 import jp.egaonohon.camerapet.R.layout;
 import android.app.Activity;
@@ -27,16 +29,11 @@ public class TutorialFourthActivity extends Activity {
 	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO 自動生成されたメソッド・スタブ
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tutorial_fourth);
 		
-//		/** BGMインスタンス生成し準備 */
-//		tutorialBgm = MediaPlayer.create(this, R.raw.honwaka);
-//		
-//		/** BGMスタート */
-//		tutorialBgm.setLooping(true);
-//		tutorialBgm.start(); // SEを鳴らす
+		/** NotificationManager用に、現在起動中である旨、プリファレンスに登録 */
+		CamPePref.saveOther02ActivityOperationStatus(this);
 		
 		/** 起動したクラスをLogで確認 */
 		CameLog.setLog(TAG, "onCreate");
@@ -126,5 +123,18 @@ public class TutorialFourthActivity extends Activity {
 				.getTracker(App.TrackerName.APP_TRACKER);
 		t.setScreenName(this.getClass().getSimpleName());
 		t.send(new HitBuilders.AppViewBuilder().build());
+	}
+	
+	/* (非 Javadoc)
+	 * @see android.app.Activity#onStop()
+	 */
+	@Override
+	protected void onStop() {
+		super.onStop();
+		/** NotificationManager用に、現在起動中でない旨、プリファレンスに登録 */
+		CamPePref.saveOther02ActivityNotWorkStatus(this);
+		
+		/** AlarmManager & NotificationManagerを動かすメソッドを呼び出す */
+		PetAlarmBroadcastReceiver.set(this);
 	}
 }

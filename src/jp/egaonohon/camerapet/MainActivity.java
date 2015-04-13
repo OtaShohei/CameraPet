@@ -123,9 +123,6 @@ public class MainActivity extends Activity {
 		/** adView を追加する */
 		layout.addView(adView);
 
-		/** NotificationManager用に、現在起動中である旨、プリファレンスに登録 */
-		CamPePref.saveOperationStatus(this);
-
 		// /** ツイート用の子画面は非表示にしておく */
 		// tweetpop.setVisibility(View.GONE);
 		// /** コールバック用文字列取得 */
@@ -170,6 +167,10 @@ public class MainActivity extends Activity {
 			mp.pause();
 			bgmOn = false;
 		}
+		
+		/** NotificationManager用に、現在起動中である旨、プリファレンスに登録 */
+		CamPePref.saveMainActivityOperationStatus(this);
+		
 		/** Admobの一時停止 */
 		adView.resume();
 	}
@@ -189,10 +190,10 @@ public class MainActivity extends Activity {
 	protected void onStop() {
 		super.onStop();
 		/** NotificationManager用に、現在起動中でない旨、プリファレンスに登録 */
-		CamPePref.saveNotWorkStatus(this);
+		CamPePref.saveMainActivityNotWorkStatus(this);
 
 		/** AlarmManager & NotificationManagerを動かすメソッドを呼び出す */
-		setPetAlarmBroadcastReceiver();
+		PetAlarmBroadcastReceiver.set(this);
 		CameLog.setLog(TAG, "onStop");
 	}
 
@@ -381,7 +382,7 @@ public class MainActivity extends Activity {
 	 * アプリをしばらく起動していないと、「おなかがすいた！」とペットがユーザーに4日後に通知を出すメソッド。
 	 * PetAlarmBroadcastReceiverクラスと連携する。 本番時には、
 	 */
-	public void setPetAlarmBroadcastReceiver() {
+	public static void setPetAlarmBroadcastReceiver() {
 
 		// TimePicker tPicker;
 		int notificationId = 0;
@@ -405,13 +406,13 @@ public class MainActivity extends Activity {
 		// int kouhoTime = new Integer(kiridasi).intValue();
 		// String henkanTimeStr = s.replaceAll("__HH__","sasuke");
 
-		Intent bootIntent = new Intent(MainActivity.this,
+		Intent bootIntent = new Intent(context,
 				AlarmBroadcastReceiver.class);
 		bootIntent.putExtra("notificationId", notificationId);
-		alarmIntent = PendingIntent.getBroadcast(MainActivity.this, 0,
+		alarmIntent = PendingIntent.getBroadcast(context, 0,
 				bootIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-		AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
 		alarm.set(AlarmManager.RTC_WAKEUP, fourDayAfter, alarmIntent);
 		CameLog.setLog(TAG, "1分後" + fourDayAfter + "に通知セット完了");

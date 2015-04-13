@@ -10,8 +10,10 @@ import java.util.logging.Logger;
 
 import jp.basicinc.gamefeat.android.sdk.controller.GameFeatAppController;
 import jp.egaonohon.camerapet.App;
+import jp.egaonohon.camerapet.CamPePref;
 import jp.egaonohon.camerapet.CameLog;
 import jp.egaonohon.camerapet.MainActivity;
+import jp.egaonohon.camerapet.PetAlarmBroadcastReceiver;
 import jp.egaonohon.camerapet.R;
 import android.app.Activity;
 import android.content.Context;
@@ -48,7 +50,7 @@ public class Encyc01Activity extends Activity {
 
 	/*
 	 * (非 Javadoc)
-	 *
+	 * 
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
 	@Override
@@ -70,6 +72,9 @@ public class Encyc01Activity extends Activity {
 			bgmOn = false;
 			CameLog.setLog(TAG, "bgmOnが" + bgmOn + "なのでBGMは鳴らさない");
 		}
+
+		/** NotificationManager用に、現在起動中である旨、プリファレンスに登録 */
+		CamPePref.saveOther01ActivityOperationStatus(this);
 
 		/** 属性 android:id="@+id/adMobSpace" が与えられているものとしてLinearLayout をルックアップする */
 		LinearLayout layout = (LinearLayout) findViewById(R.id.adMobSpace);
@@ -139,7 +144,7 @@ public class Encyc01Activity extends Activity {
 
 	/*
 	 * (非 Javadoc)
-	 *
+	 * 
 	 * @see android.app.Activity#onResume()
 	 */
 	@Override
@@ -149,7 +154,7 @@ public class Encyc01Activity extends Activity {
 
 	/*
 	 * (非 Javadoc)
-	 *
+	 * 
 	 * @see android.app.Activity#onPause()
 	 */
 	@Override
@@ -249,7 +254,7 @@ public class Encyc01Activity extends Activity {
 
 	/*
 	 * (非 Javadoc)
-	 *
+	 * 
 	 * @see android.app.Activity#onStart()
 	 */
 	@Override
@@ -300,4 +305,18 @@ public class Encyc01Activity extends Activity {
 		}
 	}
 
+	/*
+	 * (非 Javadoc)
+	 * 
+	 * @see android.app.Activity#onStop()
+	 */
+	@Override
+	protected void onStop() {
+		super.onStop();
+		/** NotificationManager用に、現在起動中でない旨、プリファレンスに登録 */
+		CamPePref.saveOther01ActivityNotWorkStatus(this);
+		
+		/** AlarmManager & NotificationManagerを動かすメソッドを呼び出す */
+		PetAlarmBroadcastReceiver.set(this);
+	}
 }

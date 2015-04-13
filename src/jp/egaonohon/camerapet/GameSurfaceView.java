@@ -2,7 +2,9 @@ package jp.egaonohon.camerapet;
 
 import java.util.ArrayList;
 import java.util.Random;
+
 import jp.egaonohon.camerapet.pet.AbstractPet;
+import android.R.integer;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -70,9 +72,11 @@ public class GameSurfaceView extends SurfaceView implements
 	/** 餌移動加速度乱数最大値 */
 	private int esaKasokudoMax = 4;
 	/** インストール直後エサ生成数初期値 */
-	private int esaDefaultMakeCnt = 30;
+	private int esaDefaultMakeCnt = 5;
 	/** 前回エサを作った時間 */
 	private long lastEsaMakeTime;
+	/** まだ生成していない残りエサ数（次回画面表示時用） */
+	private int nextMakeEsaCnt;
 
 	/** プリファレンスから取得した3時間以内エサ獲得成功数 */
 	private int gettedThreeHoursEatCnt;
@@ -360,21 +364,35 @@ public class GameSurfaceView extends SurfaceView implements
 		try {
 			/** 直近撮影回数をプリファレンスから取得 */
 			esaCnt = CamPePref.loadNowShotCnt(context);
+
+			if (esaCnt == 0) {
+				/** 直近撮影回数が0ならば、次回用として保存されたエサ数がある可能性があるので取り出しを試みる */
+				nextMakeEsaCnt = CamPePref.loadNextMakeEsaCnt(context);
+			}
+			/** 直近撮影回数を取り出し終えたので直近撮影回数を0にリセット */
+			CamPePref.saveNowShotCnt(context, 0);
+
 		} catch (Exception e1) {
 			e1.printStackTrace();
 			CameLog.setLog(TAG, "直近撮影回数をプリファレンスから取得時に例外が発生しました。");
 		}
 		CameLog.setLog(TAG, "プリファレンスから次の枚数を取り出した→" + esaCnt);
 
-		/** 落下予定のエサの数を直近撮影回数を元に設定 */
-		nowFalldownEsaCnt = 10 * esaCnt;
-
-		/** もしインストール直後などで直近撮影枚数がない場合はデフォルト値5枚をセット。プログレスバーの最大値も50枚でセット */
-		if (esaCnt == -1) {
-			esaCnt = 5;
+		/** もしインストール直後などで直近撮影枚数がない場合、あるいは、次回用として保存されたエサ数が0ならばデフォルト値5枚をセット。 */
+		if (esaCnt == -1 || (esaCnt == 0 && nextMakeEsaCnt == 0)) {
 			nowFalldownEsaCnt = esaDefaultMakeCnt;
+		} else if (nextMakeEsaCnt != 0) {
+			/** 次回用として保存されたエサ数があるならばその数だけエサを生成する */
+			nowFalldownEsaCnt = nextMakeEsaCnt;
+		} else {
+			/** それ以外の時は、落下予定のエサの数を直近撮影回数を元に設定 */
+			nowFalldownEsaCnt = 10 * esaCnt;
 		}
-
+		
+		/** さらに、Facebookやツイッターから戻ってきた時にはエサ生成数を更に20増やす */
+		if (MainActivity.isReturnFb() || MainActivity.isReturnTwitter()) {
+			nowFalldownEsaCnt += 20;
+		}
 		// CameLog.setLog(TAG, "直近撮影枚数を取得。枚数は" + esaCnt);
 
 		/** レベル判定に基づきペット作成 */
@@ -427,7 +445,7 @@ public class GameSurfaceView extends SurfaceView implements
 			CameLog.setLog(TAG, "プリファレンスから経験値取得に失敗@onCreate");
 		}
 
-		/** facebookから戻ってきた直後なら、経験値を20Upする */
+		/** facebookから戻ってきた直後なら経験値を20Up */
 		if (MainActivity.isReturnFb()) {
 			gettedtotalEXP += 20;
 			CamPePref.saveTotalExp(context, gettedtotalEXP);
@@ -441,7 +459,7 @@ public class GameSurfaceView extends SurfaceView implements
 			MainActivity.setReturnFb(false);
 		}
 
-		/** Twitterから戻ってきた直後なら、経験値を20Upする */
+		/** Twitterから戻ってきた直後なら経験値を20Up */
 		if (MainActivity.isReturnTwitter()) {
 			gettedtotalEXP += 20;
 			CamPePref.saveTotalExp(context, gettedtotalEXP);
@@ -453,8 +471,8 @@ public class GameSurfaceView extends SurfaceView implements
 			EsakokutiCnt = 0;
 			/** 経験値をアップし終えたので、Booleanを初期状態に戻す */
 			MainActivity.setReturnTwitter(false);
-//			/** ツイッター用写真の削除許可を与える */
-//			CamPePref.saveTwitterPhDeleteOK(context, true);
+			// /** ツイッター用写真の削除許可を与える */
+			// CamPePref.saveTwitterPhDeleteOK(context, true);
 		}
 
 		CameLog.setLog(TAG, "プリファレンスから経験値取得に成功@onCreate");
@@ -494,6 +512,7 @@ public class GameSurfaceView extends SurfaceView implements
 
 		/** 起動していたペット種別名をプリファレンスに保存 */
 		CamPePref.savePetSpeciesName(context, speciesName);
+		
 		/** 落下させたエサ数を初期化する */
 		throwedEsa = 0;
 		/** 落下予定のエサ数も初期化する */
@@ -767,6 +786,12 @@ public class GameSurfaceView extends SurfaceView implements
 								* (new Random().nextInt(esaKasokudoMax) + 1)));
 				/** 落下させたエサの数をインクリメント */
 				throwedEsa++;
+				
+				/** 未生成残りエサ数を保存（次回用） */
+				nextMakeEsaCnt = nowFalldownEsaCnt - throwedEsa;
+//				CameLog.setLog(TAG, "終了直前の今回降ってくる予定のエサ総数は" + nowFalldownEsaCnt +"。1ゲームですでに落下させたエサ数は" + throwedEsa);
+				CamPePref.saveNextMakeEsaCnt(context, nextMakeEsaCnt);
+				CameLog.setLog(TAG, "未生成残りエサ数" + nextMakeEsaCnt +"を次回用に保存");
 			}
 			CameLog.setLog(TAG, "複数写真使用で餌作成");
 		}

@@ -67,7 +67,7 @@
     <string name="pet_03_comment">冬以外は苦手な犬。外から帰ったらすぐに冷凍庫に入らないと溶けて消えてしまう。触ると冷たくて気持ちいい。</string>
     <string name="pet_message_satiety">お腹いっぱい！ありがと!</string>
     <string name="pet_message_levelup">レベルアップして変身できたよ!</string>
-    <string name="pet_message_thanksSNS">僕の成長ぶりをみんなに知らせてくれて嬉しいワン!</string>
+    <string name="pet_message_thanksSNS">僕の成長ぶりをみんなに知らせてくれて嬉しいワン!　経験値と残りエサ数が20も増えたよ!</string>
     <string name="pet_message_generic">ちょっと思った。飛行機みたいに速く飛びたいなって。</string>
     <string name="pet_species_name_title">種類 :</string>
     <string name="number_shooting">撮影回数は</string>

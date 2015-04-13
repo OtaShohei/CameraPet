@@ -4,8 +4,10 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import jp.egaonohon.camerapet.App;
+import jp.egaonohon.camerapet.CamPePref;
 import jp.egaonohon.camerapet.CameLog;
 import jp.egaonohon.camerapet.MainActivity;
+import jp.egaonohon.camerapet.PetAlarmBroadcastReceiver;
 import jp.egaonohon.camerapet.R;
 import jp.egaonohon.camerapet.R.layout;
 import android.app.Activity;
@@ -29,17 +31,12 @@ public class TutorialFirstActivity extends Activity {
 	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO 自動生成されたメソッド・スタブ
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tutorial_first);
 
-		// /** BGMインスタンス生成し準備 */
-		// tutorialBgm = MediaPlayer.create(this, R.raw.honwaka);
-		//
-		// /** BGMスタート */
-		// tutorialBgm.setLooping(true);
-		// tutorialBgm.start(); // SEを鳴らす
-
+		/** NotificationManager用に、現在起動中である旨、プリファレンスに登録 */
+		CamPePref.saveOther01ActivityOperationStatus(this);
+		
 		/** 起動したクラスをLogで確認 */
 		CameLog.setLog(TAG, "onCreate");
 	}
@@ -51,8 +48,22 @@ public class TutorialFirstActivity extends Activity {
 	 */
 	@Override
 	protected void onResume() {
-		// TODO 自動生成されたメソッド・スタブ
 		super.onResume();
+	}
+
+	/*
+	 * (非 Javadoc)
+	 * 
+	 * @see android.app.Activity#onStart()
+	 */
+	@Override
+	protected void onStart() {
+		super.onStart();
+		/** Google Analytics用の記述 */
+		Tracker t = ((App) getApplication())
+				.getTracker(App.TrackerName.APP_TRACKER);
+		t.setScreenName(this.getClass().getSimpleName());
+		t.send(new HitBuilders.AppViewBuilder().build());
 	}
 
 	/*
@@ -62,11 +73,7 @@ public class TutorialFirstActivity extends Activity {
 	 */
 	@Override
 	protected void onPause() {
-		// TODO 自動生成されたメソッド・スタブ
 		super.onPause();
-
-		// /** BGMを停止 */
-		// tutorialBgm.stop();
 		finish();
 	}
 
@@ -133,18 +140,16 @@ public class TutorialFirstActivity extends Activity {
 		startActivity(intent);
 	}
 
-	/*
-	 * (非 Javadoc)
-	 * 
-	 * @see android.app.Activity#onStart()
+	/* (非 Javadoc)
+	 * @see android.app.Activity#onStop()
 	 */
 	@Override
-	protected void onStart() {
-		super.onStart();
-		/** Google Analytics用の記述 */
-		Tracker t = ((App) getApplication())
-				.getTracker(App.TrackerName.APP_TRACKER);
-		t.setScreenName(this.getClass().getSimpleName());
-		t.send(new HitBuilders.AppViewBuilder().build());
+	protected void onStop() {
+		super.onStop();
+		/** NotificationManager用に、現在起動中でない旨、プリファレンスに登録 */
+		CamPePref.saveOther01ActivityNotWorkStatus(this);
+		
+		/** AlarmManager & NotificationManagerを動かすメソッドを呼び出す */
+		PetAlarmBroadcastReceiver.set(this);
 	}
 }

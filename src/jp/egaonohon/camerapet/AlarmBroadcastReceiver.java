@@ -43,12 +43,21 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 		CameLog.setLog(TAG, "Notificationを前回掲出した時間は" + lastNotificationTime);
 
 		/** 現在起動しているか否かを確認する */
+		String mainActivityworkStatus = CamPePref
+				.loadMainActivityWorkStatus(context);
+		String other01ActivityworkStatus = CamPePref
+				.loadOther01ActivityWorkStatus(context);
+		String other02ActivityworkStatus = CamPePref
+				.loadOther02ActivityWorkStatus(context);
 
-		String workStatus = CamPePref.loadWorkStatus(context);
-
-		/** 前回よりも掲出間隔が過ぎていて、かつ、現在アプリが起動中でないならばNotificationを出す */
-		if ((nowTime > (lastNotificationTime + NOTIFICATION_INTERVAL_TIME)
-				|| lastNotificationTime == -1) && (workStatus.equals("notWork") || workStatus.equals("notFound"))) {
+		/** 前回よりも掲出間隔が過ぎていて、かつ、アプリのいずれかのActivityが現在起動中でないならばNotificationを出す */
+		if ((nowTime > (lastNotificationTime + NOTIFICATION_INTERVAL_TIME) || lastNotificationTime == -1)
+				&& ((mainActivityworkStatus.equals("notWork") || mainActivityworkStatus
+						.equals("notFound"))
+						&& (other01ActivityworkStatus.equals("notWork") || other01ActivityworkStatus
+								.equals("notFound")) && (other02ActivityworkStatus
+						.equals("notWork") || other02ActivityworkStatus
+						.equals("notFound")))) {
 
 			CameLog.setLog(TAG, "前回よりも掲出間隔が過ぎているのでNotificationを出します!");
 

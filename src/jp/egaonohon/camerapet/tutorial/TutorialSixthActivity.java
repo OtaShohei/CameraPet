@@ -4,8 +4,10 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import jp.egaonohon.camerapet.App;
+import jp.egaonohon.camerapet.CamPePref;
 import jp.egaonohon.camerapet.CameLog;
 import jp.egaonohon.camerapet.MainActivity;
+import jp.egaonohon.camerapet.PetAlarmBroadcastReceiver;
 import jp.egaonohon.camerapet.R;
 import jp.egaonohon.camerapet.R.layout;
 import android.app.Activity;
@@ -15,34 +17,33 @@ import android.os.Bundle;
 import android.view.View;
 
 public class TutorialSixthActivity extends Activity {
-	
+
 	/** BGM用変数 */
 	private static MediaPlayer tutorialBgm;
 
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "TutorialSixthActivity";
-	
-	/* (非 Javadoc)
+
+	/*
+	 * (非 Javadoc)
+	 * 
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO 自動生成されたメソッド・スタブ
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tutorial_sixth);
-		
-//		/** BGMインスタンス生成し準備 */
-//		tutorialBgm = MediaPlayer.create(this, R.raw.honwaka);
-//		
-//		/** BGMスタート */
-//		tutorialBgm.setLooping(true);
-//		tutorialBgm.start(); // SEを鳴らす
-		
+
+		/** NotificationManager用に、現在起動中である旨、プリファレンスに登録 */
+		CamPePref.saveOther02ActivityOperationStatus(this);
+
 		/** 起動したクラスをLogで確認 */
 		CameLog.setLog(TAG, "onCreate");
 	}
 
-	/* (非 Javadoc)
+	/*
+	 * (非 Javadoc)
+	 * 
 	 * @see android.app.Activity#onResume()
 	 */
 	@Override
@@ -50,7 +51,9 @@ public class TutorialSixthActivity extends Activity {
 		super.onResume();
 	}
 
-	/* (非 Javadoc)
+	/*
+	 * (非 Javadoc)
+	 * 
 	 * @see android.app.Activity#onPause()
 	 */
 	@Override
@@ -65,13 +68,15 @@ public class TutorialSixthActivity extends Activity {
 
 	/**
 	 * 戻るボタンメソッド。
+	 * 
 	 * @param v
 	 */
 	public void goBack(View v) {
 		/**
 		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
 		 */
-		Intent intent = new Intent(TutorialSixthActivity.this, TutorialFifthActivity.class);
+		Intent intent = new Intent(TutorialSixthActivity.this,
+				TutorialFifthActivity.class);
 
 		/**
 		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
@@ -81,35 +86,39 @@ public class TutorialSixthActivity extends Activity {
 
 	/**
 	 * 次へボタンメソッド。
+	 * 
 	 * @param v
 	 */
 	public void goNext(View v) {
 		/**
 		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
 		 */
-		Intent intent = new Intent(TutorialSixthActivity.this, TutorialSeventhActivity.class);
+		Intent intent = new Intent(TutorialSixthActivity.this,
+				TutorialSeventhActivity.class);
 
 		/**
 		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
 		 */
 		startActivity(intent);
-	}	
-	
+	}
+
 	/**
 	 * チュートリアルを終えるボタンメソッド。
+	 * 
 	 * @param v
 	 */
 	public void goHome(View v) {
 		/**
 		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
 		 */
-		Intent intent = new Intent(TutorialSixthActivity.this, MainActivity.class);
+		Intent intent = new Intent(TutorialSixthActivity.this,
+				MainActivity.class);
 
 		/**
 		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
 		 */
 		startActivity(intent);
-	}	
+	}
 
 	/*
 	 * (非 Javadoc)
@@ -124,5 +133,20 @@ public class TutorialSixthActivity extends Activity {
 				.getTracker(App.TrackerName.APP_TRACKER);
 		t.setScreenName(this.getClass().getSimpleName());
 		t.send(new HitBuilders.AppViewBuilder().build());
+	}
+
+	/*
+	 * (非 Javadoc)
+	 * 
+	 * @see android.app.Activity#onStop()
+	 */
+	@Override
+	protected void onStop() {
+		super.onStop();
+		/** NotificationManager用に、現在起動中でない旨、プリファレンスに登録 */
+		CamPePref.saveOther02ActivityNotWorkStatus(this);
+		
+		/** AlarmManager & NotificationManagerを動かすメソッドを呼び出す */
+		PetAlarmBroadcastReceiver.set(this);
 	}
 }

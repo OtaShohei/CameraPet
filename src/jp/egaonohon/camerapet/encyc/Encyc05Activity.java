@@ -4,8 +4,10 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import jp.egaonohon.camerapet.App;
+import jp.egaonohon.camerapet.CamPePref;
 import jp.egaonohon.camerapet.CameLog;
 import jp.egaonohon.camerapet.MainActivity;
+import jp.egaonohon.camerapet.PetAlarmBroadcastReceiver;
 import jp.egaonohon.camerapet.R;
 import android.app.Activity;
 import android.content.Intent;
@@ -45,6 +47,9 @@ public class Encyc05Activity extends Activity {
 		} else {
 			bgmOn = false;
 		}
+
+		/** NotificationManager用に、現在起動中である旨、プリファレンスに登録 */
+		CamPePref.saveOther01ActivityOperationStatus(this);
 
 		/** 起動したクラスをLogで確認 */
 		CameLog.setLog(TAG, "onCreate");
@@ -179,5 +184,20 @@ public class Encyc05Activity extends Activity {
 				.getTracker(App.TrackerName.APP_TRACKER);
 		t.setScreenName(this.getClass().getSimpleName());
 		t.send(new HitBuilders.AppViewBuilder().build());
+	}
+
+	/*
+	 * (非 Javadoc)
+	 * 
+	 * @see android.app.Activity#onStop()
+	 */
+	@Override
+	protected void onStop() {
+		super.onStop();
+		/** NotificationManager用に、現在起動中でない旨、プリファレンスに登録 */
+		CamPePref.saveOther01ActivityNotWorkStatus(this);
+		
+		/** AlarmManager & NotificationManagerを動かすメソッドを呼び出す */
+		PetAlarmBroadcastReceiver.set(this);
 	}
 }
