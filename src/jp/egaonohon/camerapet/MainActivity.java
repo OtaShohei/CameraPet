@@ -3,16 +3,10 @@ package jp.egaonohon.camerapet;
 import jp.egaonohon.camerapet.encyc.Encyc01Activity;
 import jp.egaonohon.camerapet.tutorial.TutorialFirstActivity;
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Point;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -44,13 +38,9 @@ public class MainActivity extends Activity {
 
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "MainActivity";
-	/** タブレットにおける不具合調査用にディスプレイのインスタンス生成 */
-	private int windows_width;
-	private int window_height;
-
-	/** ゲーム時のトースト表示用のリソース変数 */
-	static Context context;
-	private static Resources res;
+//	/** タブレットにおける不具合調査用にディスプレイのインスタンス生成 */
+//	private int windows_width;
+//	private int window_height;
 
 	/** CameraActivityから戻ってきた直後を判定するBoolean */
 	private static boolean returnCam = false;
@@ -63,12 +53,6 @@ public class MainActivity extends Activity {
 	/** 図鑑から戻ってきた直後を判定するBoolean */
 	private static boolean returnEncyc = false;
 
-	/**
-	 * Notificationを出したい間隔。デフォルトは4日後の345600000。開発中のテストでは1分後の60000。
-	 * 本番時には、正規の数字に必ず変更すること。
-	 */
-	private static final long NOTIFICATION_INTERVAL_TIME = 60000L;
-
 	/** Admob用のインスタンス */
 	private AdView adView;
 	/** GameFeat用のインスタンス */
@@ -77,34 +61,28 @@ public class MainActivity extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
 		/** フルスクリーンに設定 */
 		getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);//
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-
 		setContentView(R.layout.activity_main);
+
 		/** SurfaceViewの生成 */
 		msv = (GameSurfaceView) findViewById(R.id.petSpace);
 
 		/** BGMインスタンス生成し準備 */
 		mp = MediaPlayer.create(MainActivity.this, R.raw.honwaka);
 		mp2 = MediaPlayer.create(MainActivity.this, R.raw.poka);
-
 		/** BGMスタート */
-		// mp.start(); // SEを鳴らす
 		bgmOn = true;
 
-		/** ゲーム時のトースト表示用のリソースインスタンス取得 */
-		res = getResources();
-
-		/** 画面のWidthを取得してみる（タブレットでの不具合対策） */
-		Display display = getWindowManager().getDefaultDisplay();
-		Point size = new Point();
-		display.getSize(size);
-		this.windows_width = size.x; // width
-		this.window_height = size.y; // height
-		CameLog.setLog(TAG, "Activityのwidthは" + windows_width
-				+ "Activityのheightは" + window_height);
+		// /** 画面のWidthを取得してみる（タブレットでの不具合対策） */
+		// Display display = getWindowManager().getDefaultDisplay();
+		// Point size = new Point();
+		// display.getSize(size);
+		// this.windows_width = size.x; // width
+		// this.window_height = size.y; // height
+		// CameLog.setLog(TAG, "Activityのwidthは" + windows_width
+		// + "Activityのheightは" + window_height);
 
 		// ////////
 		// 以下、Admob用記述
@@ -122,13 +100,6 @@ public class MainActivity extends Activity {
 
 		/** adView を追加する */
 		layout.addView(adView);
-
-		// /** ツイート用の子画面は非表示にしておく */
-		// tweetpop.setVisibility(View.GONE);
-		// /** コールバック用文字列取得 */
-		// mTwitter = TwitterUtils.getTwitterInstance(this);
-		// /** 利用ユーザが削除できない文字列を後ろに追加。不要な場合は空にしておくか削除して下さい。 */
-		// sUrl = " http://003sh.ou-net.com/";
 
 		// /** 一般的なリクエストを行う */
 		// AdRequest adRequest = new AdRequest.Builder().build();
@@ -167,10 +138,8 @@ public class MainActivity extends Activity {
 			mp.pause();
 			bgmOn = false;
 		}
-		
 		/** NotificationManager用に、現在起動中である旨、プリファレンスに登録 */
 		CamPePref.saveMainActivityOperationStatus(this);
-		
 		/** Admobの一時停止 */
 		adView.resume();
 	}
@@ -184,6 +153,27 @@ public class MainActivity extends Activity {
 		/** Admobの一時停止 */
 		adView.pause();
 		CameLog.setLog(TAG, "onPause");
+	}
+
+	/*
+	 * (非 Javadoc)
+	 * 
+	 * @see android.app.Activity#onStart()
+	 */
+	@Override
+	protected void onStart() {
+		super.onStart();
+		/** Google Analytics用の記述 */
+		Tracker t = ((App) getApplication())
+				.getTracker(App.TrackerName.APP_TRACKER);
+		t.setScreenName(this.getClass().getSimpleName());
+		t.send(new HitBuilders.AppViewBuilder().build());
+
+		/**
+		 * GAME FEAT広告設定初期化 初期化コードの引数は次の通り。 activateGF(【Activity名】.this,
+		 * カスタム広告の使用, アイコン広告の使用, 全画面広告の使用);
+		 */
+		gfAppController.activateGF(MainActivity.this, true, false, false);
 	}
 
 	@Override
@@ -205,8 +195,9 @@ public class MainActivity extends Activity {
 		super.onDestroy();
 		/** Admobの破棄 */
 		adView.destroy();
-
 		CameLog.setLog(TAG, "onDestroy");
+		/** Activityをしっかり消去 */
+		finish();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////////
@@ -222,12 +213,10 @@ public class MainActivity extends Activity {
 		if (bgmOn) {
 			mp2.start(); // SEを鳴らす
 		}
-
 		/** Facebookから戻ってくることを示す */
 		returnFb = true;
-
 		/** 現在のペットの種類名を取得して、Facebookへ投稿実行 */
-		SnsBtn.goFacebook(this, GameSurfaceView.getSpeciesName());
+		SnsBtn.goFacebook(this);
 	}
 
 	/**
@@ -240,37 +229,11 @@ public class MainActivity extends Activity {
 			/** SEを鳴らす */
 			mp2.start();
 		}
-
 		/** Twitterから戻ってくることを示す */
 		returnTwitter = true;
-
-		/** スクリーンショットを撮る */
-		bitmap1 = getScreenBitmap(msv);
-		CameLog.setLog(TAG, bitmap1.hashCode() + "");
-
-//		/** ツイッター写真はまだ消せない旨プリファレンスに登録 */
-//		CamPePref.saveTwitterPhDeleteOK(this, false);
-
 		/** ツイッター投稿メソッドを呼び出し */
-		SnsBtn.goTwitter(this, GameSurfaceView.getSpeciesName());
+		SnsBtn.goTwitter(this);
 	}
-
-	public Bitmap getScreenBitmap(View view) {
-		return getViewBitmap(view.getRootView());
-	}
-
-	public Bitmap getViewBitmap(View view) {
-		view.setDrawingCacheEnabled(true);
-		Bitmap cache = view.getDrawingCache();
-		if (cache == null) {
-			return null;
-		}
-		Bitmap bitmap = Bitmap.createBitmap(cache);
-		view.setDrawingCacheEnabled(false);
-		return bitmap;
-	}
-
-	Bitmap bitmap1;
 
 	/**
 	 * カメラ機能呼び出しメソッド。
@@ -281,20 +244,12 @@ public class MainActivity extends Activity {
 		if (bgmOn) {
 			mp2.start(); // SEを鳴らす
 		}
-
 		/** CameraActivityから戻ってくることを示す */
 		returnCam = true;
-
-		/**
-		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
-		 */
+		/** 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定 */
 		Intent intent = new Intent(MainActivity.this, CameraActivity.class);
-
-		/**
-		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
-		 */
+		/** Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。 */
 		startActivity(intent);
-
 	}
 
 	/**
@@ -320,25 +275,21 @@ public class MainActivity extends Activity {
 	 */
 	public void onClickEncyclopedia(View v) {
 		if (bgmOn) {
-			mp2.start(); // SEを鳴らす
+			/** SEを鳴らす */
+			mp2.start();
 		} else {
 		}
-
-		/**
-		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
-		 */
+		/** 図鑑から戻ってくることを示す */
+		returnEncyc = true;
+		/** 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定 */
 		Intent intent = new Intent(MainActivity.this, Encyc01Activity.class);
-
 		/** BGMオンオフ状態を保持してインテントを出せるようにputextra */
 		if (bgmOn) {
 			intent.putExtra("bgmOn", "true");
 		} else {
 			intent.putExtra("bgmOn", "false");
 		}
-
-		/**
-		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
-		 */
+		/** Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。 */
 		startActivity(intent);
 	}
 
@@ -352,19 +303,12 @@ public class MainActivity extends Activity {
 			mp2.start(); // SEを鳴らす
 		} else {
 		}
-
 		/** Tutorialから戻ってくることを示す */
 		returnTutorial = true;
-
-		/**
-		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
-		 */
+		/** 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定 */
 		Intent intent = new Intent(MainActivity.this,
 				TutorialFirstActivity.class);
-
-		/**
-		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
-		 */
+		/** Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。 */
 		startActivity(intent);
 	}
 
@@ -378,44 +322,19 @@ public class MainActivity extends Activity {
 		CamPePref.saveTotalExp(this, newTotalExp);
 	}
 
-	/**
-	 * アプリをしばらく起動していないと、「おなかがすいた！」とペットがユーザーに4日後に通知を出すメソッド。
-	 * PetAlarmBroadcastReceiverクラスと連携する。 本番時には、
-	 */
-	public static void setPetAlarmBroadcastReceiver() {
+	public Bitmap getScreenBitmap(View view) {
+		return getViewBitmap(view.getRootView());
+	}
 
-		// TimePicker tPicker;
-		int notificationId = 0;
-		PendingIntent alarmIntent;
-
-		/** 現在時間を取得 */
-		long now = System.currentTimeMillis();
-		/** テスト時は、30秒後にalert */
-		long fourDayAfter = now + (30 * 1000);
-		// /** 4日後を割り出す */
-		// long fourDayAfter = now + NOTIFICATION_INTERVAL_TIME;
-
-		/** 4日後の20時台を割り出すコードは一時保留 */
-		// /** 4日後を持つDateインスタンス生成 */
-		// Date fourDayAfterDate = new Date(fourDayAfter);
-		// /** Dateクラスから日時のString型文字列生成 */
-		// SimpleDateFormat format = new SimpleDateFormat("MM_dd__HH__mm");
-		// String s = format.format(fourDayAfterDate);
-		// String kiridasi = s.substring(6,8);
-		// /** 候補時間をint型に変換 */
-		// int kouhoTime = new Integer(kiridasi).intValue();
-		// String henkanTimeStr = s.replaceAll("__HH__","sasuke");
-
-		Intent bootIntent = new Intent(context,
-				AlarmBroadcastReceiver.class);
-		bootIntent.putExtra("notificationId", notificationId);
-		alarmIntent = PendingIntent.getBroadcast(context, 0,
-				bootIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-		AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-
-		alarm.set(AlarmManager.RTC_WAKEUP, fourDayAfter, alarmIntent);
-		CameLog.setLog(TAG, "1分後" + fourDayAfter + "に通知セット完了");
+	public Bitmap getViewBitmap(View view) {
+		view.setDrawingCacheEnabled(true);
+		Bitmap cache = view.getDrawingCache();
+		if (cache == null) {
+			return null;
+		}
+		Bitmap bitmap = Bitmap.createBitmap(cache);
+		view.setDrawingCacheEnabled(false);
+		return bitmap;
 	}
 
 	/** Cameraから戻ってきたかどうかの判定を他のクラスに与えるメソッド */
@@ -453,25 +372,35 @@ public class MainActivity extends Activity {
 		MainActivity.returnTutorial = returnTut;
 	}
 
-	/*
-	 * (非 Javadoc)
-	 * 
-	 * @see android.app.Activity#onStart()
+	/**
+	 * @return returnEncyc
 	 */
-	@Override
-	protected void onStart() {
-		super.onStart();
-		/** Google Analytics用の記述 */
-		Tracker t = ((App) getApplication())
-				.getTracker(App.TrackerName.APP_TRACKER);
-		t.setScreenName(this.getClass().getSimpleName());
-		t.send(new HitBuilders.AppViewBuilder().build());
+	public static boolean isReturnEncyc() {
+		return returnEncyc;
+	}
 
-		/**
-		 * GAME FEAT広告設定初期化 初期化コードの引数は次の通り。 activateGF(【Activity名】.this,
-		 * カスタム広告の使用, アイコン広告の使用, 全画面広告の使用);
-		 */
-		gfAppController.activateGF(MainActivity.this, true, false, false);
+	/**
+	 * @param returnEncyc
+	 *            セットする returnEncyc
+	 */
+	public static void setReturnEncyc(boolean returnEncyc) {
+		MainActivity.returnEncyc = returnEncyc;
+	}
+
+	/**
+	 * @param returnCam
+	 *            セットする returnCam
+	 */
+	public static void setReturnCam(boolean returnCam) {
+		MainActivity.returnCam = returnCam;
+	}
+
+	/**
+	 * @param returnTutorial
+	 *            セットする returnTutorial
+	 */
+	public static void setReturnTutorial(boolean returnTutorial) {
+		MainActivity.returnTutorial = returnTutorial;
 	}
 
 }

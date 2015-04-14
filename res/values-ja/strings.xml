@@ -123,5 +123,8 @@
     <string name="twitter_consumer_secret">MAcOni3ODjTy2kJykyjBQvU0GgvmSF16YhNklrJtkWd5xaZylj</string>
     <string name="twitter_oauth">Twitter認証</string>
     <string name="twitter_callback_url">gabu://twitter</string>
-
-</resources>
+    <string name="pet_message_thanksEncyc">ペット図鑑見られると恥ずかしいかも…。なんちゃって</string>
+    <string name="pet_message_thanksTutorial">飼い主さん、勉強熱心ですね！</string>
+    <string name="pet_message_thanksCam">写真撮影、お疲れ様です〜！</string>
+    
+    </resources>

@@ -103,6 +103,10 @@ public class Esa extends CamPeItem implements Runnable {
 		CameLog.setLog(TAG, "Esaがnewされた時点でのViewのWidthは" + this.viewWidth
 				+ "。ViewのHeightは" + this.viewHeight + "defaultXは" + defaultX);
 
+		 /** EsaPhの拡大縮小率確認 */
+		 CameLog.setLog(TAG, "EsaPhのitemWidthは" + itemWidth );
+		 CameLog.setLog(TAG, "EsaPhのWidthは" + itemPh.getWidth() );
+		
 		/**
 		 * PetPhの拡大・縮小率設定 ここでfloatにキャストしないと拡大率が小数点以下切り捨てられてしまうので要注意
 		 */

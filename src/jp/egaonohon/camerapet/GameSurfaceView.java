@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import jp.egaonohon.camerapet.pet.AbstractPet;
-import android.R.integer;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -143,10 +142,17 @@ public class GameSurfaceView extends SurfaceView implements
 	private int pet_message_levelup = 4;
 	/** 吹き出し発行時のイベント:SNS投稿で成長日記を投稿してくれた時 */
 	private int pet_message_thanksSNS = 5;
+	/** 吹き出し発行時のイベント:ペット図鑑を見て帰ってきた時。 */
+	private int pet_message_thanksEncyc = 6;
+	/** 吹き出し発行時のイベント:チュートリアルを見て帰ってきた時。 */
+	private int pet_message_thanksTutorial = 7;
+	/** 吹き出し発行時のイベント:写真撮影を終えて帰ってきた時。 */
+	private int pet_message_thanksCam = 8;
+
 	/** 吹き出し発行時のイベント:エサが落ちてこなくてペットが暇な時。 */
-	private int pet_message_generic = 6;
+	private int pet_message_generic = 9;
 	/** 吹き出し発行時のイベント:ペットが触られた時。 */
-	private int pet_message_touch = 7;
+	private int pet_message_touch = 10;
 
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "GameSurfaceView";
@@ -235,7 +241,7 @@ public class GameSurfaceView extends SurfaceView implements
 									"ユーザーの指がペットに触れているか判定"
 											+ myPet.rectF.contains(petAmuseX,
 													petAmuseY));
-							/** ペットが震える */
+							/** ペットが喜びの声をあげる */
 							myPet.pleased(this, pet_message_touch);
 						}
 
@@ -281,17 +287,20 @@ public class GameSurfaceView extends SurfaceView implements
 					camPeItems.add(myPet);
 					/** レベルアップ時のSEを鳴らす */
 					levelUpSE.start();
-					/** レベルアップ後のペット種別名を取得し確保しておく */
+					/** レベルアップ後のペット型番を取得し確保しておく */
 					updatedPetModelNumber = myPet.getPetModelNumber();
 					CameLog.setLog(TAG, "レベルアップ後のペット種別名"
 							+ updatedPetModelNumber + "を取得");
 					/** レベルアップ前後のペット種別名ごとにペットステイタスを司るプレファレンスを変更しておく */
 					CamPePref.savePetModelNumber(context, beforePetModelNumber,
 							updatedPetModelNumber);
-					/** SNS投稿や写真撮影によるレベルアップに備えて現在のペットModelNumberを取得し確保 */
+					/** SNS投稿や写真撮影によるレベルアップに備えて現在のペット型番を取得しプリファレンスに保存 */
 					CamPePref.savePetModelNumberForUnexpectedVersionUp(context,
 							myPet.getPetModelNumber());
-
+					/** レベルアップ後のペット種別名を取得し確保しておく */
+					speciesName = myPet.getPetName();
+					/** SNS投稿や写真撮影によるレベルアップに備えて現在のペット種別名を取得しプリファレンスに保存 */
+					CamPePref.savePetSpeciesName(context, speciesName);
 					myPet.talk(this, pet_message_levelup);
 					CameLog.setLog(TAG, "ペットがレベルアップ!!");
 				}
@@ -365,10 +374,10 @@ public class GameSurfaceView extends SurfaceView implements
 			/** 直近撮影回数をプリファレンスから取得 */
 			esaCnt = CamPePref.loadNowShotCnt(context);
 
-			if (esaCnt == 0) {
-				/** 直近撮影回数が0ならば、次回用として保存されたエサ数がある可能性があるので取り出しを試みる */
-				nextMakeEsaCnt = CamPePref.loadNextMakeEsaCnt(context);
-			}
+			// if (esaCnt == 0) {
+			/** 次回用として保存されたエサ数の取得し */
+			nextMakeEsaCnt = CamPePref.loadNextMakeEsaCnt(context);
+			// }
 			/** 直近撮影回数を取り出し終えたので直近撮影回数を0にリセット */
 			CamPePref.saveNowShotCnt(context, 0);
 
@@ -381,14 +390,17 @@ public class GameSurfaceView extends SurfaceView implements
 		/** もしインストール直後などで直近撮影枚数がない場合、あるいは、次回用として保存されたエサ数が0ならばデフォルト値5枚をセット。 */
 		if (esaCnt == -1 || (esaCnt == 0 && nextMakeEsaCnt == 0)) {
 			nowFalldownEsaCnt = esaDefaultMakeCnt;
-		} else if (nextMakeEsaCnt != 0) {
+		} else if (esaCnt == 0 && nextMakeEsaCnt != 0) {
 			/** 次回用として保存されたエサ数があるならばその数だけエサを生成する */
 			nowFalldownEsaCnt = nextMakeEsaCnt;
+		} else if (esaCnt != 0 && nextMakeEsaCnt != 0) {
+			/** 次回用として保存されたエサ数があり、直近撮影枚数もあるならば、それらの合計枚数のエサを生成する */
+			nowFalldownEsaCnt = (10 * esaCnt) + nextMakeEsaCnt;
 		} else {
 			/** それ以外の時は、落下予定のエサの数を直近撮影回数を元に設定 */
 			nowFalldownEsaCnt = 10 * esaCnt;
 		}
-		
+
 		/** さらに、Facebookやツイッターから戻ってきた時にはエサ生成数を更に20増やす */
 		if (MainActivity.isReturnFb() || MainActivity.isReturnTwitter()) {
 			nowFalldownEsaCnt += 20;
@@ -400,8 +412,35 @@ public class GameSurfaceView extends SurfaceView implements
 				(viewWidth / 3) * 2, viewWidth, viewHeight);
 		camPeItems.add(myPet);
 
-		/** 飼い主歓迎メッセージを表示 */
-		myPet.talk(this, pet_message_welcome);
+		/** 突然SNS投稿する場合に備えて、現在のペットの種別名をプリファレンスに保存 */
+		CamPePref.savePetSpeciesName(context, myPet.getPetName());
+
+		/** 突然SNS投稿する場合に備えて、現在のペットの型番をプリファレンスに保存 */
+		CamPePref.savePetModelNumberForUnexpectedVersionUp(context, myPet.getPetModelNumber());
+
+		/** 画面表示時ペットメッセージ */
+		if (MainActivity.isReturnEncyc()) {
+			/** 図鑑を見てくれてありがとう */
+			myPet.talk(this, pet_message_thanksEncyc);
+			/** お礼を言い終えたので、Booleanを初期状態に戻す */
+			MainActivity.setReturnEncyc(false);
+		} else if (MainActivity.isReturnFb() || MainActivity.isReturnTwitter()) {
+			/** SNS投稿ありがとう。経験値を上げ終えるまではこのBoolean値はfalseにはしない！ */
+			myPet.talk(this, pet_message_thanksSNS);
+		} else if (MainActivity.isReturnTutorial()) {
+			/** チュートリアルを見てくれてありがとう */
+			myPet.talk(this, pet_message_thanksTutorial);
+			/** お礼を言い終えたので、Booleanを初期状態に戻す */
+			MainActivity.setReturnTutorial(false);
+		} else if (MainActivity.isReturnCam()) {
+			/** 写真を撮ってくれてありがとう */
+			myPet.talk(this, pet_message_thanksCam);
+			/** お礼を言い終えたので、Booleanを初期状態に戻す */
+			MainActivity.setReturnCam(false);
+		} else {
+			/** それ以外のときは、飼い主歓迎メッセージを表示 */
+			myPet.talk(this, pet_message_welcome);
+		}
 
 		CameLog.setLog(TAG, "飼い主歓迎メッセージを呼び出し。イベントコードは" + pet_message_welcome);
 
@@ -417,6 +456,9 @@ public class GameSurfaceView extends SurfaceView implements
 
 		/** ペット種別名取得 */
 		speciesName = myPet.getPetName();
+
+		/** 突然SNS投稿する場合に備えて、現在のペットの種別名をプリファレンスに保存 */
+		CamPePref.savePetSpeciesName(context, speciesName);
 
 		/** プレイ中以外にペットがレベルアップした場合に対応するために、現在のペット型番名を取得してステイタスと比較する */
 		String petModelNumber = myPet.getPetModelNumber();
@@ -451,8 +493,6 @@ public class GameSurfaceView extends SurfaceView implements
 			CamPePref.saveTotalExp(context, gettedtotalEXP);
 			// CameLog.setLog(TAG, "facebookから戻ってきたので経験値を次の数値にアップ→" +
 			// gettedtotalEXP);
-			/** ペットからのありがとうメッセージを表示 */
-			myPet.talk(this, pet_message_thanksSNS);
 			/** エサ告知カウントを0にリセット */
 			EsakokutiCnt = 0;
 			/** 経験値をアップし終えたので、Booleanを初期状態に戻す */
@@ -465,8 +505,6 @@ public class GameSurfaceView extends SurfaceView implements
 			CamPePref.saveTotalExp(context, gettedtotalEXP);
 			// CameLog.setLog(TAG, "Twitterから戻ってきたので経験値を次の数値にアップ→" +
 			// gettedtotalEXP);
-			/** ペットからのありがとうメッセージを表示 */
-			myPet.talk(this, pet_message_thanksSNS);
 			/** エサ告知カウントを0にリセット */
 			EsakokutiCnt = 0;
 			/** 経験値をアップし終えたので、Booleanを初期状態に戻す */
@@ -512,7 +550,13 @@ public class GameSurfaceView extends SurfaceView implements
 
 		/** 起動していたペット種別名をプリファレンスに保存 */
 		CamPePref.savePetSpeciesName(context, speciesName);
-		
+
+		/** ペットステイタスの書き換えに備えてレベルアップ前のペット種別名を取得しプリファレンスに保存しておく */
+		beforePetModelNumber = myPet.getPetModelNumber();
+		CameLog.setLog(TAG, "レベルアップ前のペット種別名" + beforePetModelNumber + "を取得");
+		CamPePref.savePetModelNumberForUnexpectedVersionUp(context,
+				beforePetModelNumber);
+
 		/** 落下させたエサ数を初期化する */
 		throwedEsa = 0;
 		/** 落下予定のエサ数も初期化する */
@@ -533,6 +577,10 @@ public class GameSurfaceView extends SurfaceView implements
 			CamPePref.saveStartStatus(getContext());
 			CameLog.setLog(TAG, "起動済みの旨プリファレンスに情報を保存");
 		}
+		
+		/** ペットやエサが入ったArrayListを空にする。これにより、SNS投稿などから戻ってきた時にエサが無いのに何かに衝突して経験値がUpするバグを防げるはず。 */
+		camPeItems.clear();
+		CameLog.setLog(TAG, "ペットやエサが入ったArrayListを空にしたので数は" + camPeItems.size());
 
 		/** camPeItemsの全Threadを停止する。 */
 		for (int j = 0; j < camPeItems.size(); j++) {
@@ -786,12 +834,13 @@ public class GameSurfaceView extends SurfaceView implements
 								* (new Random().nextInt(esaKasokudoMax) + 1)));
 				/** 落下させたエサの数をインクリメント */
 				throwedEsa++;
-				
+
 				/** 未生成残りエサ数を保存（次回用） */
 				nextMakeEsaCnt = nowFalldownEsaCnt - throwedEsa;
-//				CameLog.setLog(TAG, "終了直前の今回降ってくる予定のエサ総数は" + nowFalldownEsaCnt +"。1ゲームですでに落下させたエサ数は" + throwedEsa);
+				// CameLog.setLog(TAG, "終了直前の今回降ってくる予定のエサ総数は" +
+				// nowFalldownEsaCnt +"。1ゲームですでに落下させたエサ数は" + throwedEsa);
 				CamPePref.saveNextMakeEsaCnt(context, nextMakeEsaCnt);
-				CameLog.setLog(TAG, "未生成残りエサ数" + nextMakeEsaCnt +"を次回用に保存");
+				CameLog.setLog(TAG, "未生成残りエサ数" + nextMakeEsaCnt + "を次回用に保存");
 			}
 			CameLog.setLog(TAG, "複数写真使用で餌作成");
 		}

@@ -123,5 +123,8 @@
     <string name="twitter_consumer_secret">MAcOni3ODjTy2kJykyjBQvU0GgvmSF16YhNklrJtkWd5xaZylj</string>
     <string name="twitter_oauth">Authentication of Twitter</string>
     <string name="twitter_callback_url">gabu://twitter</string>
+    <string name="pet_message_thanksEncyc">I might embarrassing when seen pet picture book ... Only joking.</string>
+    <string name="pet_message_thanksTutorial">You are very hardworking. Expecting!</string>
+    <string name="pet_message_thanksCam">Thank you for taking pictures.</string>
 
 </resources>

@@ -343,7 +343,10 @@ int string pet_message_generic020 0x7f070089
 int string pet_message_generic021 0x7f07008a
 int string pet_message_levelup 0x7f070064
 int string pet_message_satiety 0x7f070063
+int string pet_message_thanksCam 0x7f07009f
+int string pet_message_thanksEncyc 0x7f07009d
 int string pet_message_thanksSNS 0x7f070065
+int string pet_message_thanksTutorial 0x7f07009e
 int string pet_message_touch001 0x7f07008b
 int string pet_message_touch002 0x7f07008c
 int string pet_message_touch003 0x7f07008d

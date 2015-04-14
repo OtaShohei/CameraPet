@@ -64,10 +64,10 @@ public class SnsBtn {
 	 *
 	 * @param v
 	 */
-	public static void goFacebook(Context context, String speciesName) {
+	public static void goFacebook(Context context) {
 		if (isShareAppInstall(context, FACEBOOK_ID)) {
 			/** 投稿メッセージ生成 */
-			makeMsg(context, speciesName);
+			makeMsg(context);
 			Intent intent = new Intent();
 			intent.setAction(Intent.ACTION_SEND);
 			intent.setPackage(SHAREPACKAGES[FACEBOOK_ID]);
@@ -87,7 +87,7 @@ public class SnsBtn {
 	 *
 	 * @param v
 	 */
-	public static void goTwitter(Context context, String speciesName) {
+	public static void goTwitter(Context context) {
 		if (isShareAppInstall(context, TWITTER_ID)) {
 
 			/** ペット画像取得 */
@@ -97,7 +97,7 @@ public class SnsBtn {
 					nowPetPh);
 
 			/** 投稿メッセージ生成 */
-			makeMsg(context, speciesName);
+			makeMsg(context);
 			Intent intent = new Intent();
 			intent.setAction(Intent.ACTION_SEND);
 			intent.setPackage(SHAREPACKAGES[TWITTER_ID]);
@@ -215,7 +215,7 @@ public class SnsBtn {
 	}
 
 	/** 投稿メッセージを生成するメソッド */
-	public static String makeMsg(Context context, String speciesName) {
+	public static String makeMsg(Context context) {
 
 		/** プリファレンスから累計経験値を取得 */
 		gettedtotalEXPforSns = CamPePref.loadTotalExp(context);
@@ -228,7 +228,7 @@ public class SnsBtn {
 				+ petAgeforSns + res.getString(R.string.pet_sns_report_exp)
 				+ " " + gettedtotalEXPforSns
 				+ res.getString(R.string.pet_sns_report_species_name)
-				+ speciesName + res.getString(R.string.pet_sns_report_finish)
+				+ CamPePref.loadPetSpeciesName(context) + res.getString(R.string.pet_sns_report_finish)
 				+ " " + "https://play.google.com/store/apps/";
 		return snsTxt;
 	}

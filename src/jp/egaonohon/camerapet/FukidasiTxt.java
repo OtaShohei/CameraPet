@@ -19,7 +19,9 @@ public class FukidasiTxt {
 	/** イベント発生時の吹き出し文字 */
 	static int[] eventMsg = { R.string.pet_message_welcome,
 			R.string.pet_message_satiety, R.string.pet_message_esa_zero,
-			R.string.pet_message_levelup, R.string.pet_message_thanksSNS };
+			R.string.pet_message_levelup, R.string.pet_message_thanksSNS, 
+			R.string.pet_message_thanksEncyc, R.string.pet_message_thanksTutorial,
+			R.string.pet_message_thanksCam, };
 
 	/** 雑談時の吹き出し文字 */
 	static int[] chatMsg = { R.string.pet_message_generic001,
@@ -57,12 +59,12 @@ public class FukidasiTxt {
 
 		String msg = "";
 		/** 雑談時は乱数を発生してそれによりセリフを選択 */
-		if (eventCode == 6) {
+		if (eventCode == 9) {
 			int selectGenericMessageNum = new Random().nextInt(chatMsg.length);
 			msg = res.getString(chatMsg[selectGenericMessageNum]);
 
 			/** ペットが触られた時は乱数を発生してそれによりセリフを選択 */
-		} else if (eventCode == 7) {
+		} else if (eventCode == 10) {
 			int selectGenericMessageNum = new Random()
 					.nextInt(touchedMsg.length);
 			msg = res.getString(touchedMsg[selectGenericMessageNum]);

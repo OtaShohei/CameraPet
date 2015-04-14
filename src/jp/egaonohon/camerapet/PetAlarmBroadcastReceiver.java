@@ -7,6 +7,12 @@ import android.content.Intent;
 
 public class PetAlarmBroadcastReceiver {
 
+	/**
+	 * Notificationを出したい間隔。デフォルトは4日後の345600000。開発中のテストでは1分後の60000。
+	 * 本番時には、正規の数字に必ず変更すること。
+	 */
+	private static final long NOTIFICATION_INTERVAL_TIME = 60000L;
+	
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "PetAlarmBroadcastReceiver";
 	
