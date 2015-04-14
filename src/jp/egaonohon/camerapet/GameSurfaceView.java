@@ -283,7 +283,12 @@ public class GameSurfaceView extends SurfaceView implements
 				if (!camPeItems.contains(myPet)) {
 					/** 新しいペットを作り終えたので古いペットを削除する */
 					myPet = updatedMyPet;
-					/** スレッドの配列に新レベルのペットを追加 */
+					/**
+					 * スレッドのArrayListの中身をすべて削除（バージョンUp後に、エサが消えるのに透明なエサと衝突するバグ回避策
+					 * ）
+					 */
+					camPeItems.clear();
+					/** スレッドのArrayListに新レベルのペットを追加 */
 					camPeItems.add(myPet);
 					/** レベルアップ時のSEを鳴らす */
 					levelUpSE.start();
@@ -416,7 +421,8 @@ public class GameSurfaceView extends SurfaceView implements
 		CamPePref.savePetSpeciesName(context, myPet.getPetName());
 
 		/** 突然SNS投稿する場合に備えて、現在のペットの型番をプリファレンスに保存 */
-		CamPePref.savePetModelNumberForUnexpectedVersionUp(context, myPet.getPetModelNumber());
+		CamPePref.savePetModelNumberForUnexpectedVersionUp(context,
+				myPet.getPetModelNumber());
 
 		/** 画面表示時ペットメッセージ */
 		if (MainActivity.isReturnEncyc()) {
@@ -577,8 +583,11 @@ public class GameSurfaceView extends SurfaceView implements
 			CamPePref.saveStartStatus(getContext());
 			CameLog.setLog(TAG, "起動済みの旨プリファレンスに情報を保存");
 		}
-		
-		/** ペットやエサが入ったArrayListを空にする。これにより、SNS投稿などから戻ってきた時にエサが無いのに何かに衝突して経験値がUpするバグを防げるはず。 */
+
+		/**
+		 * ペットやエサが入ったArrayListを空にする。これにより、
+		 * SNS投稿などから戻ってきた時にエサが無いのに何かに衝突して経験値がUpするバグを防げるはず。
+		 */
 		camPeItems.clear();
 		CameLog.setLog(TAG, "ペットやエサが入ったArrayListを空にしたので数は" + camPeItems.size());
 
@@ -703,6 +712,10 @@ public class GameSurfaceView extends SurfaceView implements
 			/** 夜時間帯なら晩御飯表示文字を準備 */
 			esaStatus = context.getString(R.string.esa_status_dinner);
 		}
+		if (MealTime.equals("bedtimeSnack")) {
+			/** 夜食時間帯なら夜食表示文字を準備 */
+			esaStatus = context.getString(R.string.esa_status_bedtimeSnack);
+		}
 	}
 
 	/** 衝突判定を実行するメソッド */
@@ -749,25 +762,31 @@ public class GameSurfaceView extends SurfaceView implements
 						gettedtotalEXP = 0;
 					}
 
-					/** 新たな累計経験値の算出 */
+					/** エサゲットに伴い新たな累計経験値の算出 */
 					gettedtotalEXP++;
 
-					expTxt = context.getString(R.string.exp_points) + " "
-							+ String.valueOf(gettedtotalEXP);
 				} catch (Exception e) {
 					CameLog.setLog(TAG, "プリファレンスからの経験値表示に失敗@onResume");
 				}
-				/** 新たな累計エサ獲得成功回数と新たな累計経験値をプリファレンスに保存 */
-				CamPePref.saveTotalExpAndEsaGetCnt(context,
-						gettedTotalEsaGetCnt, gettedtotalEXP);
 				/** 今回のエサ獲得数がプログレスバー最大値になったら… */
 				if (progressMax == esaGetCnt) {
 					ManpukuCnt++;
 					/** お腹いっぱいメッセージを1回だけ表示 */
 					if (ManpukuCnt <= 1) {
 						myPet.talk(this, pet_message_satiety);
+						/** お腹いっぱいご褒美として経験値も20Up */
+						gettedtotalEXP += 20;
 					}
 				}
+
+				/** エサゲット後の経験値画面表示更新 */
+				expTxt = context.getString(R.string.exp_points) + " "
+						+ String.valueOf(gettedtotalEXP);
+
+				/** 新たな累計エサ獲得成功回数と新たな累計経験値をプリファレンスに保存 */
+				CamPePref.saveTotalExpAndEsaGetCnt(context,
+						gettedTotalEsaGetCnt, gettedtotalEXP);
+
 				CameLog.setLog(TAG, "エサの現在位置は"
 						+ camPeItems.get(i).getRectF().top);
 				/** 獲得したエサを削除する */

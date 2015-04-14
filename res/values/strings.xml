@@ -48,6 +48,7 @@
     <string name="esa_status_lunch">Satisfaction of lunch</string>
     <string name="esa_status_snack">Satisfaction of snack</string>
     <string name="esa_status_dinner">Satisfaction of dinner</string>
+    <string name="esa_status_bedtimeSnack">Satisfaction of bedtime snack</string>
     <string name="number_of_food_this_time">Remaining bait</string>
     <string name="pet_message_esa_zero">Number of bait is zero. If you post my growth record to SNS,or take pictures, you can get more bait!</string>
     <string name="pet_dummy_name">dummy</string>
@@ -65,7 +66,7 @@
     <string name="pet_03_length">Length:about snowman</string>
     <string name="pet_03_favorite">Favorite:Freezer</string>
     <string name="pet_03_comment">He is not good at summer. As soon as return from outside, he must enter in the freezer. Because he disappears and melts.</string>
-    <string name="pet_message_satiety">I"'"m full. Thank you!</string>
+    <string name="pet_message_satiety">I"'"m full. Thank you! EXP has been increased 20!</string>
     <string name="pet_message_levelup">I transform into this figure!!</string>
     <string name="pet_message_thanksSNS">Thank you for letting me everyone to know of me. EXP and the rest of the food has been increased 20!</string>
     <string name="pet_message_generic">Hey I thought. I wanna fly fast like airplane.</string>
@@ -126,5 +127,17 @@
     <string name="pet_message_thanksEncyc">I might embarrassing when seen pet picture book ... Only joking.</string>
     <string name="pet_message_thanksTutorial">You are very hardworking. Expecting!</string>
     <string name="pet_message_thanksCam">Thank you for taking pictures.</string>
+    <string name="pet_message_snacktime001">Today"'"s snack is very tasty!</string>
+    <string name="pet_message_snacktime002">My dislike is the shower. Because, since lightning is scary.</string>
+    <string name="pet_message_snacktime003">In the afternoon, you seem to be tired.But, you look fine at night. Why?</string>
+    <string name="pet_message_snacktime004">I like the time that school or company ends.Because, you are playing with me.</string>
+    <string name="pet_message_dinnertime001">At home, I can relax.Are you same?</string>
+    <string name="pet_message_dinnertime002">If We have traffic congestion at night, Are you tired?</string>
+    <string name="pet_message_dinnertime003">Why does humans become wild at night?</string>
+    <string name="pet_message_dinnertime004">What is your today"'"s dinner?</string>
+    <string name="pet_message_lunchtime001">What is your today"'"s lunch?</string>
+    <string name="pet_message_lunchtime002">McDonald is crowded at lunch. I"'"m unpleasant.</string>
+    <string name="pet_message_lunchtime003">I"'"m very sleepy afternoon too eat lunch.</string>
+    <string name="pet_message_lunchtime004">Bento Boxes Win Lunch Fans!!</string>
 
 </resources>

@@ -251,35 +251,4 @@ public class SnsBtn {
 		}
 		return petPh;
 	}
-	
-	/** ツイッター投稿画像を削除するメソッド */
-	public static boolean deleteGalleryFile(ContentResolver cr, String directory, String filename) {
-//		if(isWrite()) {
-			Cursor cursor = null;
-			try{
-				filename = directory + "/" + filename;
-				cursor = cr.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, 
-						new String[] {MediaStore.Images.Media._ID}, 
-						MediaStore.Images.Media.DATA + " = ?", 
-						new String[]{filename}, 
-						null);
-					
-				if(cursor.getCount() != 0) {
-					cursor.moveToFirst();
-					
-//					Uri uri = IMAGE_URI;
-					Uri uri = ContentUris.appendId(
-							MediaStore.Images.Media.EXTERNAL_CONTENT_URI.buildUpon(),
-							cursor.getLong(cursor.getColumnIndex(MediaStore.Images.Media._ID))).build();
-					cr.delete(uri, null, null);
-						
-					return true;
-				}
-			}finally {
-				if(cursor != null)
-					cursor.close();
-			}
-//		}	
-		return false;
-	}
 }

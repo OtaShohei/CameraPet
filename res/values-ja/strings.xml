@@ -48,6 +48,7 @@
     <string name="esa_status_lunch">お昼ご飯での満腹度</string>
     <string name="esa_status_snack">おやつでの満腹度</string>
     <string name="esa_status_dinner">晩ご飯での満腹度</string>
+    <string name="esa_status_bedtimeSnack">夜食での満腹度</string>
     <string name="number_of_food_this_time">残りエサ数</string>
     <string name="pet_message_esa_zero">エサがゼロになったよ！写真を撮るか僕の成長記録をSNS投稿するとエサがまた出てくるみたい</string>
     <string name="pet_dummy_name">"ダミーダミー"</string>
@@ -65,7 +66,7 @@
     <string name="pet_03_length">●体長:雪だるまくらい</string>
     <string name="pet_03_favorite">●好物:冷凍庫</string>
     <string name="pet_03_comment">冬以外は苦手な犬。外から帰ったらすぐに冷凍庫に入らないと溶けて消えてしまう。触ると冷たくて気持ちいい。</string>
-    <string name="pet_message_satiety">お腹いっぱい！ありがと!</string>
+    <string name="pet_message_satiety">お腹いっぱい！　ありがと!　これで経験値が20増えたよ！</string>
     <string name="pet_message_levelup">レベルアップして変身できたよ!</string>
     <string name="pet_message_thanksSNS">僕の成長ぶりをみんなに知らせてくれて嬉しいワン!　経験値と残りエサ数が20も増えたよ!</string>
     <string name="pet_message_generic">ちょっと思った。飛行機みたいに速く飛びたいなって。</string>
@@ -124,7 +125,19 @@
     <string name="twitter_oauth">Twitter認証</string>
     <string name="twitter_callback_url">gabu://twitter</string>
     <string name="pet_message_thanksEncyc">ペット図鑑見られると恥ずかしいかも…。なんちゃって</string>
-    <string name="pet_message_thanksTutorial">飼い主さん、勉強熱心ですね！</string>
-    <string name="pet_message_thanksCam">写真撮影、お疲れ様です〜！</string>
-    
-    </resources>
+    <string name="pet_message_thanksTutorial">飼い主さん、さすが勉強熱心ですね！　ボクもがんばるワン！</string>
+    <string name="pet_message_thanksCam">写真を撮ってくれてありがとうワン！</string>
+    <string name="pet_message_snacktime001">今日のおやつ、とってもおいしいワン</string>
+    <string name="pet_message_snacktime002">ボクが嫌いなのは夕立。カミナリもなったりするし…</string>
+    <string name="pet_message_snacktime003">この時間になると飼い主さん疲れてくるよね。夜は元気になるんだけど</string>
+    <string name="pet_message_snacktime004">学校や会社が終わるころってスキ。だって、飼い主さんがボクをよくかまってくれるから</string>
+    <string name="pet_message_dinnertime001">おうちに帰るとホッとするワン</string>
+    <string name="pet_message_dinnertime002">夜の電車も混んでると超疲れるよね。おつかれさまワン！</string>
+    <string name="pet_message_dinnertime003">夜になるとヒトはなぜワイルドになるの？</string>
+    <string name="pet_message_dinnertime004">飼い主さんの今日の晩御飯はなんだろ？</string>
+    <string name="pet_message_lunchtime001">飼い主さんの今日のお昼ごはんはナニかな？</string>
+    <string name="pet_message_lunchtime002">昼のマックや吉牛は超混んでるよね…</string>
+    <string name="pet_message_lunchtime003">お昼食べ過ぎると午後眠くて眠くて…</string>
+    <string name="pet_message_lunchtime004">弁当男子!!</string>
+
+</resources>

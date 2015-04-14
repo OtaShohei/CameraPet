@@ -43,10 +43,15 @@ public class MealTimeJudgment {
 			MealTime = "Snack";
 //			CameLog.setLog(TAG,"おやつと判定");
 			return MealTime;
-			/** 時間帯判定実行。18時以降あるいは3時以前ならばおやつ */
+			/** 時間帯判定実行。18時以降ならば晩御飯 */
 		} else if (nowTimeint >= 18 || nowTimeint <= 3) {
 			MealTime = "Dinner";
 //			CameLog.setLog(TAG,"晩御飯と判定");
+			return MealTime;
+			/** 時間帯判定実行。3時以前ならば夜食 */
+		} else if (nowTimeint <= 3) {
+			MealTime = "bedtimeSnack";
+//			CameLog.setLog(TAG,"夜食と判定");
 			return MealTime;
 		}
 		return nowTime;
