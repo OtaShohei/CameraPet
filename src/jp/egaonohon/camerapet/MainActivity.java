@@ -1,5 +1,7 @@
 package jp.egaonohon.camerapet;
 
+import java.util.Locale;
+
 import jp.egaonohon.camerapet.encyc.Encyc01Activity;
 import jp.egaonohon.camerapet.tutorial.TutorialFirstActivity;
 import android.app.Activity;
@@ -38,9 +40,9 @@ public class MainActivity extends Activity {
 
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "MainActivity";
-//	/** タブレットにおける不具合調査用にディスプレイのインスタンス生成 */
-//	private int windows_width;
-//	private int window_height;
+	// /** タブレットにおける不具合調査用にディスプレイのインスタンス生成 */
+	// private int windows_width;
+	// private int window_height;
 
 	/** CameraActivityから戻ってきた直後を判定するBoolean */
 	private static boolean returnCam = false;
@@ -52,6 +54,9 @@ public class MainActivity extends Activity {
 	private static boolean returnTutorial = false;
 	/** 図鑑から戻ってきた直後を判定するBoolean */
 	private static boolean returnEncyc = false;
+
+	/** 言語設定ごとの広告表示のための言語設定確認 */
+	private String locale;
 
 	/** Admob用のインスタンス */
 	private AdView adView;
@@ -84,46 +89,55 @@ public class MainActivity extends Activity {
 		// CameLog.setLog(TAG, "Activityのwidthは" + windows_width
 		// + "Activityのheightは" + window_height);
 
-		// ////////
-		// 以下、Admob用記述
-		// http://skys.co.jp/archives/1579
-		// を参考にEclipseへのメモリ割り当てを増やさないとEclipseがフリーズするので要注意。
-		// ////////
+		/** 広告表示設定のため、ユーザーの設定言語を取得 */
+		locale = Locale.getDefault().toString();
 
-		/** adView を作成する */
-		adView = new AdView(this);
-		adView.setAdUnitId("ca-app-pub-1135628131797223/1945135213");
-		adView.setAdSize(AdSize.SMART_BANNER);
-
-		/** 属性 android:id="@+id/adMobSpace" が与えられているものとしてLinearLayout をルックアップする */
-		LinearLayout layout = (LinearLayout) findViewById(R.id.adMobSpace);
-
-		/** adView を追加する */
-		layout.addView(adView);
-
-		// /** 一般的なリクエストを行う */
-		// AdRequest adRequest = new AdRequest.Builder().build();
-
-//		【教室公開用コメントアウト】
-//		/** テスト用のリクエストを行う */
-//		AdRequest adRequest = new AdRequest.Builder()
-//		/** エミュレータ */
-//		.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-//		/** Nexus */
-//		.addTestDevice("9F62663AFEF7E4EC5B3F231A4AB93A9C")
-//		/** Motorola */
-//		.addTestDevice("F8ACFF2BF5F49E1CD65848BA4BC6E0AD")
-//		/** 広告対象を女性に */
-//		.setGender(AdRequest.GENDER_FEMALE).build();
+		/** 日本語設定でないならば */
+		if (!locale.equals("ja_JP")) {
+//			// ////////
+//			// 以下、Admob用記述
+//			// http://skys.co.jp/archives/1579
+//			// を参考にEclipseへのメモリ割り当てを増やさないとEclipseがフリーズするので要注意。
+//			// ////////
 //
-//		/** 広告リクエストを行って adView を読み込む */
-//		adView.loadAd(adRequest);
+//			/** adView を作成する */
+//			adView = new AdView(this);
+//			adView.setAdUnitId("ca-app-pub-1135628131797223/1945135213");
+//			adView.setAdSize(AdSize.SMART_BANNER);
 //
-//		// //////
-//		// 以下、gamefeat用記述
-//		// //////
-//		/** GFコントローラ */
-//		gfAppController = new GameFeatAppController();
+//			/**
+//			 * 属性 android:id="@+id/adMobSpace" が与えられているものとしてLinearLayout
+//			 * をルックアップする
+//			 */
+//			LinearLayout layout = (LinearLayout) findViewById(R.id.adMobSpace);
+//
+//			/** adView を追加する */
+//			layout.addView(adView);
+//
+//			// /** 一般的なリクエストを行う */
+//			// AdRequest adRequest = new AdRequest.Builder().build();
+//
+//			/** 【教室公開用コメントアウト】 */
+//			/** テスト用のリクエストを行う */
+//			AdRequest adRequest = new AdRequest.Builder()
+//			/** エミュレータ */
+//			.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+//			/** Nexus */
+//			.addTestDevice("9F62663AFEF7E4EC5B3F231A4AB93A9C")
+//			/** Motorola */
+//			.addTestDevice("F8ACFF2BF5F49E1CD65848BA4BC6E0AD")
+//			/** 広告対象を女性に */
+//			.setGender(AdRequest.GENDER_FEMALE).build();
+//
+//			/** 広告リクエストを行って adView を読み込む */
+//			adView.loadAd(adRequest);
+//		} else {
+//			// //////
+//			// 以下、gamefeat用記述
+//			// //////
+//			/** GFコントローラ */
+//			gfAppController = new GameFeatAppController();
+		}
 	}
 
 	@Override
@@ -141,8 +155,12 @@ public class MainActivity extends Activity {
 		}
 		/** NotificationManager用に、現在起動中である旨、プリファレンスに登録 */
 		CamPePref.saveMainActivityOperationStatus(this);
-		/** Admobの一時停止 */
-		adView.resume();
+
+		/** 日本語以外の場合は */
+		if (!locale.equals("ja_JP")) {
+//			/** Admobの一時停止 */
+//			adView.resume();
+		}
 	}
 
 	/** アクティビティの動きが止まる時呼ばれる */
@@ -151,8 +169,13 @@ public class MainActivity extends Activity {
 		super.onPause();
 		/** BGMの一時停止 */
 		mp.pause();
-		/** Admobの一時停止 */
-		adView.pause();
+
+		/** 日本語以外の場合は */
+		if (!locale.equals("ja_JP")) {
+//			/** Admobの一時停止 */
+//			adView.pause();
+		}
+
 		CameLog.setLog(TAG, "onPause");
 	}
 
@@ -170,12 +193,14 @@ public class MainActivity extends Activity {
 		t.setScreenName(this.getClass().getSimpleName());
 		t.send(new HitBuilders.AppViewBuilder().build());
 
-//		【教室公開用コメントアウト】
-//		/**
-//		 * GAME FEAT広告設定初期化 初期化コードの引数は次の通り。 activateGF(【Activity名】.this,
-//		 * カスタム広告の使用, アイコン広告の使用, 全画面広告の使用);
-//		 */
-//		gfAppController.activateGF(MainActivity.this, true, false, false);
+		if (locale.equals("ja_JP")) {
+//			/** 【教室公開用コメントアウト】 */
+//			/**
+//			 * GAME FEAT広告設定初期化 初期化コードの引数は次の通り。 activateGF(【Activity名】.this,
+//			 * カスタム広告の使用, アイコン広告の使用, 全画面広告の使用);
+//			 */
+//			gfAppController.activateGF(MainActivity.this, true, false, false);
+		}
 	}
 
 	@Override
@@ -195,8 +220,13 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		/** Admobの破棄 */
-		adView.destroy();
+
+		/** 日本語以外の場合は */
+		if (!locale.equals("ja_JP")) {
+//			/** Admobの破棄 */
+//			adView.destroy();
+		}
+
 		CameLog.setLog(TAG, "onDestroy");
 		/** Activityをしっかり消去 */
 		finish();

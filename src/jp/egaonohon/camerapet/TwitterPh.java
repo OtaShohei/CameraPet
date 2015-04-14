@@ -61,13 +61,13 @@ public class TwitterPh implements Runnable {
 			/** 削除の可否を確認 */
 			deleteNg = MainActivity.isReturnTwitter();
 
-			/** 現在起動しているか否かを確認する */
-			String mainActivityworkStatus = CamPePref
-					.loadMainActivityWorkStatus(twitterPhContext);
-			String other01ActivityworkStatus = CamPePref
-					.loadOther01ActivityWorkStatus(twitterPhContext);
-			String other02ActivityworkStatus = CamPePref
-					.loadOther02ActivityWorkStatus(twitterPhContext);
+//			/** 現在起動しているか否かを確認する */
+//			String mainActivityworkStatus = CamPePref
+//					.loadMainActivityWorkStatus(twitterPhContext);
+//			String other01ActivityworkStatus = CamPePref
+//					.loadOther01ActivityWorkStatus(twitterPhContext);
+//			String other02ActivityworkStatus = CamPePref
+//					.loadOther02ActivityWorkStatus(twitterPhContext);
 
 			/**
 			 * ツイッター投稿を終えたか、アプリのいずれかのActivityが現在起動中でないならば、削除開始…
