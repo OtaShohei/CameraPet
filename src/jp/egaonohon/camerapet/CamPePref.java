@@ -229,10 +229,52 @@ public class CamPePref {
 		CameLog.setLog(TAG, "Notificationを前回掲出した時間" + notificationSubmitTime
 				+ "をプリファレンスから取得");
 
-		/** 3時間以内に食べたエサの数を戻す */
+		/**ノーティフィケーションを前回掲出した時間を戻す */
 		return notificationSubmitTime;
 	}
 
+	/** 満腹度100による経験値Upを実行した時間をプリファレンスに保存する */
+	public static void saveManpukuTime(Context context) {
+
+		/** 満腹度100による経験値Upを実行した時間（=このメソッドが呼び出された時間）を取得 */
+		long manpukuTime = System.currentTimeMillis();
+
+		/** プリファレンスの準備 */
+		SharedPreferences pref = context.getSharedPreferences(
+				"manpukuTime", Context.MODE_PRIVATE);
+
+		/** プリファレンスに書き込むためのEditorオブジェクト取得 */
+		Editor editor = pref.edit();
+
+		/** "ManpukuTime" というキーでmanpukuTimeを登録 */
+		editor.putLong("ManpukuTime", manpukuTime);
+
+		CameLog.setLog(TAG, "満腹度100による経験値Upを実行した時間" + manpukuTime
+				+ "を登録しました");
+
+		/** 書き込みの確定（実際にファイルに書き込む） */
+		editor.commit();
+	}
+
+	/** 満腹度100による経験値Upを実行した時間を取り出す。登録されていなければ 現在時間から-10800001L を引いた数を返す */
+	public static long loadManpukuTime(Context context) {
+
+		/** プリファレンスの準備 */
+		SharedPreferences pref = context.getSharedPreferences(
+				"manpukuTime", Context.MODE_PRIVATE);
+
+		/** "ManpukuTime" というキーで保存されている値を読み出す */
+		long manpukuTime = pref.getLong("ManpukuTime",
+				(long) System.currentTimeMillis() - 10800001L);
+
+		CameLog.setLog(TAG, "満腹度100による経験値Upを実行した時間" + manpukuTime
+				+ "をプリファレンスから取得");
+
+		/** 満腹度100による経験値Upを実行した時間を戻す */
+		return manpukuTime;
+	}
+
+	
 	/** 初回起動か否かを確認するステイタス情報をプリファレンスから取り出す。登録されていなければ空の文字列を返す */
 	public static String loadStartStatus(Context context) {
 
@@ -421,43 +463,6 @@ public class CamPePref {
 		/** 書き込みの確定（実際にファイルに書き込む） */
 		editor.commit();
 	}
-
-	// /** ツイッター用の写真を削除していいかどうかをプリファレンスに保存する */
-	// public static void saveTwitterPhDeleteOK(Context context, Boolean
-	// twitterPhDeleteOk) {
-	//
-	// /** プリファレンスの準備 */
-	// SharedPreferences pref = context.getSharedPreferences(
-	// "twitterPhDeleteOK", Context.MODE_PRIVATE);
-	//
-	// /** プリファレンスに書き込むためのEditorオブジェクト取得 */
-	// Editor editor = pref.edit();
-	//
-	// /** "twitterPhDeleteOK" というキーでtwitterPhDeleteOkを登録 */
-	// editor.putBoolean("twitterPhDeleteOK", twitterPhDeleteOk);
-	//
-	// /** 書き込みの確定（実際にファイルに書き込む） */
-	// editor.commit();
-	// }
-	//
-	// /** ツイッター用の写真を削除していいかどうかをプリファレンスから取り出す */
-	// public static boolean loadTwitterPhDeleteOK(Context context) {
-	//
-	// CameLog.setLog(TAG, "ツイッター用の写真を削除していいかどうかで用いているcontextの状態は" + context);
-	//
-	// /** プリファレンスの準備 */
-	// SharedPreferences pref = context.getSharedPreferences(
-	// "twitterPhDeleteOK", Context.MODE_PRIVATE);
-	//
-	// /** "twitterPhDeleteOK" というキーで保存されている値を読み出す */
-	// boolean twitterPhDeleteOK = pref.getBoolean("twitterPhDeleteOK", false);
-	//
-	// CameLog.setLog(TAG, "ツイッター用の写真を削除していいかどうか" + twitterPhDeleteOK
-	// + "をプリファレンスから取得");
-	//
-	// /** 3時間以内に食べたエサの数をを戻す */
-	// return twitterPhDeleteOK;
-	// }
 
 	/** 3時間以内に食べたエサの数を現在時間とともにプリファレンスに保存する */
 	public static void save3hoursEatCnt(Context context, int nowEatCnt) {

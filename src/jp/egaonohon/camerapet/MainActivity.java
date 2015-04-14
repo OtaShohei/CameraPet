@@ -104,25 +104,26 @@ public class MainActivity extends Activity {
 		// /** 一般的なリクエストを行う */
 		// AdRequest adRequest = new AdRequest.Builder().build();
 
-		/** テスト用のリクエストを行う */
-		AdRequest adRequest = new AdRequest.Builder()
-		/** エミュレータ */
-		.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-		/** Nexus */
-		.addTestDevice("9F62663AFEF7E4EC5B3F231A4AB93A9C")
-		/** Motorola */
-		.addTestDevice("F8ACFF2BF5F49E1CD65848BA4BC6E0AD")
-		/** 広告対象を女性に */
-		.setGender(AdRequest.GENDER_FEMALE).build();
-
-		/** 広告リクエストを行って adView を読み込む */
-		adView.loadAd(adRequest);
-
-		// //////
-		// 以下、gamefeat用記述
-		// //////
-		/** GFコントローラ */
-		gfAppController = new GameFeatAppController();
+//		【教室公開用コメントアウト】
+//		/** テスト用のリクエストを行う */
+//		AdRequest adRequest = new AdRequest.Builder()
+//		/** エミュレータ */
+//		.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+//		/** Nexus */
+//		.addTestDevice("9F62663AFEF7E4EC5B3F231A4AB93A9C")
+//		/** Motorola */
+//		.addTestDevice("F8ACFF2BF5F49E1CD65848BA4BC6E0AD")
+//		/** 広告対象を女性に */
+//		.setGender(AdRequest.GENDER_FEMALE).build();
+//
+//		/** 広告リクエストを行って adView を読み込む */
+//		adView.loadAd(adRequest);
+//
+//		// //////
+//		// 以下、gamefeat用記述
+//		// //////
+//		/** GFコントローラ */
+//		gfAppController = new GameFeatAppController();
 	}
 
 	@Override
@@ -169,11 +170,12 @@ public class MainActivity extends Activity {
 		t.setScreenName(this.getClass().getSimpleName());
 		t.send(new HitBuilders.AppViewBuilder().build());
 
-		/**
-		 * GAME FEAT広告設定初期化 初期化コードの引数は次の通り。 activateGF(【Activity名】.this,
-		 * カスタム広告の使用, アイコン広告の使用, 全画面広告の使用);
-		 */
-		gfAppController.activateGF(MainActivity.this, true, false, false);
+//		【教室公開用コメントアウト】
+//		/**
+//		 * GAME FEAT広告設定初期化 初期化コードの引数は次の通り。 activateGF(【Activity名】.this,
+//		 * カスタム広告の使用, アイコン広告の使用, 全画面広告の使用);
+//		 */
+//		gfAppController.activateGF(MainActivity.this, true, false, false);
 	}
 
 	@Override

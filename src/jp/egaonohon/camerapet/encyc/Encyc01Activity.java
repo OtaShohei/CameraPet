@@ -41,9 +41,11 @@ public class Encyc01Activity extends Activity {
 	private MediaPlayer encycBgm;
 	/** BGM用変数 */
 	private boolean bgmOn = true;
-	/** GameFeat用のインスタンス */
-	private GameFeatAppController gfAppController;
-	protected getImageData getImageData;
+	
+//	【教室公開用コメントアウト】
+//	/** GameFeat用のインスタンス */
+//	private GameFeatAppController gfAppController;
+//	protected getImageData getImageData;
 
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "Encyc01";
@@ -79,65 +81,66 @@ public class Encyc01Activity extends Activity {
 		/** 属性 android:id="@+id/adMobSpace" が与えられているものとしてLinearLayout をルックアップする */
 		LinearLayout layout = (LinearLayout) findViewById(R.id.adMobSpace);
 
-		// GFコントローラ
-		gfAppController = new GameFeatAppController();
-		gfAppController.init(Encyc01Activity.this);
-
-		// LinearLayout incLayout = null;
-		RelativeLayout incLayout = null;
-		LinearLayout mainLayout = (LinearLayout) findViewById(R.id.adMobSpace);
-
-		// カスタム広告のデータを取得
-		ArrayList<HashMap<String, String>> customArrayList = gfAppController
-				.getCustomAds();
-
-		for (final HashMap<String, String> map : customArrayList) {
-			// LayoutInflaterの準備
-			LayoutInflater inflater = (LayoutInflater) getApplicationContext()
-					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			incLayout = (RelativeLayout) inflater.inflate(R.layout.custom_row,
-					null);
-
-			// アイコン画像の読み込み
-			ImageView appIcon = (ImageView) incLayout
-					.findViewById(R.id.app_icon);
-			getImageData = new getImageData(map.get("appIconUrl"), appIcon);
-			getImageData.execute();
-
-			// タイトルの設定
-			TextView title = (TextView) incLayout.findViewById(R.id.title);
-			title.setText(map.get("appTitle"));
-
-			// タイトルの設定
-			TextView description = (TextView) incLayout
-					.findViewById(R.id.description);
-			description.setText(map.get("appDescription"));
-
-			// レビューボタンの設定
-			Button btnReview = (Button) incLayout.findViewById(R.id.btn_review);
-			if (map.get("hasReview") == "0") {
-				btnReview.setVisibility(View.GONE);
-			}
-			btnReview.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					// レビューへ
-					gfAppController.onAdReviewClick(map);
-				}
-			});
-
-			// DLボタンの設定
-			Button btnStore = (Button) incLayout.findViewById(R.id.btn_store);
-			btnStore.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					// AppStoreへ
-					gfAppController.onAdStoreClick(map);
-				}
-			});
-
-			mainLayout.addView(incLayout);
-		}
+//		【教室公開用コメントアウト】
+//		// GFコントローラ
+//		gfAppController = new GameFeatAppController();
+//		gfAppController.init(Encyc01Activity.this);
+//
+//		// LinearLayout incLayout = null;
+//		RelativeLayout incLayout = null;
+//		LinearLayout mainLayout = (LinearLayout) findViewById(R.id.adMobSpace);
+//
+//		// カスタム広告のデータを取得
+//		ArrayList<HashMap<String, String>> customArrayList = gfAppController
+//				.getCustomAds();
+//
+//		for (final HashMap<String, String> map : customArrayList) {
+//			// LayoutInflaterの準備
+//			LayoutInflater inflater = (LayoutInflater) getApplicationContext()
+//					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//			incLayout = (RelativeLayout) inflater.inflate(R.layout.custom_row,
+//					null);
+//
+//			// アイコン画像の読み込み
+//			ImageView appIcon = (ImageView) incLayout
+//					.findViewById(R.id.app_icon);
+//			getImageData = new getImageData(map.get("appIconUrl"), appIcon);
+//			getImageData.execute();
+//
+//			// タイトルの設定
+//			TextView title = (TextView) incLayout.findViewById(R.id.title);
+//			title.setText(map.get("appTitle"));
+//
+//			// タイトルの設定
+//			TextView description = (TextView) incLayout
+//					.findViewById(R.id.description);
+//			description.setText(map.get("appDescription"));
+//
+//			// レビューボタンの設定
+//			Button btnReview = (Button) incLayout.findViewById(R.id.btn_review);
+//			if (map.get("hasReview") == "0") {
+//				btnReview.setVisibility(View.GONE);
+//			}
+//			btnReview.setOnClickListener(new OnClickListener() {
+//				@Override
+//				public void onClick(View v) {
+//					// レビューへ
+//					gfAppController.onAdReviewClick(map);
+//				}
+//			});
+//
+//			// DLボタンの設定
+//			Button btnStore = (Button) incLayout.findViewById(R.id.btn_store);
+//			btnStore.setOnClickListener(new OnClickListener() {
+//				@Override
+//				public void onClick(View v) {
+//					// AppStoreへ
+//					gfAppController.onAdStoreClick(map);
+//				}
+//			});
+//
+//			mainLayout.addView(incLayout);
+//		}
 		/** 起動したクラスをLogで確認 */
 		CameLog.setLog(TAG, "onCreate");
 	}

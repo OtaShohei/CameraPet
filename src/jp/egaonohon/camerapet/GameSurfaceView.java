@@ -100,8 +100,8 @@ public class GameSurfaceView extends SurfaceView implements
 	private String expTxt;
 	/** エサ落下予定表示文字 */
 	private String foodCntThisTime;
-	/** 進捗バー最大値 */
-	private int progressMax = 100;
+	/** エサ取得プログレスバー最大値 */
+	private int progressMax = 10;
 	/** 今回降ってくる予定のエサの数。直近撮影回数の10倍 */
 	private int nowFalldownEsaCnt;
 	/** エサステイタス表示文字 */
@@ -112,8 +112,8 @@ public class GameSurfaceView extends SurfaceView implements
 	private boolean firstOfTheDay = true;
 	/** セリフでのえさ告知回数 */
 	private int EsakokutiCnt = 0;
-	/** セリフでの満腹告知回数 */
-	private int ManpukuCnt = 0;
+//	/** セリフでの満腹告知回数 */
+//	private int ManpukuCnt = 0;
 	/** 世間話を行っていいかどうか */
 	private boolean sekenBanasi = false;
 	/** ペットにユーザーが触れてよろこぶ仕草をペットがするかどうかを判定するためのタッチ位置X座標 */
@@ -770,12 +770,16 @@ public class GameSurfaceView extends SurfaceView implements
 				}
 				/** 今回のエサ獲得数がプログレスバー最大値になったら… */
 				if (progressMax == esaGetCnt) {
-					ManpukuCnt++;
-					/** お腹いっぱいメッセージを1回だけ表示 */
-					if (ManpukuCnt <= 1) {
+					/** 前回、満腹度100による経験値Upを実行した時間を取り出す */
+					long manpukuTime = CamPePref.loadManpukuTime(context);
+//					ManpukuCnt++;
+					/** 前回、経験値Upを実行した時間から3時間が経過しているならば… */
+					if (System.currentTimeMillis() > (manpukuTime + 10800000L)) {
 						myPet.talk(this, pet_message_satiety);
 						/** お腹いっぱいご褒美として経験値も20Up */
 						gettedtotalEXP += 20;
+						/** 満腹となった時間を新たに現在時間で登録する。 */
+						CamPePref.saveManpukuTime(context);
 					}
 				}
 
@@ -931,103 +935,11 @@ public class GameSurfaceView extends SurfaceView implements
 	 */
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-
 		/** GestureDetectorにすべてを任せる */
 		mGestureDetector.onTouchEvent(event);
-
 		// CameLog.setLog(TAG, "onTouchEventでのMotionEventのxは" + event.getRawX()
 		// + "onTouchEventでのMotionEventのyは" + event.getRawY());
-
 		return true;
-
-		// // petAmuseX = usertouchedX = event.getX(); // X座標を取得
-		// // petAmuseY = usertouchedY = event.getY(); // Y座標を取得
-		//
-		// float lastTouchX = 0;
-		// float currentX;
-		//
-		// /** X軸をセットするswitch文 */
-		// switch (event.getAction()) {
-		// case MotionEvent.ACTION_DOWN:
-		// lastTouchX = event.getX();
-		// break;
-		// case MotionEvent.ACTION_UP:
-		// currentX = event.getX();
-		// if (lastTouchX < currentX) {
-		// // 前に戻る動作
-		// usertouchedX = (currentX - lastTouchX)/((viewWidth/128)*8);
-		// }
-		//
-		// if (lastTouchX > currentX) {
-		// // 次に移動する動作
-		// usertouchedX = (currentX - lastTouchX)/((viewWidth/128)*8);
-		// }
-		// petAmuseX = lastTouchX;
-		// CameLog.setLog(TAG, "ペットがフリックで移動するX軸距離を" + usertouchedX + "にセット");
-		// CameLog.setLog(TAG, "ペットを触れた時に鳴かせるx位置を" + petAmuseX + "にセット");
-		// break;
-		//
-		// case MotionEvent.ACTION_CANCEL:
-		// currentX = event.getX();
-		// if (lastTouchX < currentX) {
-		// // 前に戻る動作
-		// usertouchedX = (currentX - lastTouchX)/((viewWidth/128)*8);
-		// }
-		// if (lastTouchX > currentX) {
-		// // 次に移動する動作
-		// usertouchedX = (currentX - lastTouchX)/((viewWidth/128)*8);
-		// }
-		// petAmuseX = lastTouchX;
-		// CameLog.setLog(TAG, "ペットがフリックで移動するX軸距離を" + usertouchedX + "にセット");
-		// CameLog.setLog(TAG, "ペットを触れた時に鳴かせるx位置を" + petAmuseX + "にセット");
-		// break;
-		// }
-		//
-		// float lastTouchY = 0;
-		// float currentY;
-		//
-		// /** Y軸をセットするswitch文 */
-		// switch (event.getAction()) {
-		// case MotionEvent.ACTION_DOWN:
-		// lastTouchY = event.getY();
-		// break;
-		// case MotionEvent.ACTION_UP:
-		// currentY = event.getY();
-		// if (lastTouchY < currentY) {
-		// // 前に戻る動作
-		// usertouchedY = (currentY - lastTouchY)/((viewWidth/128)*8);
-		// }
-		//
-		// if (lastTouchY > currentY) {
-		// // 次に移動する動作
-		// usertouchedY = (currentY - lastTouchY)/((viewWidth/128)*8);
-		// }
-		// petAmuseY = lastTouchY;
-		// CameLog.setLog(TAG, "ペットがフリックで移動するy軸距離を" + usertouchedY + "にセット");
-		// CameLog.setLog(TAG, "ペットを触れた時に鳴かせるy位置を" + petAmuseY + "にセット");
-		// break;
-		// case MotionEvent.ACTION_CANCEL:
-		// currentY = event.getY();
-		// if (lastTouchY < currentY) {
-		// // 前に戻る動作
-		// usertouchedY = (currentY - lastTouchY)/((viewWidth/128)*8);
-		// }
-		// if (lastTouchY > currentY) {
-		// // 次に移動する動作
-		// usertouchedY = (currentY - lastTouchY)/((viewWidth/128)*8);
-		// }
-		// petAmuseY = lastTouchY;
-		// CameLog.setLog(TAG, "ペットがフリックで移動するy軸距離を" + usertouchedY + "にセット");
-		// CameLog.setLog(TAG, "ペットを触れた時に鳴かせるy位置を" + petAmuseY + "にセット");
-		// break;
-		// }
-		//
-		// // return true;
-		// // speedMove = true;
-		//
-		// /** petに移動量をセット */
-		// myPet.setPetMoveSize(usertouchedX, usertouchedY);
-		// return true;
 	}
 
 	/**
