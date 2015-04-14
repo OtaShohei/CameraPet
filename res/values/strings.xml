@@ -139,5 +139,9 @@
     <string name="pet_message_lunchtime002">McDonald is crowded at lunch. I"'"m unpleasant.</string>
     <string name="pet_message_lunchtime003">I"'"m very sleepy afternoon too eat lunch.</string>
     <string name="pet_message_lunchtime004">Bento Boxes Win Lunch Fans!!</string>
+    <string name="pet_message_morningtime001">Tell you the truth, I have difficulty flying in the morning. As a reason for that is heavy body.</string>
+    <string name="pet_message_morningtime002">Oh! No, no, Since the morning sunlight is bright, I could hardly keep my eyes open.</string>
+    <string name="pet_message_morningtime003">In the morning, a stray cat had quarrel at garbage dump. They are young!</string>
+    <string name="pet_message_morningtime004">If I do the job, I do a newspapers round. I can deliver from the air.</string>
 
 </resources>

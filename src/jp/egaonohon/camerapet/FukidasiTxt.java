@@ -7,7 +7,7 @@ import android.view.View;
 
 /**
  * ペットがゲーム中につぶやくセリフ文字を生成するクラス。 ゆくゆくは、WebAPI化してそちらから取得するクラスにしたい。
- * 
+ *
  * @author OtaShohei
  *
  */
@@ -34,7 +34,11 @@ public class FukidasiTxt {
 			R.string.pet_message_generic013, R.string.pet_message_generic014,
 			R.string.pet_message_generic015, R.string.pet_message_generic016,
 			R.string.pet_message_generic018, R.string.pet_message_generic019,
-			R.string.pet_message_generic020, R.string.pet_message_generic021, };
+			R.string.pet_message_generic020, R.string.pet_message_generic021,
+			R.string.pet_message_morningtime001,
+			R.string.pet_message_morningtime002,
+			R.string.pet_message_morningtime003,
+			R.string.pet_message_morningtime004, };
 
 	/** 11～14時の昼時間帯雑談吹き出し文字 */
 	static int[] lunchChatMsg = { R.string.pet_message_generic001,
@@ -105,7 +109,7 @@ public class FukidasiTxt {
 
 	/**
 	 * ペットがゲーム中につぶやくセリフを生成するメソッド。
-	 * 
+	 *
 	 * @param view
 	 * @param eventCode
 	 * @return

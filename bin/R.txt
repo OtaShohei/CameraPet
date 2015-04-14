@@ -351,6 +351,10 @@ int string pet_message_lunchtime001 0x7f0700a9
 int string pet_message_lunchtime002 0x7f0700aa
 int string pet_message_lunchtime003 0x7f0700ab
 int string pet_message_lunchtime004 0x7f0700ac
+int string pet_message_morningtime001 0x7f0700ad
+int string pet_message_morningtime002 0x7f0700ae
+int string pet_message_morningtime003 0x7f0700af
+int string pet_message_morningtime004 0x7f0700b0
 int string pet_message_satiety 0x7f070064
 int string pet_message_snacktime001 0x7f0700a1
 int string pet_message_snacktime002 0x7f0700a2

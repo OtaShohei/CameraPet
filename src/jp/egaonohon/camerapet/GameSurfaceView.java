@@ -89,6 +89,8 @@ public class GameSurfaceView extends SurfaceView implements
 	private MediaPlayer levelUpSE;
 	/** エサゲット時カウント */
 	private int esaGetCnt = 0;
+	/** SEを鳴らすか否かの変数 */
+	private static boolean seOn = true;
 
 	/** ペット年齢 */
 	private String petAge;
@@ -101,7 +103,7 @@ public class GameSurfaceView extends SurfaceView implements
 	/** エサ落下予定表示文字 */
 	private String foodCntThisTime;
 	/** エサ取得プログレスバー最大値 */
-	private int progressMax = 10;
+	private int progressMax = 100;
 	/** 今回降ってくる予定のエサの数。直近撮影回数の10倍 */
 	private int nowFalldownEsaCnt;
 	/** エサステイタス表示文字 */
@@ -112,8 +114,8 @@ public class GameSurfaceView extends SurfaceView implements
 	private boolean firstOfTheDay = true;
 	/** セリフでのえさ告知回数 */
 	private int EsakokutiCnt = 0;
-//	/** セリフでの満腹告知回数 */
-//	private int ManpukuCnt = 0;
+	// /** セリフでの満腹告知回数 */
+	// private int ManpukuCnt = 0;
 	/** 世間話を行っていいかどうか */
 	private boolean sekenBanasi = false;
 	/** ペットにユーザーが触れてよろこぶ仕草をペットがするかどうかを判定するためのタッチ位置X座標 */
@@ -290,8 +292,12 @@ public class GameSurfaceView extends SurfaceView implements
 					camPeItems.clear();
 					/** スレッドのArrayListに新レベルのペットを追加 */
 					camPeItems.add(myPet);
-					/** レベルアップ時のSEを鳴らす */
-					levelUpSE.start();
+
+					if (seOn) {
+						/** レベルアップ時のSEを鳴らす */
+						levelUpSE.start();
+					}
+
 					/** レベルアップ後のペット型番を取得し確保しておく */
 					updatedPetModelNumber = myPet.getPetModelNumber();
 					CameLog.setLog(TAG, "レベルアップ後のペット種別名"
@@ -311,9 +317,9 @@ public class GameSurfaceView extends SurfaceView implements
 				}
 
 				/** 画面に表示されているエサの残数が1または0になったら新たなエサを1つ生成する */
-				if (camPeItems.size() == 2 || camPeItems.size() == 1) {
+				if (camPeItems.size() <= 3) {
 					/** かつ、前回エサを作った時間から1秒以上経過しているならエサを作る */
-					if (nowTime > (lastEsaMakeTime + 4000)) {
+					if (nowTime > (lastEsaMakeTime + 3250)) {
 						makeEsa(1);
 						lastEsaMakeTime = nowTime;
 					}
@@ -772,7 +778,7 @@ public class GameSurfaceView extends SurfaceView implements
 				if (progressMax == esaGetCnt) {
 					/** 前回、満腹度100による経験値Upを実行した時間を取り出す */
 					long manpukuTime = CamPePref.loadManpukuTime(context);
-//					ManpukuCnt++;
+					// ManpukuCnt++;
 					/** 前回、経験値Upを実行した時間から3時間が経過しているならば… */
 					if (System.currentTimeMillis() > (manpukuTime + 10800000L)) {
 						myPet.talk(this, pet_message_satiety);
@@ -800,10 +806,12 @@ public class GameSurfaceView extends SurfaceView implements
 			/** エサに衝突したらペットを反転させる */
 			myPet.returnAfterKrush();
 			CameLog.setLog(TAG, "現在の残数は" + camPeItems.size());
-			bakubakuSE.start();
+			if (seOn) {
+				bakubakuSE.start();
+			}
 			// CameLog.setLog(TAG, "Petとエサの接触を検知しました!");
-			/** 画面外に出て行ったエサを削除する */
 		} else if (camPeItems.get(i).getRectF().top > viewHeight) {
+			/** 画面外に出て行ったエサを削除する */
 			camPeItems.remove(i);
 		}
 	}
@@ -948,6 +956,14 @@ public class GameSurfaceView extends SurfaceView implements
 	 */
 	public static void setFlickOk(boolean flickOk) {
 		GameSurfaceView.flickOk = flickOk;
+	}
+
+	public static boolean isSeOn() {
+		return seOn;
+	}
+
+	public static void setSeOn(boolean seOn) {
+		GameSurfaceView.seOn = seOn;
 	}
 
 }

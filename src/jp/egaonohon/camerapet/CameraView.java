@@ -14,6 +14,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.AutoFocusCallback;
+import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.ShutterCallback;
 import android.hardware.Camera.Size;
 import android.net.Uri;
@@ -42,7 +43,7 @@ public class CameraView extends SurfaceView {
 	/** 写真保存完了まで次の写真撮影をさせないためのboolean値 */
 	private boolean afStart = false;
 	/** ボタン押下回数用 */
-	private int cntNum = 0;
+	private int cntNum = 1;
 	/** 写真撮影でインクリメントする経験値 */
 	private int gettedtotalEXP;
 	/** Logのタグを定数で確保 */
@@ -82,7 +83,39 @@ public class CameraView extends SurfaceView {
 		holder.addCallback(new SurfaceHolder.Callback() {
 			@Override
 			public void surfaceCreated(SurfaceHolder holder) {
-				petCam = Camera.open(0);
+				// petCam = Camera.open(0);
+				/** フロントカメラリアカメラを選択する */
+				int frontCameraId = -1;
+				int backCameraId = -1;
+				int numberOfCameras = Camera.getNumberOfCameras();
+				CameraInfo cameraInfo = new CameraInfo();
+				for (int i = 0; i < numberOfCameras; i++) {
+					// 指定したカメラの情報を取得
+					Camera.getCameraInfo(i, cameraInfo);
+					if (cameraInfo.facing == CameraInfo.CAMERA_FACING_BACK) {
+						backCameraId = i;
+					} else if (cameraInfo.facing == CameraInfo.CAMERA_FACING_FRONT) {
+						frontCameraId = i;
+					}
+				}
+				int id = -1;
+//				if (frontCameraId != -1) { // フロントカメラを呼び出し
+//					id = frontCameraId;
+//				}
+				 if (backCameraId != -1) { // バックカメラを呼び出し
+				 id = backCameraId;
+				 }
+				if (id >= 0) {
+					petCam = Camera.open(id);
+				} else {
+					petCam = Camera.open();
+				}
+				try {
+					petCam.setPreviewDisplay(holder);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 
 			@SuppressWarnings("deprecation")
@@ -95,8 +128,7 @@ public class CameraView extends SurfaceView {
 				Camera.Parameters params = petCam.getParameters();
 
 				/**
-				 * 端末がサポートするサイズを取得する。
-				 * これにより、機種によって発生する例外を防止する。
+				 * 端末がサポートするサイズを取得する。 これにより、機種によって発生する例外を防止する。
 				 */
 				List<Size> supportedPictureSizes = SupportedSizesReflect
 						.getSupportedPictureSizes(params);
@@ -257,6 +289,8 @@ public class CameraView extends SurfaceView {
 							 * .getExternalStorageState()を使うかどうかはどちらでもいい。
 							 */
 							saveDataToURI(data, dataName);
+							/** 撮影回数をここでカウント */
+							cntNum++;
 							camera.startPreview();// プレビューを再度表示開始。
 							afStart = false;// オートフォーカスをオフ&この動作まで再び写真撮影をさせない。
 						} catch (Exception e) {
@@ -295,7 +329,7 @@ public class CameraView extends SurfaceView {
 	 * ボタン押下回数カウントを行うメソッド。
 	 */
 	void btnCount() {
-		cntNum++;
+
 		/** プリファレンスから前回の累計撮影回数を取得 */
 		int totalShotCnt = CamPePref.loadTotalShotCnt(getContext());
 

@@ -139,5 +139,32 @@
     <string name="pet_message_lunchtime002">昼のマックや吉牛は超混んでるよね…</string>
     <string name="pet_message_lunchtime003">お昼食べ過ぎると午後眠くて眠くて…</string>
     <string name="pet_message_lunchtime004">弁当男子!!</string>
+    <string name="pet_message_morningtime001">実はね。寝起きは体が重くて飛びにくいんだ</string>
+    <string name="pet_message_morningtime002">ああ。ダメダメ。朝日がまぶしくて目が開けてられないよ～</string>
+    <string name="pet_message_morningtime003">朝、ゴミ捨て場で野良猫がケンカしてた。これって若さ?</string>
+    <string name="pet_message_morningtime004">やるなら新聞配達のバイト。空中からお届けするんだ</string>
+
+    <!-- 楽しかった!　お友だちはやっぱり大切だと思いますよ -->
+    <!-- I had fun.Friends are such a great thing. -->
+
+
+    <!-- 飼い主さんにとって大切なことって何?　ボクは自由かな -->
+    <!-- What is it important to you? Freedom is important for me. -->
+
+
+    <!-- 今日はエステに行こうっと -->
+    <!-- Today, Im going to go to a beauty‐treatment clinic. -->
+
+
+    <!-- 飼い主さんの留守中にNHKのヒトが来てた。受信料…。 -->
+    <!-- Salesman had come during your absence. I wonder what he sell? -->
+
+
+    <!-- 飼い主さん疲れてる?　ひょっとしてボクのせい? -->
+    <!-- You look so tired. Because of me by chance? -->
+
+
+    <!-- 最近肩こりがひどいんだよね。年かな。 -->
+    <!-- Recently I'm terrible stiff neck. I am old. -->
 
 </resources>

@@ -1,5 +1,7 @@
 package jp.egaonohon.camerapet;
 
+import java.util.Random;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -37,21 +39,25 @@ public class Esa extends CamPeItem implements Runnable {
 	/** エサの高さ */
 	private int itemHeight = 10;
 	/** エサの現在位置：X軸 */
-	private int nowX = 10;
+	private float nowX = 10;
 	/** エサの初期位置：X軸 */
 	private int defaultX;
 	/** エサの現在距離：Y軸 */
 	private double nowY;
 	/** エサ移動距離：X軸 */
-	private int moveX;
+	private double moveX;
 	/** エサ移動距離：Y軸 */
 	private double moveY;
 	/** エサが移動するアニメーション効果用（歩数カウント） */
-	private int cnt;
+	private int cnt = 1;
 	/** エサが動くスピード（移動および歩くアニメーションに影響） */
 	private long speed = 60;
 	/** X軸の進行方向を変更した時間 */
 	private long moveChangeTime;
+	/** Y方向に移動する加速度 */
+	private float esaKasokudoX = 1.3f;
+	/** Y方向餌移動乱数最大値 */
+	private int esaKasokudoXMax = 4;
 
 	/** 1度でも何かに衝突したか否か */
 	private boolean oneTimeKrush = false;
@@ -96,6 +102,8 @@ public class Esa extends CamPeItem implements Runnable {
 		this.viewWidth = viewWidth;
 		this.viewHeight = viewHeight;
 		this.moveY = moveY;
+		this.moveX = esaKasokudoX
+				* ((new Random().nextInt(esaKasokudoXMax+1)) - (esaKasokudoXMax/2));
 
 		/** 衝突判定用RectFをインスタンス化 */
 		rectF = new RectF();
@@ -106,7 +114,7 @@ public class Esa extends CamPeItem implements Runnable {
 		 /** EsaPhの拡大縮小率確認 */
 		 CameLog.setLog(TAG, "EsaPhのitemWidthは" + itemWidth );
 		 CameLog.setLog(TAG, "EsaPhのWidthは" + itemPh.getWidth() );
-		
+
 		/**
 		 * PetPhの拡大・縮小率設定 ここでfloatにキャストしないと拡大率が小数点以下切り捨てられてしまうので要注意
 		 */
@@ -140,6 +148,11 @@ public class Esa extends CamPeItem implements Runnable {
 		/** 歩数を数える */
 		cnt++;
 
+//		if (nowY < (viewHeight/3)) {
+//			/** Y方向に動くペースを変化させる。 */
+//			moveY = moveY * (1 + (cnt / 800));
+//		}
+
 		/** 画面端のチェック：X軸 */
 		if (nowX < 0 || this.viewWidth - itemWidth < nowX) {
 			moveX *= -1;
@@ -171,7 +184,7 @@ public class Esa extends CamPeItem implements Runnable {
 		// }
 
 		/** 移動させる */
-		nowX = nowX + moveX;
+		nowX = (float) (nowX + moveX);
 		nowY = nowY + moveY;
 
 		// /** esaPhの位置と拡大縮小率確認 */

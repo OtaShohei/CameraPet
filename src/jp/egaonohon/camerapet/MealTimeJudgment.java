@@ -44,7 +44,7 @@ public class MealTimeJudgment {
 //			CameLog.setLog(TAG,"おやつと判定");
 			return MealTime;
 			/** 時間帯判定実行。18時以降ならば晩御飯 */
-		} else if (nowTimeint >= 18 || nowTimeint <= 3) {
+		} else if (nowTimeint >= 18) {
 			MealTime = "Dinner";
 //			CameLog.setLog(TAG,"晩御飯と判定");
 			return MealTime;
