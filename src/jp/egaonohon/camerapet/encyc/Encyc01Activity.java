@@ -1,15 +1,11 @@
 package jp.egaonohon.camerapet.encyc;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Locale;
 
 import jp.basicinc.gamefeat.android.sdk.controller.GameFeatAppController;
 import jp.egaonohon.camerapet.App;
+import jp.egaonohon.camerapet.CamPeAdMob;
+import jp.egaonohon.camerapet.CamPeGameFeat;
 import jp.egaonohon.camerapet.CamPePref;
 import jp.egaonohon.camerapet.CameLog;
 import jp.egaonohon.camerapet.MainActivity;
@@ -32,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
@@ -43,16 +40,23 @@ public class Encyc01Activity extends Activity {
 	private boolean bgmOn = true;
 
 	/** 【教室公開用コメントアウト】 */
+	/** 言語設定ごとの広告表示のための言語設定確認 */
+	private String locale;
+	/** Admob用のインスタンス */
+	private AdView adView;
 	/** GameFeat用のインスタンス */
 	private GameFeatAppController gfAppController;
-	protected getImageData getImageData;
+	
+	// /** GameFeat用のインスタンス */
+	// private GameFeatAppController gfAppController;
+	// protected getImageData getImageData;
 
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "Encyc01";
 
 	/*
 	 * (非 Javadoc)
-	 *
+	 * 
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
 	@Override
@@ -78,86 +82,43 @@ public class Encyc01Activity extends Activity {
 		/** NotificationManager用に、現在起動中である旨、プリファレンスに登録 */
 		CamPePref.saveOther01ActivityOperationStatus(this);
 
-		/** 属性 android:id="@+id/adMobSpace" が与えられているものとしてLinearLayout をルックアップする */
-		LinearLayout layout = (LinearLayout) findViewById(R.id.adMobSpace);
+		/** 広告表示設定のため、ユーザーの設定言語を取得 */
+		locale = Locale.getDefault().toString();
 
-		/** 【教室公開用コメントアウト】 */
-		// GFコントローラ
-		gfAppController = new GameFeatAppController();
-		gfAppController.init(Encyc01Activity.this);
-
-		// LinearLayout incLayout = null;
-		RelativeLayout incLayout = null;
-		LinearLayout mainLayout = (LinearLayout) findViewById(R.id.adMobSpace);
-
-		// カスタム広告のデータを取得
-		ArrayList<HashMap<String, String>> customArrayList = gfAppController
-				.getCustomAds();
-
-		for (final HashMap<String, String> map : customArrayList) {
-			// LayoutInflaterの準備
-			LayoutInflater inflater = (LayoutInflater) getApplicationContext()
-					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			incLayout = (RelativeLayout) inflater.inflate(R.layout.custom_row,
-					null);
-
-			// アイコン画像の読み込み
-			ImageView appIcon = (ImageView) incLayout
-					.findViewById(R.id.app_icon);
-			getImageData = new getImageData(map.get("appIconUrl"), appIcon);
-			getImageData.execute();
-
-			// タイトルの設定
-			TextView title = (TextView) incLayout.findViewById(R.id.title);
-			title.setText(map.get("appTitle"));
-
-			// タイトルの設定
-			TextView description = (TextView) incLayout
-					.findViewById(R.id.description);
-			description.setText(map.get("appDescription"));
-
-			// レビューボタンの設定
-			Button btnReview = (Button) incLayout.findViewById(R.id.btn_review);
-			if (map.get("hasReview") == "0") {
-				btnReview.setVisibility(View.GONE);
-			}
-			btnReview.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					// レビューへ
-					gfAppController.onAdReviewClick(map);
-				}
-			});
-
-			// DLボタンの設定
-			Button btnStore = (Button) incLayout.findViewById(R.id.btn_store);
-			btnStore.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					// AppStoreへ
-					gfAppController.onAdStoreClick(map);
-				}
-			});
-
-			mainLayout.addView(incLayout);
+		if (!locale.equals("ja_JP")) {
+			/** AdMob呼び出し */
+			CamPeAdMob encyc01CamPeAdMob = new CamPeAdMob();
+			adView = encyc01CamPeAdMob.workAtOnCreate(this);
+		} else {
+			/** GFコントローラ。MainActivityにのみ（?）必要 */
+			gfAppController = new GameFeatAppController();
+			
+			/** GameFeat呼び出し */
+			CamPeGameFeat encyc01CamPeGameFeat = new CamPeGameFeat();
+			encyc01CamPeGameFeat.workAtOnCreate(this);
 		}
+
 		/** 起動したクラスをLogで確認 */
 		CameLog.setLog(TAG, "onCreate");
 	}
 
 	/*
 	 * (非 Javadoc)
-	 *
+	 * 
 	 * @see android.app.Activity#onResume()
 	 */
 	@Override
 	protected void onResume() {
 		super.onResume();
+		if (!locale.equals("ja_JP")) {
+			/** 日本語以外の場合はAdMobの一時停止 */
+			adView.resume();
+		}
 	}
 
 	/*
 	 * (非 Javadoc)
-	 *
+	 * 
 	 * @see android.app.Activity#onPause()
 	 */
 	@Override
@@ -167,6 +128,12 @@ public class Encyc01Activity extends Activity {
 		/** BGMを停止 */
 		encycBgm.stop();
 
+		/** 日本語以外の場合は */
+		if (!locale.equals("ja_JP")) {
+			/** Admobの破棄 */
+			adView.destroy();
+		}
+
 		/**
 		 * Activityを明示的に終了させる。 ただし注意点あり。
 		 * http://d.hatena.ne.jp/adsaria/20110428/1303966837
@@ -175,10 +142,48 @@ public class Encyc01Activity extends Activity {
 		finish();
 	}
 
+	/*
+	 * (非 Javadoc)
+	 * 
+	 * @see android.app.Activity#onStart()
+	 */
+	@Override
+	protected void onStart() {
+		super.onStart();
+		/** Google Analytics用の記述 */
+		Tracker t = ((App) getApplication())
+				.getTracker(App.TrackerName.APP_TRACKER);
+		t.setScreenName(this.getClass().getSimpleName());
+		t.send(new HitBuilders.AppViewBuilder().build());
+		
+		if (locale.equals("ja_JP")) {
+			/** 【教室公開用コメントアウト】 */
+			/**
+			 * GAME FEAT広告設定初期化 初期化コードの引数は次の通り。MainActivityでの宣言だけでOK？？ activateGF(【Activity名】.this,
+			 * カスタム広告の使用, アイコン広告の使用, 全画面広告の使用);
+			 */
+			gfAppController.activateGF(Encyc01Activity.this, true, false, false);
+		}
+	}
+
+	/*
+	 * (非 Javadoc)
+	 * 
+	 * @see android.app.Activity#onStop()
+	 */
+	@Override
+	protected void onStop() {
+		super.onStop();
+		/** NotificationManager用に、現在起動中でない旨、プリファレンスに登録 */
+		CamPePref.saveOther01ActivityNotWorkStatus(this);
+
+		/** AlarmManager & NotificationManagerを動かすメソッドを呼び出す */
+		PetAlarmBroadcastReceiver.set(this);
+	}
+	
 	// //////////////////////////////////////////////////////////////////////////////////
 	// 以下、非オーバーライド系メソッド。
 	// //////////////////////////////////////////////////////////////////////////////////
-
 	/**
 	 * 戻るボタンメソッド。
 	 *
@@ -252,73 +257,5 @@ public class Encyc01Activity extends Activity {
 		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
 		 */
 		startActivity(intent);
-	}
-
-	/*
-	 * (非 Javadoc)
-	 *
-	 * @see android.app.Activity#onStart()
-	 */
-	@Override
-	protected void onStart() {
-		super.onStart();
-		/** Google Analytics用の記述 */
-		Tracker t = ((App) getApplication())
-				.getTracker(App.TrackerName.APP_TRACKER);
-		t.setScreenName(this.getClass().getSimpleName());
-		t.send(new HitBuilders.AppViewBuilder().build());
-	}
-
-	/**
-	 * 画像の非同期読み込み
-	 *
-	 */
-	class getImageData extends AsyncTask<String, Integer, Bitmap> {
-
-		private ImageView imageView;
-		private String imageUrl;
-
-		public getImageData(String imageUrl, ImageView imageView) {
-			super();
-			this.imageView = imageView;
-			this.imageUrl = imageUrl;
-		}
-
-		@Override
-		protected Bitmap doInBackground(String... param) {
-			Bitmap bitmap;
-
-			try {
-				URL url = new URL(this.imageUrl);
-				InputStream inputStream = url.openStream();
-				bitmap = BitmapFactory.decodeStream(inputStream);
-				return bitmap;
-			} catch (IOException ex) {
-				Logger.getLogger(Encyc01Activity.class.getName()).log(
-						Level.SEVERE, null, ex);
-			}
-
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(Bitmap result) {
-			imageView.setImageBitmap(result);
-		}
-	}
-
-	/*
-	 * (非 Javadoc)
-	 *
-	 * @see android.app.Activity#onStop()
-	 */
-	@Override
-	protected void onStop() {
-		super.onStop();
-		/** NotificationManager用に、現在起動中でない旨、プリファレンスに登録 */
-		CamPePref.saveOther01ActivityNotWorkStatus(this);
-
-		/** AlarmManager & NotificationManagerを動かすメソッドを呼び出す */
-		PetAlarmBroadcastReceiver.set(this);
 	}
 }

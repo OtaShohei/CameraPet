@@ -143,7 +143,7 @@ int drawable twt_btn 0x7f02004a
 int drawable yellow_mini 0x7f02004b
 int id LinearLayout1 0x7f0c0019
 int id ScrollView 0x7f0c0017
-int id action_settings 0x7f0c0037
+int id action_settings 0x7f0c0038
 int id adMobSpace 0x7f0c001b
 int id ad_lists 0x7f0c0018
 int id adjust_height 0x7f0c0000
@@ -152,9 +152,9 @@ int id app_icon 0x7f0c0025
 int id book_now 0x7f0c0010
 int id btn_review 0x7f0c0027
 int id btn_store 0x7f0c0028
-int id button1 0x7f0c0031
-int id button2 0x7f0c0033
-int id button3 0x7f0c0036
+int id button1 0x7f0c0032
+int id button2 0x7f0c0034
+int id button3 0x7f0c0037
 int id buyButton 0x7f0c000c
 int id buy_now 0x7f0c0011
 int id buy_with_google 0x7f0c0012
@@ -175,8 +175,8 @@ int id hatena_btn 0x7f0c0021
 int id holo_dark 0x7f0c0007
 int id holo_light 0x7f0c0008
 int id hybrid 0x7f0c0003
-int id imageView1 0x7f0c0032
-int id imageView2 0x7f0c0035
+int id imageView1 0x7f0c0033
+int id imageView2 0x7f0c0036
 int id match_parent 0x7f0c000e
 int id monochrome 0x7f0c0016
 int id none 0x7f0c0002
@@ -192,9 +192,10 @@ int id stopSound 0x7f0c001e
 int id strict_sandbox 0x7f0c000b
 int id terrain 0x7f0c0006
 int id textView1 0x7f0c002a
-int id textView2 0x7f0c0034
+int id textView2 0x7f0c0035
 int id textView30 0x7f0c002c
 int id textView31 0x7f0c0030
+int id textView32 0x7f0c0031
 int id title 0x7f0c0026
 int id wrap_content 0x7f0c000f
 int integer google_play_services_version 0x7f090000
@@ -393,6 +394,7 @@ int string shotBtn 0x7f07002b
 int string sound 0x7f070026
 int string store_picture_message 0x7f070001
 int string store_picture_title 0x7f070000
+int string to_be_continued 0x7f0700b1
 int string tutorial01 0x7f070034
 int string tutorial02 0x7f070035
 int string tutorial03 0x7f070036

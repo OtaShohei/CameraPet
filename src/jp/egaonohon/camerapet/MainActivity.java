@@ -57,8 +57,7 @@ public class MainActivity extends Activity {
 
 	/** 言語設定ごとの広告表示のための言語設定確認 */
 	private String locale;
-
-	/** Admob用のインスタンス */
+	/** AdMob用のインスタンス */
 	private AdView adView;
 	/** GameFeat用のインスタンス */
 	private GameFeatAppController gfAppController;
@@ -94,49 +93,20 @@ public class MainActivity extends Activity {
 
 		/** 日本語設定でないならば */
 		if (!locale.equals("ja_JP")) {
-			// ////////
-			// 以下、Admob用記述
-			// http://skys.co.jp/archives/1579
-			// を参考にEclipseへのメモリ割り当てを増やさないとEclipseがフリーズするので要注意。
-			// ////////
-
-			/** adView を作成する */
-			adView = new AdView(this);
-			adView.setAdUnitId("ca-app-pub-1135628131797223/1945135213");
-			adView.setAdSize(AdSize.SMART_BANNER);
-
-			/**
-			 * 属性 android:id="@+id/adMobSpace" が与えられているものとしてLinearLayout
-			 * をルックアップする
-			 */
-			LinearLayout layout = (LinearLayout) findViewById(R.id.adMobSpace);
-
-			/** adView を追加する */
-			layout.addView(adView);
-
-			// /** 一般的なリクエストを行う */
-			// AdRequest adRequest = new AdRequest.Builder().build();
-
-			/** 【教室公開用コメントアウト】 */
-			/** テスト用のリクエストを行う */
-			AdRequest adRequest = new AdRequest.Builder()
-			/** エミュレータ */
-			.addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-			/** Nexus */
-			.addTestDevice("9F62663AFEF7E4EC5B3F231A4AB93A9C")
-			/** Motorola */
-			.addTestDevice("F8ACFF2BF5F49E1CD65848BA4BC6E0AD")
-			/** 広告対象を女性に */
-			.setGender(AdRequest.GENDER_FEMALE).build();
-
-			/** 広告リクエストを行って adView を読み込む */
-			adView.loadAd(adRequest);
+			
+			/** AdMob呼び出し */
+			CamPeAdMob mainActivityCamPeAdMob = new CamPeAdMob();
+			adView = mainActivityCamPeAdMob.workAtOnCreate(this);
 		} else {
 			// //////
 			// 以下、gamefeat用記述
 			// //////
-			/** GFコントローラ */
+			/** GFコントローラ。MainActivityにのみ（?）必要 */
 			gfAppController = new GameFeatAppController();
+			
+			/** GameFeat呼び出し */
+			CamPeGameFeat mainActivityCamPeGameFeat = new CamPeGameFeat();
+			mainActivityCamPeGameFeat.workAtOnCreate(this);
 		}
 	}
 
@@ -159,9 +129,8 @@ public class MainActivity extends Activity {
 		/** NotificationManager用に、現在起動中である旨、プリファレンスに登録 */
 		CamPePref.saveMainActivityOperationStatus(this);
 
-		/** 日本語以外の場合は */
 		if (!locale.equals("ja_JP")) {
-			/** Admobの一時停止 */
+			/** 日本語以外の場合はAdMobの一時停止 */
 			adView.resume();
 		}
 	}
@@ -204,7 +173,7 @@ public class MainActivity extends Activity {
 		if (locale.equals("ja_JP")) {
 			/** 【教室公開用コメントアウト】 */
 			/**
-			 * GAME FEAT広告設定初期化 初期化コードの引数は次の通り。 activateGF(【Activity名】.this,
+			 * GAME FEAT広告設定初期化 初期化コードの引数は次の通り。MainActivityでの宣言だけでOK？？ activateGF(【Activity名】.this,
 			 * カスタム広告の使用, アイコン広告の使用, 全画面広告の使用);
 			 */
 			gfAppController.activateGF(MainActivity.this, true, false, false);

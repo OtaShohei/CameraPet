@@ -11,7 +11,9 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -42,6 +44,9 @@ public class Encyc10ContentsDrawView extends View {
 	private String petFavoriteTxt;
 	/** ペット解説文字 */
 	private String petCommentTxt;
+	
+//	/** 塗りのテーマカラー */
+//	private static int themeColor = Color.argb(255, 224, 107, 98);
 
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "Encyc10ContentsDrawView";
@@ -137,6 +142,21 @@ public class Encyc10ContentsDrawView extends View {
 		encycCommonTextRect.Draw(getContext(), canvas, contentsFieldWidth,
 				contentsFieldHeight, petPh, layoutScale, paint, petNameTxt,
 				petWeightTxt, petLengthTxt, petFavoriteTxt, petCommentTxt);
-
+		
+//		/** 「続く」文字描画 */
+//		/** 文字色にテーマカラーを設定 */
+//		paint.setColor(themeColor);
+//		/** Aliasを設定 */
+//		paint.setAntiAlias(true);
+//
+//		/** テキストサイズと書体を設定 */
+//		paint.setTextSize(contentsFieldWidth / 26);
+//		paint.setTypeface(Typeface.DEFAULT_BOLD);
+//
+//		/** テキスト中央揃えに設定 */
+//		paint.setTextAlign(Paint.Align.CENTER);
+//
+//		/** ペット名表示 */
+//		canvas.drawText(petNameTxt, layoutScale * 73, layoutScale * 77, paint);
 	}
 }

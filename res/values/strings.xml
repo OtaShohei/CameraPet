@@ -143,5 +143,6 @@
     <string name="pet_message_morningtime002">Oh! No, no, Since the morning sunlight is bright, I could hardly keep my eyes open.</string>
     <string name="pet_message_morningtime003">In the morning, a stray cat had quarrel at garbage dump. They are young!</string>
     <string name="pet_message_morningtime004">If I do the job, I do a newspapers round. I can deliver from the air.</string>
-
+    <string name="to_be_continued">To be continued</string>
+    
 </resources>
