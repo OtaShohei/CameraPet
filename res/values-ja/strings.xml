@@ -40,7 +40,7 @@
     <string name="pet_01_weight">●体重:メロン1個分くらい</string>
     <string name="pet_01_length">●体長:筆箱より少し長い</string>
     <string name="pet_01_favorite">●好物:飼い主の匂い</string>
-    <string name="pet_01_comment">公園で拾った犬。ある日突然空を飛べるようになったすごいヤツ。でも、写真を食べ始めるなんてびっくりですよ。</string>
+    <string name="pet_01_comment">近所の空き地で拾った犬。ある日突然空を飛びはじめた。しかも、写真も食べ始める。ただものではなさそう。</string>
     <string name="pet_message_welcome">飼い主さんに会えてうれしいワン!</string>
     <string name="how_to_shot">画面タップで撮影できます。</string>
     <string name="download_sns_app">SNSアプリが入っていません。Google PlayでSNSアプリをダウンロードしてください。</string>
@@ -56,16 +56,26 @@
     <string name="pet_dummy_length">ダミーダミー</string>
     <string name="pet_dummy_favorite">ダミーダミー</string>
     <string name="pet_dummy_comment">"ダミーダミーダミーダミーダミーダミーダミーダミーダミーダミーダミーダミーダミーダミーダミーダミーダミー"</string>
-    <string name="pet_02_name">お城イヌ</string>
-    <string name="pet_02_weight">●体重:スイカ1個分くらい</string>
-    <string name="pet_02_length">●体長:スマホ2つ分</string>
-    <string name="pet_02_favorite">●好物:日本庭園</string>
-    <string name="pet_02_comment">お城の石垣みたいなものをまとった犬。歩きにくそうだけど本人は気にならないみたい。石垣を触られると大喜び。</string>
-    <string name="pet_03_name">雪犬だるま</string>
-    <string name="pet_03_weight">●体重:雪だるまくらい</string>
-    <string name="pet_03_length">●体長:雪だるまくらい</string>
-    <string name="pet_03_favorite">●好物:冷凍庫</string>
-    <string name="pet_03_comment">冬以外は苦手な犬。外から帰ったらすぐに冷凍庫に入らないと溶けて消えてしまう。触ると冷たくて気持ちいい。</string>
+    <string name="pet_02_name">富士山ワンコ</string>
+    <string name="pet_02_weight">●体重:富士山よりは軽い</string>
+    <string name="pet_02_length">●体長:富士山よりは小さい</string>
+    <string name="pet_02_favorite">●好物:山梨みかん</string>
+    <string name="pet_02_comment">富士山から頭と足が生えてる犬。外国人は「Oh! FUJIYAMA!」と喜ぶ。でも、日本人が見るとやや驚きを禁じ得ない。</string>
+    <string name="pet_03_name">アメリ犬（けん）</string>
+    <string name="pet_03_weight">●体重:50ガロン</string>
+    <string name="pet_03_length">●体長:50インチ</string>
+    <string name="pet_03_favorite">●好物:コーラ</string>
+    <string name="pet_03_comment">アメリカンな犬。でも、こういう犬はアメリカにはたぶんいない。世界の番犬として悪と戦う日も近い。たぶん。</string>
+    <string name="pet_02b_name">お城イヌ</string>
+    <string name="pet_02b_weight">●体重:スイカ1個分くらい</string>
+    <string name="pet_02b_length">●体長:スマホ2つ分</string>
+    <string name="pet_02b_favorite">●好物:日本庭園</string>
+    <string name="pet_02b_comment">お城の石垣みたいなものをまとった犬。歩きにくそうだけど本人は気にならないみたい。石垣を触られると大喜び。</string>
+    <string name="pet_03b_name">雪犬だるま</string>
+    <string name="pet_03b_weight">●体重:雪だるまくらい</string>
+    <string name="pet_03b_length">●体長:雪だるまくらい</string>
+    <string name="pet_03b_favorite">●好物:冷凍庫</string>
+    <string name="pet_03b_comment">冬以外は苦手な犬。外から帰ったらすぐに冷凍庫に入らないと溶けて消えてしまう。触ると冷たくて気持ちいい。</string>
     <string name="pet_message_satiety">お腹いっぱい！　ありがと!　これで経験値が20増えたよ！</string>
     <string name="pet_message_levelup">レベルアップして変身できたよ!</string>
     <string name="pet_message_thanksSNS">僕の成長ぶりをみんなに知らせてくれて嬉しいワン!　経験値と残りエサ数が20も増えたよ!</string>
@@ -144,28 +154,63 @@
     <string name="pet_message_morningtime003">朝、ゴミ捨て場で野良猫がケンカしてた。これって若さ?</string>
     <string name="pet_message_morningtime004">やるなら新聞配達のバイト。空中からお届けするんだ</string>
     <string name="to_be_continued">続く…</string>
-    
-    <!-- 楽しかった!　お友だちはやっぱり大切だと思いますよ -->
-    <!-- I had fun.Friends are such a great thing. -->
+    <string name="special_thanks">サンクス</string>
+    <string name="camera_pet_copyright">カメラペットVer.1.0\nCopyright 2015 太田祥平 (NicoAlu)\nAll rights reserved.</string>
+    <string name="special_thanks_title">Special Thanks</string>
+    <string name="special_thanks_illust">たのしい絵:小豆だるま</string>
+    <string name="special_thanks_illust_link">http://www6.ocn.ne.jp/~komameda/</string>
+    <string name="special_thanks_bgm">たのしい音楽:もっぴーさうんど</string>
+    <string name="special_thanks_bgm_link">http://moppysound.seesaa.net/</string>
+    <string name="special_thanks_button_icon">ボタンの絵:WPZOOM Developer Icon Set by WPZOOM is licensed under a Creative Commons Attribution-ShareAlike 3.0 Unported License.</string>
+    <string name="special_thanks_button_icon_link">http://www.wpzoom.com/</string>
+    <string name="special_thanks_encyclopedia_illust">図鑑の絵:All Vectors</string>
+    <string name="special_thanks_encyclopedia_illust_link">http://www.allvectors.com/</string>
+    <string name="return_txt">もどる</string>
+    <string name="pet_message_generic022">飼い主さんにとって大切なことって何?　ボクは自由かな</string>
+    <string name="pet_message_generic023">今日はエステに行くつもり</string>
+    <string name="pet_message_generic024">飼い主さんの留守中にNHKのヒトが来てた。受信料…</string>
+    <string name="pet_message_generic025">飼い主さん疲れてる?　ひょっとしてボクのせい?</string>
+    <string name="pet_message_generic026">最近肩こりがひどいんだよね。年かな</string>
+    <string name="pet_message_generic027">楽しかった!　友だちはやっぱり大切だと思った</string>
+    <string name="special_thanks_talent">たのしい絵:小豆だるま\nhttp://www6.ocn.ne.jp/~komameda/\n\nたのしい音楽:もっぴーさうんど\nhttp://moppysound.seesaa.net/\n\nボタンの絵:WPZOOM Developer Icon Set by WPZOOM is licensed under a Creative Commons Attribution-ShareAlike 3.0 Unported License.\nhttp://www.wpzoom.com/\n\n図鑑の絵:All Vectors\nhttp://www.allvectors.com/</string>
+
+    <!-- アタマがかゆい。シャンプーを変えてほしい… -->
+    <!-- I have itchy head. I want to change the shampoo ... -->
 
 
-    <!-- 飼い主さんにとって大切なことって何?　ボクは自由かな -->
-    <!-- What is it important to you? Freedom is important for me. -->
+    <!-- ゴジラはすごいよ。見習わないと。強さと優しさあたりを -->
+    <!-- Godzilla is amazing. I apprentice him. In particular, His strength and tenderness -->
 
 
-    <!-- 今日はエステに行こうっと -->
-    <!-- Today, Im going to go to a beauty‐treatment clinic. -->
+    <!-- このスマホはあたたかくて居心地がいいんだよね。飼い主さんはどう? -->
+    <!-- I'm a good comfortable because your smartphone is warm. How about you? -->
 
 
-    <!-- 飼い主さんの留守中にNHKのヒトが来てた。受信料…。 -->
-    <!-- Salesman had come during your absence. I wonder what he sell? -->
+    <!-- 今日は素振りを100回がんばった。明日は101回を目指す -->
+    <!-- I tried hard to practice swing 100 times today. Tomorrow I aim to 101 times -->
 
 
-    <!-- 飼い主さん疲れてる?　ひょっとしてボクのせい? -->
-    <!-- You look so tired. Because of me by chance? -->
+    <!-- 早く起きて、ってガールフレンドに起こされるのも悪くないかも -->
+    <!-- A girlfriend's voice of "Wake up, sleepyhead!" is not bad. -->
 
 
-    <!-- 最近肩こりがひどいんだよね。年かな。 -->
-    <!-- Recently I'm terrible stiff neck. I am old. -->
+    <!-- 犬もスピード違反で捕まるんだって。ネズミ捕りにひっかかって。犬なのにね -->
+    <!-- Dog Even do get caught for speeding. They can get stuck to mousetrap. Even though the dog. -->
+
+
+    <!-- キレイなディスプレイだとボクもイケメンに見えるかな -->
+    <!-- If beautiful display, wonder if I even look to Twink. -->
+
+
+    <!-- 今日は紫外線対策をして出かける。飼い主さんも気をつけて -->
+    <!-- I go out with a UV protection today. You also please be careful. -->
+
+
+    <!-- LINEのスタンプがうらやましい。だって、いろんなヒトのスマホにお出かけできるから… -->
+    <!-- I envy the stamp of Facebook Messenger. Because they can go out to the smartphone of many people ... -->
+
+
+    <!-- 夜更かしするとコンビニに行きたくなる。飼い主さんもそうでしょ? -->
+    <!-- If I stay up late, I would want to go to a convenience store. Don't you think so? -->
 
 </resources>

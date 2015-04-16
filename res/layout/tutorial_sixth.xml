@@ -69,7 +69,6 @@
             android:text="@string/next_logo"
             android:textColor="#ffffff"
             android:textSize="24sp" />
-
     </LinearLayout>
 
     <LinearLayout
@@ -79,22 +78,23 @@
         android:orientation="horizontal"
         android:padding="4dp" >
 
-        <TextView
-            android:id="@+id/textView2"
+        <Button
+            android:id="@+id/button4"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="1"
+            android:background="@null"
+            android:gravity="center"
             android:padding="4dp"
-            android:text=" "
-            android:textColor="#ffffff"
-            android:textSize="16sp" />
+            android:text="@string/special_thanks"
+            android:textColor="#f1c120" />
 
         <ImageView
             android:id="@+id/imageView2"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-                        android:layout_gravity="center"
+            android:layout_gravity="center"
             android:layout_weight="2"
             android:background="@null"
             android:gravity="center"
@@ -112,7 +112,6 @@
             android:onClick="goHome"
             android:text="@string/tutorial_end"
             android:textColor="#ffffff" />
-
     </LinearLayout>
 
 </LinearLayout>

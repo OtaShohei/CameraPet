@@ -9,7 +9,6 @@ import jp.egaonohon.camerapet.CameLog;
 import jp.egaonohon.camerapet.MainActivity;
 import jp.egaonohon.camerapet.PetAlarmBroadcastReceiver;
 import jp.egaonohon.camerapet.R;
-import jp.egaonohon.camerapet.R.layout;
 import android.app.Activity;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -20,7 +19,7 @@ public class TutorialSeventhActivity extends Activity {
 
 	/** BGM用変数 */
 	private static MediaPlayer tutorialBgm;
-	
+
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "TutorialSeventhActivity";
 
@@ -33,10 +32,10 @@ public class TutorialSeventhActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tutorial_seventh);
-		
+
 		/** NotificationManager用に、現在起動中である旨、プリファレンスに登録 */
 		CamPePref.saveOther01ActivityOperationStatus(this);
-		
+
 		/** 起動したクラスをLogで確認 */
 		CameLog.setLog(TAG, "onCreate");
 	}
@@ -48,7 +47,6 @@ public class TutorialSeventhActivity extends Activity {
 	 */
 	@Override
 	protected void onResume() {
-		// TODO 自動生成されたメソッド・スタブ
 		super.onResume();
 	}
 
@@ -59,10 +57,9 @@ public class TutorialSeventhActivity extends Activity {
 	 */
 	@Override
 	protected void onPause() {
-		// TODO 自動生成されたメソッド・スタブ
 		super.onPause();
-//		/** BGMを停止 */
-//		tutorialBgm.stop();
+		// /** BGMを停止 */
+		// tutorialBgm.stop();
 		finish();
 	}
 
@@ -88,21 +85,41 @@ public class TutorialSeventhActivity extends Activity {
 		startActivity(intent);
 	}
 
-	 /**
-	 * 次へボタンメソッド。
+	/**
+	 * SpecialThanksへボタンメソッド。
+	 * 
 	 * @param v
 	 */
-	 public void goNext(View v) {
-	 /**
-	 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
+	public void goThanks(View v) {
+		/**
+		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
+		 */
+		Intent intent = new Intent(TutorialSeventhActivity.this,
+				SpecialThanksActivity.class);
+
+		/**
+		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
+		 */
+		startActivity(intent);
+	}
+
+	/**
+	 * 次へボタンメソッド。
+	 * 
+	 * @param v
 	 */
-	 Intent intent = new Intent(TutorialSeventhActivity.this,MainActivity.class);
-	
-	 /**
-	 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
-	 */
-	 startActivity(intent);
-	 }
+	public void goNext(View v) {
+		/**
+		 * 画面移動要求を格納したインテントを作成する。 第一引数に自身(this)を設定 第二引数に移動先のクラス名を指定
+		 */
+		Intent intent = new Intent(TutorialSeventhActivity.this,
+				MainActivity.class);
+
+		/**
+		 * Activity.startActivity()の第一引数にインテントを指定することで画面移動が行われる。
+		 */
+		startActivity(intent);
+	}
 
 	/**
 	 * チュートリアルを終えるボタンメソッド。
@@ -136,8 +153,10 @@ public class TutorialSeventhActivity extends Activity {
 		t.setScreenName(this.getClass().getSimpleName());
 		t.send(new HitBuilders.AppViewBuilder().build());
 	}
-	
-	/* (非 Javadoc)
+
+	/*
+	 * (非 Javadoc)
+	 * 
 	 * @see android.app.Activity#onStop()
 	 */
 	@Override
@@ -145,7 +164,7 @@ public class TutorialSeventhActivity extends Activity {
 		super.onStop();
 		/** NotificationManager用に、現在起動中でない旨、プリファレンスに登録 */
 		CamPePref.saveOther01ActivityNotWorkStatus(this);
-		
+
 		/** AlarmManager & NotificationManagerを動かすメソッドを呼び出す */
 		PetAlarmBroadcastReceiver.set(this);
 	}

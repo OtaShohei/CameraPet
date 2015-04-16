@@ -140,6 +140,14 @@
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
         </activity>
 
+        <!-- チュートリアル用Activity追加8　SpecialThanksActivity -->
+        <activity
+            android:name="jp.egaonohon.camerapet.tutorial.SpecialThanksActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
+        </activity>
+
         <!-- 図鑑Activity追加1 -->
         <activity
             android:name="jp.egaonohon.camerapet.encyc.Encyc01Activity"
