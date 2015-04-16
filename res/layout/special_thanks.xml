@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
+        android:layout_weight="1"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingLeft="4dp"
@@ -18,29 +19,31 @@
 
         <ImageView
             android:id="@+id/imageView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:src="@drawable/ic_launcher" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="3"
             android:orientation="vertical" >
 
             <TextView
                 android:id="@+id/textView1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_weight="1"
                 android:padding="4dp"
                 android:text="@string/camera_pet_copyright"
                 android:textColor="#ffffff"
-                android:textSize="16sp" />
+                android:textSize="@dimen/textsize_small" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_weight="3"
                 android:orientation="horizontal" >
 
                 <ImageButton
@@ -50,7 +53,7 @@
                     android:layout_weight="1"
                     android:background="@null"
                     android:onClick="onClickOtaFb"
-                    android:padding="3dp"
+                    android:padding="2dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/fb_btn" />
 
@@ -61,7 +64,7 @@
                     android:layout_weight="1"
                     android:background="@null"
                     android:onClick="onClickOtaTw"
-                    android:padding="3dp"
+                    android:padding="2dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/twt_btn" />
 
@@ -72,7 +75,7 @@
                     android:layout_weight="1"
                     android:background="@null"
                     android:onClick="onClickOtaBlog"
-                    android:padding="3dp"
+                    android:padding="2dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/home_btn" />
             </LinearLayout>
@@ -104,17 +107,19 @@
             android:id="@+id/textView5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:padding="4dp"
             android:text="@string/special_thanks_talent"
             android:textColor="#ffffff"
-            android:textSize="16sp" />
+            android:textSize="@dimen/textsize_small" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
+        android:layout_weight="0.5"
         android:orientation="horizontal"
         android:padding="4dp" >
 
@@ -128,7 +133,8 @@
             android:gravity="center"
             android:onClick="goBack"
             android:text="@string/return_txt"
-            android:textColor="#ffffff" />
+            android:textColor="#ffffff"
+            android:textSize="@dimen/textsize_small" />
 
         <TextView
             android:id="@+id/textView2"
@@ -151,7 +157,8 @@
             android:gravity="center"
             android:onClick="goHome"
             android:text="@string/tutorial_end"
-            android:textColor="#ffffff" />
+            android:textColor="#ffffff"
+            android:textSize="@dimen/textsize_small" />
     </LinearLayout>
 
 </LinearLayout>
