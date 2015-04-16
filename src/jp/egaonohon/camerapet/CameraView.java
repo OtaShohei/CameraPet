@@ -48,6 +48,9 @@ public class CameraView extends SurfaceView {
 	private int gettedtotalEXP;
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "CameraView";
+	/** Toastをメンバ変数で確保 */
+	private Toast toast = null;
+
 	/**
 	 * プレビューのサイズ。詳しくは、 http://labs.techfirm.co.jp/android/cho/1647
 	 * http://d.hatena.ne.jp/TAC/20101214/1292347298
@@ -83,38 +86,42 @@ public class CameraView extends SurfaceView {
 		holder.addCallback(new SurfaceHolder.Callback() {
 			@Override
 			public void surfaceCreated(SurfaceHolder holder) {
-				// petCam = Camera.open(0);
-				/** フロントカメラリアカメラを選択する */
-				int frontCameraId = -1;
-				int backCameraId = -1;
-				int numberOfCameras = Camera.getNumberOfCameras();
-				CameraInfo cameraInfo = new CameraInfo();
-				for (int i = 0; i < numberOfCameras; i++) {
-					// 指定したカメラの情報を取得
-					Camera.getCameraInfo(i, cameraInfo);
-					if (cameraInfo.facing == CameraInfo.CAMERA_FACING_BACK) {
-						backCameraId = i;
-					} else if (cameraInfo.facing == CameraInfo.CAMERA_FACING_FRONT) {
-						frontCameraId = i;
-					}
-				}
-				int id = -1;
-//				if (frontCameraId != -1) { // フロントカメラを呼び出し
-//					id = frontCameraId;
-//				}
-				 if (backCameraId != -1) { // バックカメラを呼び出し
-				 id = backCameraId;
-				 }
-				if (id >= 0) {
-					petCam = Camera.open(id);
-				} else {
-					petCam = Camera.open();
-				}
+				/** リアカメラがないスマホ・タブレット対策としてトライキャッチで囲んで、catch部分でそれら端末向けの処理を行う */
 				try {
-					petCam.setPreviewDisplay(holder);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					/** フロントカメラリアカメラを選択する */
+					int frontCameraId = -1;
+					int backCameraId = -1;
+					int numberOfCameras = Camera.getNumberOfCameras();
+					CameraInfo cameraInfo = new CameraInfo();
+					for (int i = 0; i < numberOfCameras; i++) {
+						// 指定したカメラの情報を取得
+						Camera.getCameraInfo(i, cameraInfo);
+						if (cameraInfo.facing == CameraInfo.CAMERA_FACING_BACK) {
+							backCameraId = i;
+						} else if (cameraInfo.facing == CameraInfo.CAMERA_FACING_FRONT) {
+							frontCameraId = i;
+						}
+					}
+					int id = -1;
+					// if (frontCameraId != -1) { // フロントカメラを呼び出し
+					// id = frontCameraId;
+					// }
+					if (backCameraId != -1) { // バックカメラを呼び出し
+						id = backCameraId;
+					}
+					if (id >= 0) {
+						petCam = Camera.open(id);
+					} else {
+						petCam = Camera.open();
+					}
+					try {
+						petCam.setPreviewDisplay(holder);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} catch (Exception e) {
+					petCam = Camera.open(0);
 				}
 			}
 
@@ -201,6 +208,8 @@ public class CameraView extends SurfaceView {
 			}
 		});
 		// holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+
+		toast = Toast.makeText(context, "", Toast.LENGTH_SHORT);
 
 		/** 撮影ガイダンスのToast表示文字列を取得 */
 		Resources res = getResources();
@@ -328,6 +337,7 @@ public class CameraView extends SurfaceView {
 	/**
 	 * ボタン押下回数カウントを行うメソッド。
 	 */
+	@SuppressWarnings("unused")
 	void btnCount() {
 
 		/** プリファレンスから前回の累計撮影回数を取得 */
@@ -353,15 +363,24 @@ public class CameraView extends SurfaceView {
 		/** プリファレンスに新たな累計経験値を保存 */
 		CamPePref.saveTotalExp(getContext(), gettedtotalEXP);
 
-		/** 撮影回数を表示 */
 		Resources res = this.getResources();
-		Toast.makeText(
-				getContext(),
-				res.getString(R.string.number_shooting) + " " + cntNum + " "
-						+ res.getString(R.string.exp_increased_01) + " "
-						+ (cntNum * 10)
-						+ res.getString(R.string.exp_increased_02),
-				Toast.LENGTH_SHORT).show();
+
+		/** 撮影回数を表示。メソッドチェーンでの記述をやめることで、シャッターを連打されてもToastが遅延することを防ぐようにした */
+		toast.setText(res.getString(R.string.number_shooting) + " " + cntNum
+				+ " " + res.getString(R.string.exp_increased_01) + " "
+				+ (cntNum * 10) + res.getString(R.string.exp_increased_02));
+		toast.show();
+
+		// /** 撮影回数を表示。メソッドチェーンで書いた */
+		// Resources res = this.getResources();
+		// Toast.makeText(
+		// getContext(),
+		// res.getString(R.string.number_shooting) + " " + cntNum + " "
+		// + res.getString(R.string.exp_increased_01) + " "
+		// + (cntNum * 10)
+		// + res.getString(R.string.exp_increased_02),
+		// Toast.LENGTH_SHORT).show();
+
 		CameLog.setLog(TAG, "btnCount");
 	}
 }

@@ -1,8 +1,5 @@
 package jp.egaonohon.camerapet.tutorial;
 
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-
 import jp.egaonohon.camerapet.App;
 import jp.egaonohon.camerapet.CamPePref;
 import jp.egaonohon.camerapet.CameLog;
@@ -16,6 +13,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 public class SpecialThanksActivity extends Activity {
 
 	/** BGM用変数 */
@@ -28,7 +28,7 @@ public class SpecialThanksActivity extends Activity {
 
 	/*
 	 * (非 Javadoc)
-	 * 
+	 *
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
 	@Override
@@ -45,7 +45,7 @@ public class SpecialThanksActivity extends Activity {
 
 	/*
 	 * (非 Javadoc)
-	 * 
+	 *
 	 * @see android.app.Activity#onResume()
 	 */
 	@Override
@@ -55,7 +55,7 @@ public class SpecialThanksActivity extends Activity {
 
 	/*
 	 * (非 Javadoc)
-	 * 
+	 *
 	 * @see android.app.Activity#onPause()
 	 */
 	@Override
@@ -63,18 +63,9 @@ public class SpecialThanksActivity extends Activity {
 		super.onPause();
 	}
 
-	/* (非 Javadoc)
-	 * @see android.app.Activity#onDestroy()
-	 */
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		finish();
-	}
-
 	/*
 	 * (非 Javadoc)
-	 * 
+	 *
 	 * @see android.app.Activity#onStart()
 	 */
 	@Override
@@ -89,7 +80,7 @@ public class SpecialThanksActivity extends Activity {
 
 	/*
 	 * (非 Javadoc)
-	 * 
+	 *
 	 * @see android.app.Activity#onStop()
 	 */
 	@Override
@@ -97,9 +88,20 @@ public class SpecialThanksActivity extends Activity {
 		super.onStop();
 		/** NotificationManager用に、現在起動中でない旨、プリファレンスに登録 */
 		CamPePref.saveOther02ActivityNotWorkStatus(this);
-	
+
 		/** AlarmManager & NotificationManagerを動かすメソッドを呼び出す */
 		PetAlarmBroadcastReceiver.set(this);
+
+	}
+
+	/* (非 Javadoc)
+	 * @see android.app.Activity#onDestroy()
+	 */
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		/** finishはonStopなどだとtwitterから戻ってきた時にこのActivityが存在しないことになってしまう */
+		finish();
 	}
 
 	// //////////////////////////////////////////////////////////////////////////////////
@@ -128,7 +130,7 @@ public class SpecialThanksActivity extends Activity {
 
 	/**
 	 * 戻るボタンメソッド。
-	 * 
+	 *
 	 * @param v
 	 */
 	public void goBack(View v) {
@@ -146,7 +148,7 @@ public class SpecialThanksActivity extends Activity {
 
 	/**
 	 * ゲーム画面へ移動するメソッド。
-	 * 
+	 *
 	 * @param v
 	 */
 	public void goHome(View v) {

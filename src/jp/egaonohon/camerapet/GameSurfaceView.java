@@ -243,8 +243,10 @@ public class GameSurfaceView extends SurfaceView implements
 									"ユーザーの指がペットに触れているか判定"
 											+ myPet.rectF.contains(petAmuseX,
 													petAmuseY));
-							/** ペットが喜びの声をあげる */
-							myPet.pleased(this, pet_message_touch);
+							if (seOn) {
+								/** SE鳴らしてもいいならばペットが喜びの声をあげる */
+								myPet.pleased(this, pet_message_touch);
+							}
 						}
 
 						/** ペットに触れていようがいまいが同じ位置で2回目は震えないように判定位置を画面の外にセットし直す */

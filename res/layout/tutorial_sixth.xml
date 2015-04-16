@@ -110,6 +110,7 @@
             android:background="@null"
             android:gravity="center"
             android:onClick="goHome"
+            android:padding="4dp"
             android:text="@string/tutorial_end"
             android:textColor="#ffffff"
             android:textSize="@dimen/textsize_small" />
