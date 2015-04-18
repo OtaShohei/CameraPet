@@ -59,11 +59,11 @@
     <string name="pet_02_name">富士山ワンコ</string>
     <string name="pet_02_weight">●体重:富士山よりは軽い</string>
     <string name="pet_02_length">●体長:富士山よりは小さい</string>
-    <string name="pet_02_favorite">●好物:山梨みかん</string>
+    <string name="pet_02_favorite">●好物:静岡みかん</string>
     <string name="pet_02_comment">富士山から頭と足が生えてる犬。外国人は「Oh! FUJIYAMA!」と喜ぶ。でも、日本人が見るとやや驚きを禁じ得ない。</string>
     <string name="pet_03_name">アメリ犬（けん）</string>
-    <string name="pet_03_weight">●体重:50ガロン</string>
-    <string name="pet_03_length">●体長:50インチ</string>
+    <string name="pet_03_weight">●体重:5ガロン</string>
+    <string name="pet_03_length">●体長:5インチ</string>
     <string name="pet_03_favorite">●好物:コーラ</string>
     <string name="pet_03_comment">アメリカンな犬。でも、こういう犬はアメリカにはたぶんいない。世界の番犬として悪と戦う日も近い。たぶん。</string>
     <string name="pet_02b_name">お城イヌ</string>
@@ -172,45 +172,16 @@
     <string name="pet_message_generic025">飼い主さん疲れてる?　ひょっとしてボクのせい?</string>
     <string name="pet_message_generic026">最近肩こりがひどいんだよね。年かな</string>
     <string name="pet_message_generic027">楽しかった!　友だちはやっぱり大切だと思った</string>
-    <string name="special_thanks_talent">たのしいキャラをデザイン:小豆だるま\nhttp://www6.ocn.ne.jp/~komameda/\n\nたのしい音楽:もっぴーさうんど\nhttp://moppysound.seesaa.net/\n\nボタンの絵:WPZOOM Developer Icon Set by WPZOOM is licensed under a Creative Commons Attribution-ShareAlike 3.0 Unported License.\nhttp://www.wpzoom.com/\n\n図鑑の絵:All Vectors\nhttp://www.allvectors.com/</string>
-
-    <!-- アタマがかゆい。シャンプーを変えてほしい… -->
-    <!-- I have itchy head. I want to change the shampoo ... -->
-
-
-    <!-- ゴジラはすごいよ。見習わないと。強さと優しさあたりを -->
-    <!-- Godzilla is amazing. I apprentice him. In particular, His strength and tenderness -->
-
-
-    <!-- このスマホはあたたかくて居心地がいいんだよね。飼い主さんはどう? -->
-    <!-- I'm a good comfortable because your smartphone is warm. How about you? -->
-
-
-    <!-- 今日は素振りを100回がんばった。明日は101回を目指す -->
-    <!-- I tried hard to practice swing 100 times today. Tomorrow I aim to 101 times -->
-
-
-    <!-- 早く起きて、ってガールフレンドに起こされるのも悪くないかも -->
-    <!-- A girlfriend's voice of "Wake up, sleepyhead!" is not bad. -->
-
-
-    <!-- 犬もスピード違反で捕まるんだって。ネズミ捕りにひっかかって。犬なのにね -->
-    <!-- Dog Even do get caught for speeding. They can get stuck to mousetrap. Even though the dog. -->
-
-
-    <!-- キレイなディスプレイだとボクもイケメンに見えるかな -->
-    <!-- If beautiful display, wonder if I even look to Twink. -->
-
-
-    <!-- 今日は紫外線対策をして出かける。飼い主さんも気をつけて -->
-    <!-- I go out with a UV protection today. You also please be careful. -->
-
-
-    <!-- LINEのスタンプがうらやましい。だって、いろんなヒトのスマホにお出かけできるから… -->
-    <!-- I envy the stamp of Facebook Messenger. Because they can go out to the smartphone of many people ... -->
-
-
-    <!-- 夜更かしするとコンビニに行きたくなる。飼い主さんもそうでしょ? -->
-    <!-- If I stay up late, I would want to go to a convenience store. Don't you think so? -->
+    <string name="special_thanks_talent">たのしいキャラデザイン:小豆だるま\nhttp://www6.ocn.ne.jp/~komameda/\n\nたのしい音楽:もっぴーさうんど\nhttp://moppysound.seesaa.net/\n\nボタンの絵:WPZOOM Developer Icon Set by WPZOOM is licensed under a Creative Commons Attribution-ShareAlike 3.0 Unported License.\nhttp://www.wpzoom.com/\n\n図鑑の絵:All Vectors\nhttp://www.allvectors.com/</string>
+    <string name="pet_message_generic028">アタマがかゆい。シャンプーを変えてほしい… </string>
+    <string name="pet_message_generic029">ゴジラはすごいよ。見習わないと。強さと優しさあたりを</string>
+    <string name="pet_message_generic030">このスマホはあたたかくて居心地がいいんだよね。飼い主さんはどう?</string>
+    <string name="pet_message_generic031">犬もスピード違反で捕まるんだって。ネズミ捕りにひっかかって。犬なのにね</string>
+    <string name="pet_message_generic032">キレイなディスプレイだとボクもイケメンに見えるよね</string>
+    <string name="pet_message_generic033">LINEのスタンプがうらやましい。だって、いろんなヒトのスマホにお出かけできるから…</string>
+    <string name="pet_message_morningtime005">早く起きて、ってガールフレンドに起こされるのも悪くないかも</string>
+    <string name="pet_message_morningtime006">今日は紫外線対策をして出かける。飼い主さんも気をつけて</string>
+    <string name="pet_message_dinnertime005">今日は素振りを100回がんばった。明日は101回を目指す</string>
+    <string name="pet_message_midnight001">夜更かしするとコンビニに行きたくなる。飼い主さんもそうでしょ?</string>
 
 </resources>

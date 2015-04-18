@@ -56,16 +56,16 @@
     <string name="pet_dummy_length">dummydummy</string>
     <string name="pet_dummy_favorite">dummydummy</string>
     <string name="pet_dummy_comment">dummydummydummydummydummydummydummydummydummydummydummydummydummydummydummydummydummydummydummy</string>
-    <string name="pet_02_name">お城イヌ</string>
-    <string name="pet_02_weight">●体重:スイカ1個分くらい</string>
-    <string name="pet_02_length">●体長:スマホ2つ分</string>
-    <string name="pet_02_favorite">●好物:日本庭園</string>
-    <string name="pet_02_comment">お城の石垣みたいなものをまとった犬。歩きにくそうだけど本人は気にならないみたい。石垣を触られると大喜び。</string>
-    <string name="pet_03_name">雪犬だるま</string>
-    <string name="pet_03_weight">●体重:雪だるまくらい</string>
-    <string name="pet_03_length">●体長:雪だるまくらい</string>
-    <string name="pet_03_favorite">●好物:冷凍庫</string>
-    <string name="pet_03_comment">冬以外は苦手な犬。外から帰ったらすぐに冷凍庫に入らないと溶けて消えてしまう。触ると冷たくて気持ちいい。</string>
+    <string name="pet_02_name">Fujiyama dog</string>
+    <string name="pet_02_weight">Weight:Lighter than Mt.Fuji</string>
+    <string name="pet_02_length">Length:Tiny than Mt.Fuji</string>
+    <string name="pet_02_favorite">Favorite:Shizuoka Mikan</string>
+    <string name="pet_02_comment">Dog that grows head and feet from Mt. Fuji. Foreigners rejoice as "Oh! FUJIYAMA!". But, Japanese are surprised at this dog.</string>
+    <string name="pet_03_name">American Dog</string>
+    <string name="pet_03_weight">Weight:5 gallon</string>
+    <string name="pet_03_length">Length:5 inch</string>
+    <string name="pet_03_favorite">Favorite:Cola</string>
+    <string name="pet_03_comment">He seems American. But, like this dog don"'"t live in the US. In the near future, he may fight evil as a watchdog of the world.</string>
     <string name="pet_02b_name">Castle dog</string>
     <string name="pet_02b_weight">Weight:about Watermelon</string>
     <string name="pet_02b_length">Length:Two Smartphone</string>
@@ -173,5 +173,15 @@
     <string name="pet_message_generic026">Recently I"'"m terrible stiff neck. I am old.</string>
     <string name="pet_message_generic027">I had fun.Friends are such a great thing.</string>
     <string name="special_thanks_talent">Fun illust:KOMAMEDARUMA\nhttp://www6.ocn.ne.jp/~komameda/\n\nFun music:MoppySound\nhttp://moppysound.seesaa.net/\n\nIcon of button:WPZOOM Developer Icon Set by WPZOOM is licensed under a Creative Commons Attribution-ShareAlike 3.0 Unported License.\nhttp://www.wpzoom.com/\n\nEncyclopedia image:All Vectors\nhttp://www.allvectors.com/</string>
+    <string name="pet_message_generic028">I have itchy head. I want to change the shampoo ...</string>
+    <string name="pet_message_generic029">Godzilla is amazing. I apprentice him. In particular, His strength and tenderness.</string>
+    <string name="pet_message_generic030">I"'"m a good comfortable because your smartphone is warm. How about you?</string>
+    <string name="pet_message_generic031">Dog Even do get caught for speeding. They can get stuck to mousetrap. Even though the dog.</string>
+    <string name="pet_message_generic032">If beautiful display, wonder if I even look to Twink.</string>
+    <string name="pet_message_generic033">I envy the stamp of Facebook Messenger. Because they can go out to the smartphone of many people ...</string>
+    <string name="pet_message_morningtime005">A girlfriend"'"s voice of "Wake up, sleepyhead!" is not bad.</string>
+    <string name="pet_message_morningtime006">I go out with a UV protection today. You also please be careful.</string>
+    <string name="pet_message_dinnertime005">I tried hard to practice swing 100 times today. Tomorrow I aim to 101 times.</string>
+    <string name="pet_message_midnight001">f I stay up late, I would want to go to Taco Bell. Don"'"t you think so?</string>
 
 </resources>

@@ -55,7 +55,7 @@
             android:layout_weight="10"
             android:paddingBottom="4dp"
             android:paddingTop="4dp"
-            android:src="@drawable/screenshot_home" />
+            android:src="@drawable/tutorial_06" />
 
         <Button
             android:id="@+id/button2"

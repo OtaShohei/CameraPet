@@ -34,11 +34,19 @@ public class FukidasiTxt {
 			R.string.pet_message_generic013, R.string.pet_message_generic014,
 			R.string.pet_message_generic015, R.string.pet_message_generic016,
 			R.string.pet_message_generic018, R.string.pet_message_generic019,
-			R.string.pet_message_generic020, R.string.pet_message_generic021,
+			R.string.pet_message_generic021, R.string.pet_message_generic022,
+			R.string.pet_message_generic023, R.string.pet_message_generic024,
+			R.string.pet_message_generic025, R.string.pet_message_generic026,
+			R.string.pet_message_generic027, R.string.pet_message_generic028,
+			R.string.pet_message_generic029, R.string.pet_message_generic030,
+			R.string.pet_message_generic031, R.string.pet_message_generic032,
+			R.string.pet_message_generic033,
 			R.string.pet_message_morningtime001,
 			R.string.pet_message_morningtime002,
 			R.string.pet_message_morningtime003,
-			R.string.pet_message_morningtime004, };
+			R.string.pet_message_morningtime004,
+			R.string.pet_message_morningtime005,
+			R.string.pet_message_morningtime006, };
 
 	/** 11～14時の昼時間帯雑談吹き出し文字 */
 	static int[] lunchChatMsg = { R.string.pet_message_generic001,
@@ -65,7 +73,13 @@ public class FukidasiTxt {
 			R.string.pet_message_generic014, R.string.pet_message_generic015,
 			R.string.pet_message_generic016, R.string.pet_message_generic018,
 			R.string.pet_message_generic019, R.string.pet_message_generic020,
-			R.string.pet_message_generic021, R.string.pet_message_snacktime001,
+			R.string.pet_message_generic021, R.string.pet_message_generic022,
+			R.string.pet_message_generic023, R.string.pet_message_generic024,
+			R.string.pet_message_generic025, R.string.pet_message_generic026,
+			R.string.pet_message_generic027, R.string.pet_message_generic028,
+			R.string.pet_message_generic029, R.string.pet_message_generic030,
+			R.string.pet_message_generic031, R.string.pet_message_generic032,
+			R.string.pet_message_generic033, R.string.pet_message_snacktime001,
 			R.string.pet_message_snacktime002,
 			R.string.pet_message_snacktime003,
 			R.string.pet_message_snacktime004, };
@@ -80,11 +94,18 @@ public class FukidasiTxt {
 			R.string.pet_message_generic015, R.string.pet_message_generic016,
 			R.string.pet_message_generic017, R.string.pet_message_generic018,
 			R.string.pet_message_generic019, R.string.pet_message_generic020,
-			R.string.pet_message_generic021,
+			R.string.pet_message_generic021, R.string.pet_message_generic022,
+			R.string.pet_message_generic023, R.string.pet_message_generic024,
+			R.string.pet_message_generic025, R.string.pet_message_generic026,
+			R.string.pet_message_generic027, R.string.pet_message_generic028,
+			R.string.pet_message_generic029, R.string.pet_message_generic030,
+			R.string.pet_message_generic031, R.string.pet_message_generic032,
+			R.string.pet_message_generic033,
 			R.string.pet_message_dinnertime001,
 			R.string.pet_message_dinnertime002,
 			R.string.pet_message_dinnertime003,
-			R.string.pet_message_dinnertime004, };
+			R.string.pet_message_dinnertime004,
+			R.string.pet_message_dinnertime005, };
 
 	/** 0～3時の深夜時間帯雑談吹き出し文字 */
 	static int[] bedtimeChatMsg = { R.string.pet_message_generic001,
@@ -96,7 +117,14 @@ public class FukidasiTxt {
 			R.string.pet_message_generic014, R.string.pet_message_generic015,
 			R.string.pet_message_generic016, R.string.pet_message_generic017,
 			R.string.pet_message_generic018, R.string.pet_message_generic019,
-			R.string.pet_message_generic020, R.string.pet_message_generic021, };
+			R.string.pet_message_generic020, R.string.pet_message_generic021,
+			R.string.pet_message_generic022, R.string.pet_message_generic023,
+			R.string.pet_message_generic024, R.string.pet_message_generic025,
+			R.string.pet_message_generic026, R.string.pet_message_generic027,
+			R.string.pet_message_generic028, R.string.pet_message_generic029,
+			R.string.pet_message_generic030, R.string.pet_message_generic031,
+			R.string.pet_message_generic032, R.string.pet_message_generic033,
+			R.string.pet_message_midnight001 };
 
 	/** 吹き出し発行時のイベント:ペットが触られた時。 */
 	static int[] touchedMsg = { R.string.pet_message_touch001,
