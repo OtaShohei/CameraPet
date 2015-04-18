@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">ｶﾒﾗﾍﾟｯﾄ</string>
+    <string name="app_name">CameraPet</string>
     <string name="facebook">フェイスブック</string>
     <string name="tweet">ツイート</string>
     <string name="sound">音量</string>
@@ -21,7 +21,7 @@
     <string name="tutorial01">カメラペットはカメラアプリ。でも、ただのカメラじゃないのです。このアプリで写真を撮るとアプリの中に住んでいるあなたのペットも成長するのです。</string>
     <string name="tutorial02">まずは写真を撮ります。プレビュー画面をタップするだけでオートフォーカスで撮れちゃいますよ。ゲーム画面に戻るには下のボタンをタップ。</string>
     <string name="tutorial03">戻ると、先ほど撮った写真が浮かんでます。画面をフリックしてペットを動かしてみて！　ペットが写真を食べちゃいます（スマホの写真は消えないから大丈夫）。</string>
-    <string name="tutorial04">ペットを動かすには下方向にフリックして、ペットを画面下で跳ね返らせます。ペットの近くをフリックするとゆっくり。遠くだと速く動くよ！</string>
+    <string name="tutorial04">ペットを動かすには動かしたい向きにフリック。短いフリックならゆっくり。大きいフリックだと速く動くよ。画面のどこでもフリックOK。片手でも動かせちゃう。</string>
     <string name="tutorial05">3時間以内に食べたエサの数と満腹度が左上。レベルアップの目安である経験値が右上。その下はエサの残り数。画面の下でペットの年齢と種類がわかります。</string>
     <string name="tutorial06">ペットの経験値のため方はいろいろ。写真を撮る（1枚10pt）。写真を食べさせる（1枚1 pt）。TwitterやFacebookでこのペットのことをつぶやく（1回20 pt）。</string>
     <string name="tutorial07">かわいい。ときにはキモかわいい。育て方でいろんなペットに成長していきます。友だちと一緒に育てていろんなペットをカメラペットで楽しんじゃおう！</string>

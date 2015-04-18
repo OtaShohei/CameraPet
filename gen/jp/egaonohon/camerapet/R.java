@@ -525,9 +525,8 @@ containing a value of this type.
         public static final int tutorial_04=0x7f02004c;
         public static final int tutorial_05=0x7f02004d;
         public static final int tutorial_06=0x7f02004e;
-        public static final int tutorial_07=0x7f02004f;
-        public static final int twt_btn=0x7f020050;
-        public static final int yellow_mini=0x7f020051;
+        public static final int twt_btn=0x7f02004f;
+        public static final int yellow_mini=0x7f020050;
     }
     public static final class id {
         public static final int LinearLayout1=0x7f0c0019;

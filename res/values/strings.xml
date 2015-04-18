@@ -8,7 +8,7 @@
     <string name="goCamBtn">SHOT</string>
     <string name="encycl">CameraPet Encyclopedia</string>
     <string name="action_settings">Settings</string>
-    <string name="returnBtn">GoHome</string>
+    <string name="returnBtn">To the game screen</string>
     <string name="shotBtn">TakePic</string>
     <string name="pet_age">Age :</string>
     <string name="age_times">Hours</string>
@@ -21,8 +21,8 @@
     <string name="tutorial01">This app is a camera app. But, this is not just a camera. Taking photos with this app, Your pet who lives in the app grow!!</string>
     <string name="tutorial02">First of all, please take a photo. You can take a photo by simply tapping the preview screen.Please tap below button to return to the game screen.</string>
     <string name="tutorial03">In the game screen, the photo you took has afloat. Please try to move the pet Flick the screen. Pet will eat photo (does\'t disappear photos stored on smartphone).</string>
-    <string name="tutorial04">How to move the pet is to flick downwards. Then, pets will bounce in at the bottom. It works when you flick slowly close to the pet. It works quickly that it is far away.</string>
-    <string name="tutorial05">Bait Number eaten within 3 hours and satisfaction　is upper left. EXP is the top right. The number of remaining bait is under. The pet\'age and type is bottom.</string>
+    <string name="tutorial04">Flick to the direction you want the pet to move. Flick short, move slowly. Flick long, move quickly. You can anywhere flick on the screen. So with one hand, you can enjoy game.</string>
+    <string name="tutorial05">Bait Number eaten within 3 hours and satisfaction is upper left. EXP is the top right. The number of remaining bait is under. The pet\'age and type is bottom.</string>
     <string name="tutorial06">There are many way for pets of experience point add. Take a picture (10pt/1). Feeding the photos (1pt/1). On Twitter or Facebook, you post your CameraPet\'s pet (20 pt /1).</string>
     <string name="tutorial07">Cute. Sometimes cute and disgusting. You can grow to various pet in your upbringing. Please grow together with your friends. Let\'s fun various pet with this app.</string>
     <string name="tutorial_end">Done</string>
@@ -44,11 +44,11 @@
     <string name="pet_message_welcome">I"'"m glad to meet the owner"'"s!</string>
     <string name="how_to_shot">Tap the screen, you can take a picture.</string>
     <string name="download_sns_app">SNS app is not installed. Please download the SNS apps on Google Play.</string>
-    <string name="esa_status_morning">Satisfaction of breakfast</string>
-    <string name="esa_status_lunch">Satisfaction of lunch</string>
-    <string name="esa_status_snack">Satisfaction of snack</string>
-    <string name="esa_status_dinner">Satisfaction of dinner</string>
-    <string name="esa_status_bedtimeSnack">Satisfaction of bedtime snack</string>
+    <string name="esa_status_morning">Full of breakfast</string>
+    <string name="esa_status_lunch">Full of lunch</string>
+    <string name="esa_status_snack">Full of snack</string>
+    <string name="esa_status_dinner">Full of dinner</string>
+    <string name="esa_status_bedtimeSnack">Full of bedtime snack</string>
     <string name="number_of_food_this_time">Remaining bait</string>
     <string name="pet_message_esa_zero">Number of bait is zero. If you post my growth record to SNS,or take pictures, you can get more bait!</string>
     <string name="pet_dummy_name">dummy</string>
@@ -60,7 +60,7 @@
     <string name="pet_02_weight">Weight:Lighter than Mt.Fuji</string>
     <string name="pet_02_length">Length:Tiny than Mt.Fuji</string>
     <string name="pet_02_favorite">Favorite:Shizuoka Mikan</string>
-    <string name="pet_02_comment">Dog that grows head and feet from Mt. Fuji. Foreigners rejoice as "Oh! FUJIYAMA!". But, Japanese are surprised at this dog.</string>
+    <string name="pet_02_comment">"Dog that grows head and feet from Mt. Fuji. Foreigners rejoice as "Oh! FUJIYAMA!". But, Japanese are surprised at this dog."</string>
     <string name="pet_03_name">American Dog</string>
     <string name="pet_03_weight">Weight:5 gallon</string>
     <string name="pet_03_length">Length:5 inch</string>
@@ -84,9 +84,9 @@
     <string name="number_shooting">Number of times your shooting is</string>
     <string name="exp_increased_01">times.Your EXP has increased</string>
     <string name="exp_increased_02">.</string>
-    <string name="pet_sns_report_age">"Pet which I have kept in the Android app "CameraPet" are as follows! "</string>
+    <string name="pet_sns_report_age">"My Pet of "CameraPet" are as follows! "</string>
     <string name="pet_sns_report_exp">". EXP is "</string>
-    <string name="pet_sns_report_species_name">". Species name is "</string>
+    <string name="pet_sns_report_species_name">". Type is "</string>
     <string name="pet_sns_report_finish">.</string>
     <string name="alarm_sign">" is said that..."</string>
     <string name="alarm_body_txt01">"I don""'""t eat a food many days."</string>
@@ -157,7 +157,7 @@
     <string name="special_thanks">Thanks</string>
     <string name="camera_pet_copyright">CameraPet Ver.1.0\nCopyright 2015 Shohei Ota (NicoAlu)\nAll rights reserved.</string>
     <string name="special_thanks_title">Special Thanks</string>
-    <string name="special_thanks_illust">Fun illust:KOMAMEDARUMA</string>
+    <string name="special_thanks_illust">Fun character design:KOMAMEDARUMA</string>
     <string name="special_thanks_illust_link">http://www6.ocn.ne.jp/~komameda/</string>
     <string name="special_thanks_bgm">Fun music:MoppySound</string>
     <string name="special_thanks_bgm_link">http://moppysound.seesaa.net/</string>
@@ -172,7 +172,7 @@
     <string name="pet_message_generic025">You look so tired. Because of me by chance?</string>
     <string name="pet_message_generic026">Recently I"'"m terrible stiff neck. I am old.</string>
     <string name="pet_message_generic027">I had fun.Friends are such a great thing.</string>
-    <string name="special_thanks_talent">Fun illust:KOMAMEDARUMA\nhttp://www6.ocn.ne.jp/~komameda/\n\nFun music:MoppySound\nhttp://moppysound.seesaa.net/\n\nIcon of button:WPZOOM Developer Icon Set by WPZOOM is licensed under a Creative Commons Attribution-ShareAlike 3.0 Unported License.\nhttp://www.wpzoom.com/\n\nEncyclopedia image:All Vectors\nhttp://www.allvectors.com/</string>
+    <string name="special_thanks_talent">Fun character design:KOMAMEDARUMA\nhttp://www6.ocn.ne.jp/~komameda/\n\nFun music:MoppySound\nhttp://moppysound.seesaa.net/\n\nIcon of button:WPZOOM Developer Icon Set by WPZOOM is licensed under a Creative Commons Attribution-ShareAlike 3.0 Unported License.\nhttp://www.wpzoom.com/\n\nEncyclopedia image:All Vectors\nhttp://www.allvectors.com/</string>
     <string name="pet_message_generic028">I have itchy head. I want to change the shampoo ...</string>
     <string name="pet_message_generic029">Godzilla is amazing. I apprentice him. In particular, His strength and tenderness.</string>
     <string name="pet_message_generic030">I"'"m a good comfortable because your smartphone is warm. How about you?</string>

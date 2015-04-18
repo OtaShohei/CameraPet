@@ -147,9 +147,8 @@ int drawable tutorial_03 0x7f02004b
 int drawable tutorial_04 0x7f02004c
 int drawable tutorial_05 0x7f02004d
 int drawable tutorial_06 0x7f02004e
-int drawable tutorial_07 0x7f02004f
-int drawable twt_btn 0x7f020050
-int drawable yellow_mini 0x7f020051
+int drawable twt_btn 0x7f02004f
+int drawable yellow_mini 0x7f020050
 int id LinearLayout1 0x7f0c0019
 int id OtaBlogBtn 0x7f0c0035
 int id OtaFbBtn 0x7f0c0033
