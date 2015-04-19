@@ -23,9 +23,9 @@ public class PetLevel {
 	/** ペット画像右向き */
 	private Bitmap petPhL;
 	/** ペット002Aに必要な経験値 */
-	private static int pet002ARequiredEXP = 25;
+	private static int pet002ARequiredEXP = 3563;
 	/** ペット003Aに必要な経験値 */
-	private static int pet03ARequiredEXP = 45;
+	private static int pet03ARequiredEXP = 9765;
 
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "PetLevel";

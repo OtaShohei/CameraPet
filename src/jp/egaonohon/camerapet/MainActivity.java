@@ -61,6 +61,12 @@ public class MainActivity extends Activity {
 	private AdView adView;
 	/** GameFeat用のインスタンス */
 	private GameFeatAppController gfAppController;
+	
+	/**
+	 * Notificationを出したい間隔。デフォルトは4日後の345600000。開発中のテストでは30秒後の60000。
+	 * 本番時には、正規の数字に必ず変更すること。
+	 */
+	private static final long NOTIFICATION_INTERVAL_TIME = 345600000;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -187,7 +193,7 @@ public class MainActivity extends Activity {
 		CamPePref.saveMainActivityNotWorkStatus(this);
 
 		/** AlarmManager & NotificationManagerを動かすメソッドを呼び出す */
-		PetAlarmBroadcastReceiver.set(this);
+		PetAlarmBroadcastReceiver.set(this,NOTIFICATION_INTERVAL_TIME);
 		CameLog.setLog(TAG, "onStop");
 	}
 

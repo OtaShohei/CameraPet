@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 
 /**
@@ -23,8 +24,14 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 	private Context alarmReceiverContext;
 	private int notificationProvisionalId;
 
-	/** Notificationを出したい間隔。デフォルトは4日後の345600000。開発中のテストでは3分後の180000。 */
-	private static final long NOTIFICATION_INTERVAL_TIME = 180000;
+	/**
+	 * Notificationを出したい間隔。この間隔があいているかを確認する。デフォルトは4日後の345600000。開発中のテストでは1分後の60000
+	 * 。
+	 */
+	private static final long NOTIFICATION_INTERVAL_TIME = 345600000;
+
+	/** さらに追加で仕込むNotification。デフォルトは5日後の432000000。開発中のテストでは2分後の120000。 */
+	private static final long NOTIFICATION_INTERVAL_5DAYS_AFTER = 432000000;
 
 	/** Logのタグを定数で確保 */
 	private static final String TAG = "PetAlarmBroadcastReceiver";
@@ -66,18 +73,25 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 					"notificationId", 0);
 			NotificationManager myNotification = (NotificationManager) context
 					.getSystemService(Context.NOTIFICATION_SERVICE);
-			Notification notification = prepareNotification();
+			Notification notification = prepareNotification(context);
 			myNotification.notify(notificationProvisionalId, notification);
 
 			/** 今回notificationを出した時間を次回に備えて記録しておく。 */
 			CamPePref.saveNotificationTime(context);
+
+			/** さらに、現在起動中でないならば、AlarmManageを5日後に動かすメソッドを呼び出す */
+			PetAlarmBroadcastReceiver.set(alarmReceiverContext,
+					NOTIFICATION_INTERVAL_5DAYS_AFTER);
+			CameLog.setLog(TAG, "AlarmManageを5日後に動かすメソッドを呼び出す。インターバルは"
+					+ NOTIFICATION_INTERVAL_5DAYS_AFTER);
+
 		} else if (!((nowTime + NOTIFICATION_INTERVAL_TIME) > lastNotificationTime)
 				|| lastNotificationTime != -1) {
 			CameLog.setLog(TAG, "前回よりもNotificationの掲出間隔が過ぎていないので何もしません。");
 		}
 	}
 
-	private Notification prepareNotification() {
+	private Notification prepareNotification(Context context) {
 		CameLog.setLog(TAG, "prepareNotification、動作!");
 		/** タイトル用のひな形の文字列を取得する */
 		Resources res = alarmReceiverContext.getResources();
@@ -98,7 +112,10 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(
 				alarmReceiverContext);
 		/** タイトル表示時の画像をセット。 */
-		builder.setSmallIcon(R.drawable.ic_launcher)
+		builder.setSmallIcon(R.drawable.notification)
+				.setLargeIcon(
+						BitmapFactory.decodeResource(context.getResources(),
+								R.drawable.ic_launcher))
 				.setTicker(bodyMsg01 + bodyMsg02 + SpeciesName + bodyMsg03)
 				.setContentTitle(SpeciesName + hinagataTxt)
 				/** 通知のタイトル下の文字列 */

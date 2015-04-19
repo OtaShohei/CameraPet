@@ -46,7 +46,7 @@ public class Encyc01Activity extends Activity {
 	private AdView adView;
 	/** GameFeat用のインスタンス */
 	private GameFeatAppController gfAppController;
-	
+
 	// /** GameFeat用のインスタンス */
 	// private GameFeatAppController gfAppController;
 	// protected getImageData getImageData;
@@ -92,7 +92,7 @@ public class Encyc01Activity extends Activity {
 		} else {
 			/** GFコントローラ。MainActivityにのみ（?）必要 */
 			gfAppController = new GameFeatAppController();
-			
+
 			/** GameFeat呼び出し */
 			CamPeGameFeat encyc01CamPeGameFeat = new CamPeGameFeat();
 			encyc01CamPeGameFeat.workAtOnCreate(this);
@@ -155,14 +155,15 @@ public class Encyc01Activity extends Activity {
 				.getTracker(App.TrackerName.APP_TRACKER);
 		t.setScreenName(this.getClass().getSimpleName());
 		t.send(new HitBuilders.AppViewBuilder().build());
-		
+
 		if (locale.equals("ja_JP")) {
 			/** 【教室公開用コメントアウト】 */
 			/**
-			 * GAME FEAT広告設定初期化 初期化コードの引数は次の通り。MainActivityでの宣言だけでOK？？ activateGF(【Activity名】.this,
-			 * カスタム広告の使用, アイコン広告の使用, 全画面広告の使用);
+			 * GAME FEAT広告設定初期化 初期化コードの引数は次の通り。MainActivityでの宣言だけでOK？？
+			 * activateGF(【Activity名】.this, カスタム広告の使用, アイコン広告の使用, 全画面広告の使用);
 			 */
-			gfAppController.activateGF(Encyc01Activity.this, true, false, false);
+			gfAppController
+					.activateGF(Encyc01Activity.this, true, false, false);
 		}
 	}
 
@@ -180,7 +181,7 @@ public class Encyc01Activity extends Activity {
 		/** AlarmManager & NotificationManagerを動かすメソッドを呼び出す */
 		PetAlarmBroadcastReceiver.set(this);
 	}
-	
+
 	// //////////////////////////////////////////////////////////////////////////////////
 	// 以下、非オーバーライド系メソッド。
 	// //////////////////////////////////////////////////////////////////////////////////

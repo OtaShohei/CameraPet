@@ -200,11 +200,11 @@ public class CameraView extends SurfaceView {
 				petCam.release();
 				petCam = null;
 				CameLog.setLog(TAG, "surfaceDestroyed");
-				/**
-				 * 撮影回数をDatabaseファイルに記録。
-				 */
-				CamPeDb.saveNowCount(getContext());
-				CameLog.setLog(TAG, "撮影回数をDatabaseファイルに記録");
+//				/**
+//				 * 撮影回数をDatabaseファイルに記録。
+//				 */
+//				CamPeDb.saveNowCount(getContext());
+//				CameLog.setLog(TAG, "撮影回数をDatabaseファイルに記録");
 			}
 		});
 		// holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
